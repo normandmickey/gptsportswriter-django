@@ -5,6 +5,9 @@ from django.utils.timezone import datetime
 from .chat_completion import generate_prediction
 from .image_generation import generate_image
 from praw.models import InlineImage
+from dotenv import load_dotenv
+
+load_dotenv()
 
 reddit = praw.Reddit(
     client_id=os.environ.get("REDDIT_CLIENT_ID"),
@@ -49,6 +52,10 @@ def predictions(request):
         image = InlineImage(path=image_url, caption=title)
         media = {"image1": image}
         selfText = "{image1}" + generated_prediction
-        redditSubmission = subreddit.submit(title, inline_media=media, selftext=selfText)
+        try:
+            subreddit.submit(title, inline_media=media, selftext=selfText)
+        except:
+            print("error submitting reddit post")
+    
 
         return render(request, "predictions/predictions.html", context)
