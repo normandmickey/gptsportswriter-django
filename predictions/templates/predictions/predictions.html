@@ -15,6 +15,11 @@ GPTSportsWriter - Predictions
     <p>
         <strong>{{ user_input }}</strong>
     </p>
+    {% if image_url %}
+        <p>
+            <img src="{{ image_url }}" alt="Generated Image" style="max-width:80vw; width:30em; height:30em;">
+        </p>
+    {% endif %}
     {% if generated_prediction %}
         <p>{{ generated_prediction | safe }}</p>
     {% endif %}
