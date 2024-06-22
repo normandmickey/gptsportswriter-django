@@ -1,4 +1,4 @@
-import re, os, praw
+import re, os, praw, requests
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils.timezone import datetime
@@ -40,6 +40,10 @@ def predictions(request):
             f"Generate an image that visually illustrates the essence of the following story: {generated_prediction}"
         )
         image_url = generate_image(image_prompt)
+        data = requests.get(image_url).content
+        f = open('img.jpg', 'wb')
+        f.write(data)
+        f.close
 
         
         context = {
@@ -49,7 +53,7 @@ def predictions(request):
         }
 
         title = user_input
-        image = InlineImage(path=image_url, caption=title)
+        image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
         selfText = "{image1}" + generated_prediction
         try:
