@@ -87,6 +87,7 @@ def predictions(request):
         #    f"Generate an image that visually illustrates the essence of the following story: {generated_prediction}"
         #)
         image_prompt = createImagePrompt(user_input)
+        print(image_prompt)
         image_url = generate_image(image_prompt)
         print(image_url)
         data = requests.get(image_url).content

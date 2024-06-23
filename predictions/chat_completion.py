@@ -35,7 +35,7 @@ def get_prediction(input_text):
         model=GPT_MODEL,
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Write a humorous prediction for the following matchup.  Include relevant stats and odds. " + context + input_text},
+            {"role": "user", "content": "Write a humorous prediction for the following matchup.  Include only relevant stats and odds." + context + input_text},
         ],
         temperature=0.3, 
         max_tokens=1000
