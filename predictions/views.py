@@ -107,6 +107,5 @@ def predictions(request):
             subreddit.submit(title, inline_media=media, selftext=selfText)
         except:
             print("error submitting reddit post")
-    
-
+        
         return render(request, "predictions/predictions.html", context)
