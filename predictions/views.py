@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils.timezone import datetime
 from .chat_completion import generate_prediction
-from .image_generation import generate_image
+from .image_generation import generate_image, createImagePrompt
 from praw.models import InlineImage
 from dotenv import load_dotenv
 from datetime import datetime as dtdt
@@ -83,9 +83,10 @@ def predictions(request):
             user_input += request.POST.get("game") + "\n"
 
         generated_prediction = generate_prediction(user_input)
-        image_prompt = (
-            f"Generate an image that visually illustrates the essence of the following story: {generated_prediction}"
-        )
+        #image_prompt = (
+        #    f"Generate an image that visually illustrates the essence of the following story: {generated_prediction}"
+        #)
+        image_prompt = createImagePrompt(user_input)
         image_url = generate_image(image_prompt)
         print(image_url)
         data = requests.get(image_url).content

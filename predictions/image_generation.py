@@ -2,6 +2,26 @@ import os
 from openai import OpenAI
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
+
+def createImagePrompt(text):
+    response = client.chat.completions.create(
+    model="gpt-4o",
+    messages=[
+        {
+        "role": "user",
+        "content": "create a prompt to create an image in the style of digital art.  Find the mascot for the teams mentioned in the text and create an image of a game between them, include references to the cities or colleges and teams or mascots mentioned in the text, be creative, fun and whimsical. If there are no teams mentioned then use the subject of text as your inspiration. " + text
+        }
+    ],
+    temperature=0.5,
+    max_tokens=500,
+    top_p=1,
+    frequency_penalty=0,
+    presence_penalty=0
+    )
+
+    return response.choices[0].message.content
+
+
 def generate_image(text_prompt):
     response = client.images.generate(
         model="dall-e-3",

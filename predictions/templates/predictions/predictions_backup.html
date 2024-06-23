@@ -8,6 +8,11 @@ GPTSportsWriter - Predictions
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <textarea name="text_input" placeholder="Match: e.g. Edmonton Oilers vs Florida Panthers 6/22/2024" style="width:30em;"></textarea>
+        <select name="game" style="width:30em;">
+            {% for game in games %}
+            <option value="{{game}}">{{game}}</option>
+            {% endfor %}
+        </select>
         <br/>
         <input type="submit" value="Submit" style="width:8em; height:3em;">
     </form>
