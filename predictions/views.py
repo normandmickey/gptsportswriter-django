@@ -28,7 +28,7 @@ reddit = praw.Reddit(
 subreddit = reddit.subreddit("gptsportswriter")
 
 def getGames():
-    sports = ['baseball_mlb','soccer_usa_mls','basketball_nba','icehockey_nhl','soccer_epl','soccer_spain_la_liga']
+    sports = ['baseball_mlb']
     
     dataGames = []
     for sport in sports:
@@ -42,22 +42,6 @@ def getGames():
             utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
             esTime = utcTime.astimezone(ept)
             dataGames.append(dataMatch[i]['sport_key'] + " - " + dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " Prediction " + str(esTime))
-
-    for sport in sports:
-        dataResults = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/scores/?daysFrom=1&apiKey={ODDSAPI_API_KEY}")
-        dataResults = dataResults.json()
-        try:
-            for i in range(len(dataResults)):
-                if dataResults[i]['completed']:
-                    t = dataResults[i]['commence_time']
-                    utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
-                    esTime = utcTime.astimezone(ept)
-                    dataGames.append(dataResults[i]['sport_key'] + " - " + dataResults[i]['home_team'] + " VS " + dataResults[i]['away_team'] + " Recap " + str(esTime)) 
-                else:
-                    print("error")      
-        except:
-            print("error")
-        
         
     #print(dataGames)
     return(dataGames)
