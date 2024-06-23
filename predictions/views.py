@@ -75,7 +75,7 @@ def predictions(request):
    
     if request.method == "GET":
         dataGames = getGames()
-        #print(dataGames)
+        print(dataGames)
         return render(request, "predictions/predictions.html", {'games': dataGames})
     else:
         if "game" in request.POST:
