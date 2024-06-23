@@ -1,4 +1,4 @@
-import re, os, praw, requests, pytz
+import re, os, praw, requests, pytz, time
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils.timezone import datetime
@@ -72,12 +72,13 @@ def about(request):
 def predictions(request):
     context = {}
     user_input = ""
+    dataGames = getGames()
    
     if request.method == "GET":
         #dataGames = getGames()
         #print(dataGames)
-        #return render(request, "predictions/predictions.html", {'games': dataGames})
-        return render(request, "predictions/predictions.html")
+        return render(request, "predictions/predictions.html", {'games': dataGames})
+        #return render(request, "predictions/predictions.html")
     else:
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
@@ -87,19 +88,21 @@ def predictions(request):
         #    f"Generate an image that visually illustrates the essence of the following story: {generated_prediction}"
         #)
         image_prompt = createImagePrompt(user_input)
-        print(image_prompt)
+        #print(image_prompt)
         image_url = generate_image(image_prompt)
-        print(image_url)
+        #print(image_url)
         data = requests.get(image_url).content
         f = open('img.jpg', 'wb')
         f.write(data)
         f.close
+        time.sleep(3)
 
         
         context = {
             "user_input": user_input,
             "generated_prediction": generated_prediction.replace("\n", "<br/>"),
             "image_url": image_url,
+            "games": dataGames,
         }
 
         title = user_input
