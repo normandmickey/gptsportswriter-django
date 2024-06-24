@@ -29,7 +29,9 @@ subreddit = reddit.subreddit("gptsportswriter")
 
 def getGames():
     #sports = ['american_football_cfl','baseball_mlb','basketball_wnba','ice_hockey_nhl','mixed_martial_arts','soccer_epl','soccer_usa_mls']
+    sports = ['baseball_mlb']
     sports = []
+    #print(sports)
     sport = requests.get(f"https://api.the-odds-api.com/v4/sports/?apiKey={ODDSAPI_API_KEY}")
     sport = sport.json()
     for i in range(len(sport)):
@@ -37,22 +39,22 @@ def getGames():
             sports.append(sport[i]['key'])
             
     
-    #dataGames = []
-    #for sport in sports:
-    #    dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/odds/?apiKey={ODDSAPI_API_KEY}&regions=us&markets=h2h&bookmakers=draftkings,fanduel")
-    #    dataMatch = dataMatch.json()
-    #    for i in range(len(dataMatch)):
-    #        try:
-    #            t = dataMatch[i]['commence_time']
-    #        except:
-    #            t = "2024-02-25 12:00:00-05:00"
-    #        utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
-    #        esTime = utcTime.astimezone(ept)
-    #        print(dataMatch[i]['sport_key'])
-    #        dataGames.append(dataMatch[i]['sport_key'] + " - " + dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " Prediction " + str(esTime))
+    dataGames = []
+    for sport in sports:
+        dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/odds/?apiKey={ODDSAPI_API_KEY}&regions=us&markets=h2h&bookmakers=draftkings,fanduel")
+        dataMatch = dataMatch.json()
+        for i in range(len(dataMatch)):
+            try:
+                t = dataMatch[i]['commence_time']
+            except:
+                t = "2024-02-25 12:00:00-05:00"
+            utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
+            esTime = utcTime.astimezone(ept)
+            print(dataMatch[i]['sport_key'])
+            dataGames.append(dataMatch[i]['sport_key'] + " - " + dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " Prediction " + str(esTime))
         
-    #print(dataGames)
-    return(sport)
+    print(dataGames)
+    return(dataGames)
 
 # Create your views here.
 def home(request):
@@ -64,17 +66,15 @@ def about(request):
 def predictions(request):
     context = {}
     user_input = ""
-    dataGames = getGames()
-   
+    games = getGames()
+    
     if request.method == "GET":
-        #dataGames = getGames()
-        sport = getGames()
-        #print(dataGames)
-        return render(request, "predictions/predictions.html", {'sport': sport})
+        dataGames = getGames()
+        return render(request, "predictions/predictions.html", {'games': dataGames})
         #return render(request, "predictions/predictions.html")
     else:
-        if "sport" in request.POST:
-            user_input += request.POST.get("sport") + "\n"
+        if "game" in request.POST:
+            user_input += request.POST.get("game") + "\n"
 
         generated_prediction = generate_prediction(user_input)
         #image_prompt = (
@@ -96,7 +96,7 @@ def predictions(request):
             "user_input": user_input,
             "generated_prediction": generated_prediction.replace("\n", "<br/>"),
             "image_url": image_url,
-            "sport": sport,
+            "games": games,
         }
 
         title = user_input
