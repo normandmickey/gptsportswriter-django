@@ -28,12 +28,13 @@ reddit = praw.Reddit(
 subreddit = reddit.subreddit("gptsportswriter")
 
 def getGames():
-    sports = ['baseball_mlb','basketball_wnba','soccer_epl','soccer_usa_mls']
-    #sport = requests.get(f"https://api.the-odds-api.com/v4/sports/?apiKey={ODDSAPI_API_KEY}")
-    #sport = sport.json()
-    #for i in range(len(sport)):
-    #    if sport[i]['has_outrights'] == False:
-    #        sports.append(sport[i]['key'])
+    #sports = ['american_football_cfl','baseball_mlb','basketball_wnba','ice_hockey_nhl','mixed_martial_arts','soccer_epl','soccer_usa_mls']
+    sports = []
+    sport = requests.get(f"https://api.the-odds-api.com/v4/sports/?apiKey={ODDSAPI_API_KEY}")
+    sport = sport.json()
+    for i in range(len(sport)):
+        if sport[i]['has_outrights'] == False:
+            sports.append(sport[i]['key'])
             
     
     dataGames = []
