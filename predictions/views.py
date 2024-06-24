@@ -72,14 +72,15 @@ def predictions(request):
         #    f"Generate an image that visually illustrates the essence of the following story: {generated_prediction}"
         #)
         image_prompt = createImagePrompt(user_input)
-        #print(image_prompt)
+        print(image_prompt)
         image_url = generate_image(image_prompt)
-        #print(image_url)
+        print(image_url)
+        time.sleep(2)
         data = requests.get(image_url).content
         f = open('img.jpg', 'wb')
         f.write(data)
         f.close
-        time.sleep(3)
+       
 
         
         context = {
