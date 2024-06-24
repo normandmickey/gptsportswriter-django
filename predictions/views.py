@@ -28,7 +28,13 @@ reddit = praw.Reddit(
 subreddit = reddit.subreddit("gptsportswriter")
 
 def getGames():
-    sports = ['baseball_mlb']
+    sports = []
+    sport = requests.get(f"https://api.the-odds-api.com/v4/sports/?apiKey={ODDSAPI_API_KEY}")
+    sport = sport.json()
+    for i in range(len(sport)):
+        if sport[i]['has_outrights'] == False:
+            sports.append(sport[i]['key'])
+            
     
     dataGames = []
     for sport in sports:
@@ -41,6 +47,7 @@ def getGames():
                 t = "2024-02-25 12:00:00-05:00"
             utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
             esTime = utcTime.astimezone(ept)
+            print(dataMatch[i]['sport_key'])
             dataGames.append(dataMatch[i]['sport_key'] + " - " + dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " Prediction " + str(esTime))
         
     #print(dataGames)
