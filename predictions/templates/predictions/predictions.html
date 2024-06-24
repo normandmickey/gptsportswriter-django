@@ -7,9 +7,9 @@ GPTSportsWriter - Predictions
 <div style="padding:1em; font-size:14pt;">
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <select name="game" style="width:30em;">
+        <select name="sport" style="width:30em;">
             {% for game in games %}
-            <option value="{{game}}">{{game}}</option>
+            <option value="{{sport}}">{{sport}}</option>
             {% endfor %}
         </select>
         <br/>

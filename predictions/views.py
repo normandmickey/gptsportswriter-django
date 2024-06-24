@@ -37,22 +37,22 @@ def getGames():
             sports.append(sport[i]['key'])
             
     
-    dataGames = []
-    for sport in sports:
-        dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/odds/?apiKey={ODDSAPI_API_KEY}&regions=us&markets=h2h&bookmakers=draftkings,fanduel")
-        dataMatch = dataMatch.json()
-        for i in range(len(dataMatch)):
-            try:
-                t = dataMatch[i]['commence_time']
-            except:
-                t = "2024-02-25 12:00:00-05:00"
-            utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
-            esTime = utcTime.astimezone(ept)
-            print(dataMatch[i]['sport_key'])
-            dataGames.append(dataMatch[i]['sport_key'] + " - " + dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " Prediction " + str(esTime))
+    #dataGames = []
+    #for sport in sports:
+    #    dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/odds/?apiKey={ODDSAPI_API_KEY}&regions=us&markets=h2h&bookmakers=draftkings,fanduel")
+    #    dataMatch = dataMatch.json()
+    #    for i in range(len(dataMatch)):
+    #        try:
+    #            t = dataMatch[i]['commence_time']
+    #        except:
+    #            t = "2024-02-25 12:00:00-05:00"
+    #        utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
+    #        esTime = utcTime.astimezone(ept)
+    #        print(dataMatch[i]['sport_key'])
+    #        dataGames.append(dataMatch[i]['sport_key'] + " - " + dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " Prediction " + str(esTime))
         
     #print(dataGames)
-    return(dataGames)
+    return(sport)
 
 # Create your views here.
 def home(request):
@@ -67,13 +67,14 @@ def predictions(request):
     dataGames = getGames()
    
     if request.method == "GET":
-        dataGames = getGames()
+        #dataGames = getGames()
+        sport = getGames()
         #print(dataGames)
-        return render(request, "predictions/predictions.html", {'games': dataGames})
+        return render(request, "predictions/predictions.html", {'sport': sport})
         #return render(request, "predictions/predictions.html")
     else:
-        if "game" in request.POST:
-            user_input += request.POST.get("game") + "\n"
+        if "sport" in request.POST:
+            user_input += request.POST.get("sport") + "\n"
 
         generated_prediction = generate_prediction(user_input)
         #image_prompt = (
@@ -95,7 +96,7 @@ def predictions(request):
             "user_input": user_input,
             "generated_prediction": generated_prediction.replace("\n", "<br/>"),
             "image_url": image_url,
-            "games": dataGames,
+            "sport": sport,
         }
 
         title = user_input
