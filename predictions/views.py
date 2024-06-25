@@ -7,6 +7,7 @@ from .image_generation import generate_image, createImagePrompt
 from praw.models import InlineImage
 from dotenv import load_dotenv
 from datetime import datetime as dtdt
+from django.http import JsonResponse
 
 load_dotenv()
 
@@ -27,9 +28,9 @@ reddit = praw.Reddit(
 
 subreddit = reddit.subreddit("gptsportswriter")
 
-def getGames():
+def getSports():
     #sports = ['american_football_cfl','baseball_mlb','basketball_wnba','ice_hockey_nhl','mixed_martial_arts','soccer_epl','soccer_usa_mls']
-    sports = ['baseball_mlb']
+    #sports = ['baseball_mlb']
     sports = []
     #print(sports)
     sport = requests.get(f"https://api.the-odds-api.com/v4/sports/?apiKey={ODDSAPI_API_KEY}")
@@ -37,24 +38,24 @@ def getGames():
     for i in range(len(sport)):
         if sport[i]['has_outrights'] == False:
             sports.append(sport[i]['key'])
+    return(sports)
             
-    
-    dataGames = []
-    for sport in sports:
-        dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/odds/?apiKey={ODDSAPI_API_KEY}&regions=us&markets=h2h&bookmakers=draftkings,fanduel")
-        dataMatch = dataMatch.json()
-        for i in range(len(dataMatch)):
-            try:
-                t = dataMatch[i]['commence_time']
-            except:
-                t = "2024-02-25 12:00:00-05:00"
-            utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
-            esTime = utcTime.astimezone(ept)
-            print(dataMatch[i]['sport_key'])
-            dataGames.append(dataMatch[i]['sport_key'] + " - " + dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " Prediction " + str(esTime))
+def ajax_handler(request,sport):
+    games = []
+    dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/odds/?apiKey={ODDSAPI_API_KEY}&regions=us&markets=h2h&bookmakers=draftkings,fanduel")
+    dataMatch = dataMatch.json()
+    for i in range(len(dataMatch)):
+        try:
+            t = dataMatch[i]['commence_time']
+        except:
+            t = "2024-02-25 12:00:00-05:00"
+        utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
+        esTime = utcTime.astimezone(ept)
+        #print(dataMatch[i]['sport_key'])
+        games.append(dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime))
         
-    print(dataGames)
-    return(dataGames)
+    #print(dataGames)
+    return JsonResponse({'games': games})
 
 # Create your views here.
 def home(request):
@@ -66,15 +67,17 @@ def about(request):
 def predictions(request):
     context = {}
     user_input = ""
-    games = getGames()
+    sports = getSports()
     
     if request.method == "GET":
-        dataGames = getGames()
-        return render(request, "predictions/predictions.html", {'games': dataGames})
+        dataSports = getSports()
+        return render(request, "predictions/predictions.html", {'sports': dataSports})
         #return render(request, "predictions/predictions.html")
     else:
+        print(user_input)
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
+            print("Game: " + user_input)
 
         generated_prediction = generate_prediction(user_input)
         #image_prompt = (
@@ -89,23 +92,21 @@ def predictions(request):
         f = open('img.jpg', 'wb')
         f.write(data)
         f.close
-       
-
-        
+            
         context = {
             "user_input": user_input,
             "generated_prediction": generated_prediction.replace("\n", "<br/>"),
             "image_url": image_url,
-            "games": games,
+            "sports": sports,
         }
 
         title = user_input
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
         selfText = "{image1}" + generated_prediction
-        try:
-            subreddit.submit(title, inline_media=media, selftext=selfText)
-        except:
-            print("error submitting reddit post")
+        #try:
+        #    subreddit.submit(title, inline_media=media, selftext=selfText)
+        #except:
+        #    print("error submitting reddit post")
         
         return render(request, "predictions/predictions.html", context)
