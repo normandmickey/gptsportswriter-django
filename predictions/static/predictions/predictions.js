@@ -24,7 +24,7 @@ function ajax_request(id){
      games = res.games;
      removeChilds(document.getElementById('game'));
      for(const prop in games){
-        add_option(prop,games[prop]);
+        add_option(games[prop],games[prop]);
      }
     }
   };

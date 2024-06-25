@@ -74,10 +74,9 @@ def predictions(request):
         return render(request, "predictions/predictions.html", {'sports': dataSports})
         #return render(request, "predictions/predictions.html")
     else:
-        print(user_input)
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
-            print("Game: " + user_input)
+            #user_input = "Cleveland Guardians VS Baltimore Orioles 2024-06-25"
 
         generated_prediction = generate_prediction(user_input)
         #image_prompt = (
