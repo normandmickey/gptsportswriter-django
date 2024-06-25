@@ -103,9 +103,9 @@ def predictions(request):
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
         selfText = "{image1}" + generated_prediction
-        #try:
-        #    subreddit.submit(title, inline_media=media, selftext=selfText)
-        #except:
-        #    print("error submitting reddit post")
+        try:
+            subreddit.submit(title, inline_media=media, selftext=selfText)
+        except:
+            print("error submitting reddit post")
         
         return render(request, "predictions/predictions.html", context)
