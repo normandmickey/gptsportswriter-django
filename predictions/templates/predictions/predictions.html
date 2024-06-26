@@ -22,11 +22,13 @@ GPTSportsWriter - Predictions
         <br/>
         <input type="submit" value="submit" style="width:8em; height:3em;">
     </form>
-
+    <div class="spinner-border" role="status">
+      </div>
+      <br/>
     <p>
         <strong>{{ user_input }}</strong>
     </p>
-    {% if image_url %}
+        {% if image_url %}
         <p>
             <img src="{{ image_url }}" alt="Generated Image" style="max-width:80vw; width:30em; height:30em;">
         </p>

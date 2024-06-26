@@ -6,14 +6,35 @@
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'predictions/site.css' %}"/>
     <script src='{% static "predictions/predictions.js" %}'></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 
 <body>
-<div class="navbar">
-    <a href="{% url 'home' %}" class="navbar-brand">Home</a>
-    <a href="{% url 'about' %}" class="navbar-item">About</a>
-    <a href="{% url 'predictions' %}" class="navbar-item">Predictions</a>
-</div>
+
+<div class="container-fluid p-5 bg-primary text-white text-center">
+    <h1>GPTSportsWriter</h1>
+    <p>Your AI mate for sports betting predictions and rapid insights.</p> 
+  </div>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'about' %}">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'predictions' %}">Predictions</a>
+          </li>
+        </div>
+    </div>
+  </nav>
 
 <div class="body-content">
     {% block content %}
