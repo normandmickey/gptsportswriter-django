@@ -1,7 +1,6 @@
 window.onload = function(){
 
     let selector = document.querySelector("#sport");
-    var pageTitle = document.title;
     selector.addEventListener('change',function(){
 
         let sport_id = selector.value;
@@ -10,14 +9,11 @@ window.onload = function(){
             removeChilds(document.getElementById('game'));
         }
         else{
-            if(pageTitle == "GPTSportsWriter - Predictions"){
-                ajax_request(sport_id);
-            }
-            else {
-                ajax_requestb(sport_id);
-            }
+            ajax_request(sport_id);
         }
+        
     });
+
 
 function ajax_request(id){
     var xhttp = new XMLHttpRequest();
@@ -36,22 +32,6 @@ function ajax_request(id){
   xhttp.send();
 }
 
-function ajax_requestb(id){
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-     console.log(this.responseText);
-     res = JSON.parse(this.responseText)
-     games = res.games;
-     removeChilds(document.getElementById('game'));
-     for(const prop in games){
-        add_option(games[prop],games[prop]);
-     }
-    }
-  };
-  xhttp.open("GET", `/ajax_handlerb/${id}`, true);
-  xhttp.send();
-}
 
 function add_option(val,text){
     var sel = document.getElementById('game');

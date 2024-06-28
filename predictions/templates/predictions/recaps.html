@@ -1,10 +1,10 @@
 {% extends "predictions/layout.html" %}
 {% block title %}
-GPTSportsWriter - Predictions
+GPTSportsWriter - Recaps
 {% endblock %}
 {% block content %}
-<p>AI Sports Predictions - Accurate, humorous and informative.</p>
-<div pagename="predictions" style="padding:1em; font-size:14pt;">
+<p>AI Sports Recaps - Accurate, humorous and informative.</p>
+<div pagename="recaps" style="padding:1em; font-size:14pt;">
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <select name="sport" style="width:30em;" id="sport">
@@ -30,8 +30,8 @@ GPTSportsWriter - Predictions
             <img src="{{ image_url }}" alt="Generated Image" style="max-width:80vw; width:30em; height:30em;">
         </p>
     {% endif %}
-    {% if generated_prediction %}
-        <p>{{ generated_prediction | safe }}</p>
+    {% if generated_recap %}
+        <p>{{ generated_recap | safe }}</p>
     {% endif %}
 </div>
 {% endblock %}
