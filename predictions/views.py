@@ -108,7 +108,7 @@ def predictions(request):
             "sports": sports,
         }
 
-        title = user_input
+        title = "Prediction: " + user_input
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
         selfText = "{image1}" + generated_prediction
@@ -149,7 +149,7 @@ def recaps(request):
             "sports": sports,
         }
 
-        title = user_input
+        title = "Recap: " + user_input
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
         selfText = "{image1}" + generated_recap
