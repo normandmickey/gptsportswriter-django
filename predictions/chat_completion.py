@@ -24,7 +24,7 @@ def generate_prediction(input_text):
     return format_response(response)
 
 def get_prediction(input_text):
-    start = (datetime.now() - timedelta(hours=24)).timestamp()
+    start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
     context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end)).as_string
     print(context)
@@ -51,7 +51,7 @@ def generate_recap(input_text):
     return format_response(response)
 
 def get_recap(input_text):
-    start = (datetime.now() - timedelta(hours=24)).timestamp()
+    start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
     context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end)).as_string
     print(context)
