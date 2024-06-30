@@ -50,6 +50,7 @@ def sendTweet(text,redditURL):
 
 def createTweet(text, redditURL):
     tweetText = generate_tweet(text)
+    tweetText = tweetText.replace('"', '')
     return(tweetText)
 
 
