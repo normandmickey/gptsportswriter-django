@@ -140,6 +140,7 @@ def predictions(request):
         selfText = "{image1}" + generated_prediction
         try:
             redditURL = subreddit.submit(title, inline_media=media, selftext=selfText)
+            redditURL = "https://redd.it/" + redditURL
             sendTweet(generated_prediction,redditURL)
         except:
             print("error submitting reddit post")
