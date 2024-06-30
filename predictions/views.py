@@ -2,16 +2,22 @@ import re, os, praw, requests, pytz, time
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils.timezone import datetime
-from .chat_completion import generate_prediction, generate_recap
+from .chat_completion import generate_prediction, generate_recap, generate_tweet
 from .image_generation import generate_image, createImagePrompt
 from praw.models import InlineImage
 from dotenv import load_dotenv
 from datetime import datetime as dtdt
 from django.http import JsonResponse
+import tweepy
 
 load_dotenv()
 
 ODDSAPI_API_KEY=os.environ.get("ODDSAPI_API_KEY")
+consumer_key=os.environ.get('TWITTER_API_KEY')
+consumer_secret=os.environ.get('TWITTER_API_SECRET')
+bearer_token=os.environ.get('TWITTER_BEARER_TOKEN')
+access_token_secret=os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
+access_token=os.environ.get('TWITTER_ACCESS_TOKEN')
 
 ept = pytz.timezone('US/Eastern')
 utc = pytz.utc
@@ -27,6 +33,25 @@ reddit = praw.Reddit(
 )
 
 subreddit = reddit.subreddit("gptsportswriter")
+
+# send Tweet
+def sendTweet(text,redditURL):
+    tweetText = createTweet(text,redditURL)
+    client = tweepy.Client(
+        consumer_key=consumer_key,
+        consumer_secret=consumer_secret,
+        access_token=access_token,
+        access_token_secret=access_token_secret
+    )
+
+    # Post Tweet
+    response = client.create_tweet(text=tweetText)
+    print(response)
+
+def createTweet(text, redditURL):
+    tweetText = generate_tweet(text)
+    return(tweetText)
+
 
 def getSports():
     sports = []
@@ -113,7 +138,8 @@ def predictions(request):
         media = {"image1": image}
         selfText = "{image1}" + generated_prediction
         try:
-            subreddit.submit(title, inline_media=media, selftext=selfText)
+            redditURL = subreddit.submit(title, inline_media=media, selftext=selfText)
+            sendTweet(user_input,redditURL)
         except:
             print("error submitting reddit post")
         

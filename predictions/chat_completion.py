@@ -71,6 +71,34 @@ def get_recap(input_text):
     # Return the API response
     return response
 
+def generate_tweet(input_text):
+    # Call the OpenAI API to generate the story
+    response = get_tweet(input_text)
+    # Format and return the response
+    return format_response(response)
+
+def get_tweet(input_text):
+    start = (datetime.now() - timedelta(hours=48)).timestamp()
+    end = datetime.now().timestamp()
+    context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end)).as_string
+    print(context)
+    # Construct the system prompt. Feel free to experiment with different prompts.
+    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate.  """
+    # Make the API call
+    response = groq_client.chat.completions.create(
+        model=GPT_MODEL,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": "Write a humorous 130 character tweet predicting the outcome of the following match.  Include only relevant stats and odds for the game in question do not make up any details. Use approprate hashtags and emojis." + context + input_text},
+        ],
+        temperature=0.3, 
+        max_tokens=200
+    )
+
+    # Return the API response
+    return response
+
+
 def format_response(response):
     # Extract the generated story from the response
     prediction = response.choices[0].message.content
