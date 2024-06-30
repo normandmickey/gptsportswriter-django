@@ -35,9 +35,11 @@ reddit = praw.Reddit(
 subreddit = reddit.subreddit("gptsportswriter")
 
 # send Tweet
-def sendTweet(text):
+def sendTweet(text, redditURL):
     tweetText = createTweet(text)
-    tweetText = tweetText[:279]
+    tweetText = tweetText[:253]
+    tweetText = tweetText + " " + redditURL
+    print(tweetText)
     client = tweepy.Client(
         consumer_key=consumer_key,
         consumer_secret=consumer_secret,
@@ -47,7 +49,7 @@ def sendTweet(text):
 
     # Post Tweet
     response = client.create_tweet(text=tweetText)
-    print(response)
+    #print(response)
 
 def createTweet(text):
     tweetText = generate_tweet(text)
@@ -69,7 +71,7 @@ def ajax_handler(request,sport):
     games = []
     dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/odds/?apiKey={ODDSAPI_API_KEY}&regions=us&markets=h2h&bookmakers=draftkings,fanduel")
     dataMatch = dataMatch.json()
-    print("predictions: " + str(dataMatch))
+    #print("predictions: " + str(dataMatch))
     for i in range(len(dataMatch)):
         try:
             t = dataMatch[i]['commence_time']
@@ -85,7 +87,7 @@ def ajax_handlerb(request,sport):
     games = []
     dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/scores/?apiKey={ODDSAPI_API_KEY}&daysFrom=3")
     dataMatch = dataMatch.json()
-    print("recaps: " + str(dataMatch))
+    #print("recaps: " + str(dataMatch))
     for i in range(len(dataMatch)):
         try:
             t = dataMatch[i]['commence_time']
@@ -120,9 +122,9 @@ def predictions(request):
         
         generated_prediction = generate_prediction(user_input)
         image_prompt = createImagePrompt(user_input)
-        print(image_prompt)
+        #print(image_prompt)
         image_url = generate_image(image_prompt)
-        print(image_url)
+        #print(image_url)
         time.sleep(2)
         data = requests.get(image_url).content
         f = open('img.jpg', 'wb')
@@ -143,12 +145,12 @@ def predictions(request):
         try:
             redditURL = subreddit.submit(title, inline_media=media, selftext=selfText)
             redditURL = "https://redd.it/" + str(redditURL)
-            print(redditURL)
+            #print(redditURL)
         except:
             print("error submitting reddit post")
-
+        
         try:
-            sendTweet(generated_prediction)
+            sendTweet(generated_prediction, redditURL)
         except:
             print("error sending tweet")
         
@@ -168,9 +170,9 @@ def recaps(request):
         
         generated_recap = generate_recap(user_input)
         image_prompt = createImagePrompt(user_input)
-        print(image_prompt)
+        #print(image_prompt)
         image_url = generate_image(image_prompt)
-        print(image_url)
+        #print(image_url)
         time.sleep(2)
         data = requests.get(image_url).content
         f = open('img.jpg', 'wb')
