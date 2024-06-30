@@ -35,8 +35,9 @@ reddit = praw.Reddit(
 subreddit = reddit.subreddit("gptsportswriter")
 
 # send Tweet
-def sendTweet(text,redditURL):
-    tweetText = createTweet(text,redditURL)
+def sendTweet(text):
+    tweetText = createTweet(text)
+    tweetText = tweetText[:280]
     client = tweepy.Client(
         consumer_key=consumer_key,
         consumer_secret=consumer_secret,
@@ -48,9 +49,10 @@ def sendTweet(text,redditURL):
     response = client.create_tweet(text=tweetText)
     print(response)
 
-def createTweet(text, redditURL):
+def createTweet(text):
     tweetText = generate_tweet(text)
     tweetText = tweetText.replace('"', '')
+    tweetText = tweetText
     return(tweetText)
 
 
@@ -140,10 +142,15 @@ def predictions(request):
         selfText = "{image1}" + generated_prediction
         try:
             redditURL = subreddit.submit(title, inline_media=media, selftext=selfText)
-            redditURL = "https://redd.it/" + redditURL
-            sendTweet(generated_prediction,redditURL)
+            redditURL = "https://redd.it/" + str(redditURL)
+            print(redditURL)
         except:
             print("error submitting reddit post")
+
+        try:
+            sendTweet(generated_prediction)
+        except:
+            print("error sending tweet")
         
         return render(request, "predictions/predictions.html", context)
 
