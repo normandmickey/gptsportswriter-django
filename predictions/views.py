@@ -37,7 +37,7 @@ subreddit = reddit.subreddit("gptsportswriter")
 # send Tweet
 def sendTweet(text, redditURL):
     tweetText = createTweet(text)
-    tweetText = tweetText[:253]
+    tweetText = tweetText[:245]
     tweetText = tweetText + " " + redditURL
     print(tweetText)
     client = tweepy.Client(
