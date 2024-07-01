@@ -89,7 +89,7 @@ def get_tweet(input_text):
         model=GPT_MODEL,
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Write a humorous 130 character tweet predicting the outcome of the following match.  Include only relevant stats and odds for the game in question do not make up any details. Use approprate hashtags and emojis." + " " + input_text},
+            {"role": "user", "content": "Write a brief humorous tweet predicting the outcome of the following match.  Include only relevant stats and odds for the game in question do not make up any details. Use approprate hashtags and emojis." + " " + input_text},
         ],
         temperature=0.3, 
         max_tokens=200

@@ -111,6 +111,7 @@ def about(request):
 def predictions(request):
     context = {}
     user_input = ""
+    sport = ""
     sports = getSports()
     
     if request.method == "GET":
@@ -119,9 +120,11 @@ def predictions(request):
     else:
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
+            sport += request.POST.get("sport") + "\n"
+            sport = sport.replace('_', " ")
         
-        generated_prediction = generate_prediction(user_input)
-        image_prompt = createImagePrompt(user_input)
+        generated_prediction = generate_prediction(sport + " " + user_input)
+        image_prompt = createImagePrompt(sport + " " + user_input)
         #print(image_prompt)
         image_url = generate_image(image_prompt)
         #print(image_url)
