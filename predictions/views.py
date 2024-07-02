@@ -34,12 +34,23 @@ reddit = praw.Reddit(
 
 subreddit = reddit.subreddit("gptsportswriter")
 
+tweepy_auth = tweepy.OAuth1UserHandler(
+    "{}".format(os.environ.get("TWITTER_API_KEY")),
+    "{}".format(os.environ.get("TWITTER_API_SECRET")),
+    "{}".format(os.environ.get("TWITTER_ACCESS_TOKEN")),
+    "{}".format(os.environ.get("TWITTER_ACCESS_TOKEN_SECRET")),
+)
 # send Tweet
 def sendTweet(text, redditURL):
     tweetText = createTweet(text)
     tweetText = tweetText[:245]
-    tweetText = tweetText + " " + redditURL
+    #tweetText = tweetText + " " + redditURL
     print(tweetText)
+    tweepy_api = tweepy.API(tweepy_auth)
+    post = tweepy_api.simple_upload("img.jpg")
+    text = str(post)
+    media_id = re.search("media_id=(.+?),", text).group(1)
+    
     client = tweepy.Client(
         consumer_key=consumer_key,
         consumer_secret=consumer_secret,
@@ -48,7 +59,7 @@ def sendTweet(text, redditURL):
     )
 
     # Post Tweet
-    response = client.create_tweet(text=tweetText)
+    response = client.create_tweet(text=tweetText, media_ids=[media_id])
     #print(response)
 
 def createTweet(text):
