@@ -205,8 +205,15 @@ def recaps(request):
         media = {"image1": image}
         selfText = "{image1}" + generated_recap
         try:
-            subreddit.submit(title, inline_media=media, selftext=selfText)
+            #subreddit.submit(title, inline_media=media, selftext=selfText)
+            redditURL = subreddit.submit(title, inline_media=media, selftext=selfText)
+            redditURL = "https://redd.it/" + str(redditURL)
         except:
             print("error submitting reddit post")
+
+        try:
+            sendTweet(generated_recap, redditURL)
+        except:
+            print("error sending tweet")
         
         return render(request, "predictions/recaps.html", context)

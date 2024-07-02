@@ -27,7 +27,7 @@ def get_prediction(input_text):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
     context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end)).as_string
-    print(context)
+    #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
     # Make the API call
@@ -54,7 +54,7 @@ def get_recap(input_text):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
     context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end)).as_string
-    print(context)
+    #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate.  """
     # Make the API call
@@ -89,7 +89,7 @@ def get_tweet(input_text):
         model=GPT_MODEL,
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Write a 150 character humorous tweet predicting the outcome of the following match.  Include only relevant stats and odds for the game in question do not make up any details. Use approprate hashtags and emojis. limit your reply to 150 characters." + " " + input_text},
+            {"role": "user", "content": "Write a 150 character humorous tweet summarizing the follwoing text.  Include only relevant stats and odds for the game in question do not make up any details. Use approprate hashtags and emojis. limit your reply to 150 characters." + " " + input_text},
         ],
         temperature=0.3, 
         max_tokens=200
