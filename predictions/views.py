@@ -174,6 +174,7 @@ def recaps(request):
     context = {}
     user_input = ""
     sports = getSports()
+    sport = ""
     
     if request.method == "GET":
         dataSports = getSports()
