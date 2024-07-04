@@ -1,4 +1,4 @@
-import re, os, praw, requests, pytz, time
+import re, os, praw, requests, pytz, time, json
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils.timezone import datetime
@@ -8,6 +8,7 @@ from praw.models import InlineImage
 from dotenv import load_dotenv
 from datetime import datetime as dtdt
 from django.http import JsonResponse
+import facebook as fb
 import tweepy
 
 load_dotenv()
@@ -68,19 +69,14 @@ def createTweet(text):
     tweetText = tweetText
     return(tweetText)
 
-def fbPost(text):
-    #Your Access Keys
-    page_id_1 = os.environ.get('FACEBOOK_PAGE_ID')
-    facebook_access_token_1 = os.environ.get('FACEBOOK_ACCESS_TOKEN')
-    msg = text
-    post_url = 'https://graph.facebook.com/{}/feed'.format(page_id_1)
-    payload = {
-    'message': msg,
-    'access_token': facebook_access_token_1
-    }
-    r = requests.post(post_url, data=payload)
-    print(r.text)
-
+def fbPost(text, title):
+    postBody = title + "\n" + text
+    gptsportswriterapi=fb.GraphAPI(os.environ.get('FACEBOOK_ACCESS_TOKEN'))
+    response_photo = gptsportswriterapi.put_photo(open('img.jpg','rb'), message=postBody)
+    photoJson = json.loads(response_photo)
+    #photo_id = photoJson[0]['id']
+    #gptsportswriterapi.put_object(parent_object="me",connection_name="feed",message=text,link="https://www.gptsportswriter.com",photo_id=photo_id)
+    #print(photo_id)
 
 def getSports():
     sports = []
@@ -185,7 +181,7 @@ def predictions(request):
             print("error sending tweet")
 
         try:
-            fbPost(generated_prediction)
+            fbPost(generated_prediction, user_input)
         except:
             print("error posting to FB")
         
