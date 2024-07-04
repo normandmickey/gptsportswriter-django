@@ -68,6 +68,19 @@ def createTweet(text):
     tweetText = tweetText
     return(tweetText)
 
+def fbPost(text):
+    #Your Access Keys
+    page_id_1 = os.environ.get('FACEBOOK_PAGE_ID')
+    facebook_access_token_1 = os.environ.get('FACEBOOK_ACCESS_TOKEN')
+    msg = text
+    post_url = 'https://graph.facebook.com/{}/feed'.format(page_id_1)
+    payload = {
+    'message': msg,
+    'access_token': facebook_access_token_1
+    }
+    r = requests.post(post_url, data=payload)
+    print(r.text)
+
 
 def getSports():
     sports = []
@@ -119,6 +132,9 @@ def home(request):
 def about(request):
     return render(request, "predictions/about.html")
 
+def fbprivacy(request):
+    return render(request, "predictions/fbprivacy.html")
+
 def predictions(request):
     context = {}
     user_input = ""
@@ -167,6 +183,11 @@ def predictions(request):
             sendTweet(generated_prediction, redditURL)
         except:
             print("error sending tweet")
+
+        try:
+            fbPost(generated_prediction)
+        except:
+            print("error posting to FB")
         
         return render(request, "predictions/predictions.html", context)
 
