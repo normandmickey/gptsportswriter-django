@@ -1,25 +1,14 @@
+const spinnerBox = document.getElementById('spinner-box')
+const dataBox = document.getElementById('data-box')
+
+console.log(spinnerBox)
+console.log(dataBox)
+
 window.onload = function(){
 
-    console.log('hello world')
+   
 
-    const spinnerBox = document.getElementById('spinner-box')
-    const dataBox = document.getElementById('data-box')
-
-    // console.log(spinnerBox)
-    // console.log(dataBox)
-
-    $.ajax({
-        type: 'GET',
-        url: '/predictions/',
-        success: function(response){
-            console.log(response)
-        },
-        error: function(error){
-            console.log(error)
-        }
-    })
-
-   let selector = document.querySelector("#sport");
+    let selector = document.querySelector("#sport");
     var pageTitle = document.title;
     selector.addEventListener('change',function(){
 

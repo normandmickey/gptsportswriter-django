@@ -73,7 +73,8 @@ def fbPost(text, title):
     postBody = title + "\n" + text
     gptsportswriterapi=fb.GraphAPI(os.environ.get('FACEBOOK_ACCESS_TOKEN'))
     response_photo = gptsportswriterapi.put_photo(open('img.jpg','rb'), message=postBody)
-    photoJson = json.loads(response_photo)
+    print(response_photo)
+    #photoJson = json.loads(response_photo)
     #photo_id = photoJson[0]['id']
     #gptsportswriterapi.put_object(parent_object="me",connection_name="feed",message=text,link="https://www.gptsportswriter.com",photo_id=photo_id)
     #print(photo_id)
