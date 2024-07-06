@@ -106,7 +106,7 @@ def ajax_handler(request,sport):
 
 def ajax_handlerb(request,sport):
     games = []
-    dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/scores/?apiKey={ODDSAPI_API_KEY}&daysFrom=3")
+    dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/scores/?apiKey={ODDSAPI_API_KEY}&daysFrom=1")
     dataMatch = dataMatch.json()
     #print("recaps: " + str(dataMatch))
     for i in range(len(dataMatch)):
