@@ -44,6 +44,60 @@ def get_prediction(input_text):
     # Return the API response
     return response
 
+def generate_parlay(input_text):
+    # Call the OpenAI API to generate the story
+    response = get_parlay(input_text)
+    # Format and return the response
+    return format_response(response)
+
+def get_parlay(input_text):
+    start = (datetime.now() - timedelta(hours=48)).timestamp()
+    end = datetime.now().timestamp()
+    input_text = "Same Game Parlays for " + input_text
+    context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end)).as_string
+    #print(context)
+    # Construct the system prompt. Feel free to experiment with different prompts.
+    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
+    # Make the API call
+    response = groq_client.chat.completions.create(
+        model=GPT_MODEL,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": "Find the best same game parlay bet for the following match.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + input_text},
+        ],
+        temperature=0.3, 
+        max_tokens=1000
+    )
+
+def generate_news(input_text):
+    # Call the OpenAI API to generate the story
+    response = get_news(input_text)
+    # Format and return the response
+    return format_response(response)
+
+def get_news(input_text):
+    start = (datetime.now() - timedelta(hours=48)).timestamp()
+    end = datetime.now().timestamp()
+    input_text = "Top News for " + input_text
+    context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end)).as_string
+    #print(context)
+    # Construct the system prompt. Feel free to experiment with different prompts.
+    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
+    # Make the API call
+    response = groq_client.chat.completions.create(
+        model=GPT_MODEL,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": "Write a summary of the following context." + context + input_text},
+        ],
+        temperature=0.3, 
+        max_tokens=1000
+    )
+
+
+    # Return the API response
+    return response
+
 def generate_recap(input_text):
     # Call the OpenAI API to generate the story
     response = get_recap(input_text)

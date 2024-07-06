@@ -10,7 +10,7 @@ window.onload = function(){
             removeChilds(document.getElementById('game'));
         }
         else{
-            if(pageTitle == "GPTSportsWriter - Predictions"){
+            if(pageTitle == "GPTSportsWriter - Predictions" || pageTitle == "GPTSportsWriter - Parlays"){
                 ajax_request(sport_id);
             }
             else {
