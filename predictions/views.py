@@ -198,11 +198,12 @@ def topnews(request):
         dataSports = getSports()
         return render(request, "predictions/topnews.html", {'sports': dataSports})
     else:
-        if "game" in request.POST:
-            user_input += request.POST.get("game") + "\n"
+        if "sport" in request.POST:
+            user_input += request.POST.get("sport") + "\n"
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
         
+        print("sport: " + sport)
         generated_news = generate_news(sport)
         image_prompt = createImagePrompt(sport)
         #print(image_prompt)
@@ -232,10 +233,10 @@ def topnews(request):
         except:
             print("error submitting reddit post")
         
-        try:
-            sendTweet(generated_news, redditURL)
-        except:
-            print("error sending tweet")
+        #try:
+        #    sendTweet(generated_news, redditURL)
+        #except:
+        #    print("error sending tweet")
 
         try:
             fbPost(generated_news, user_input)
