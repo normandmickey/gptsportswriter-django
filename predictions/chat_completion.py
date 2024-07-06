@@ -89,7 +89,7 @@ def get_tweet(input_text):
         model=GPT_MODEL,
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Write a 150 character humorous tweet summarizing the follwoing text.  Include only relevant stats and odds for the game in question do not make up any details. Use approprate hashtags and emojis. limit your reply to 150 characters." + " " + input_text},
+            {"role": "user", "content": "Write a 150 character sarcastic tweet summarizing the following text.  Include only relevant stats and odds for the game in question do not make up any details. Use approprate hashtags and emojis. limit your reply to 150 characters." + " " + input_text},
         ],
         temperature=0.3, 
         max_tokens=200

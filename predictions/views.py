@@ -236,5 +236,10 @@ def recaps(request):
             sendTweet(generated_recap, redditURL)
         except:
             print("error sending tweet")
+
+        try:
+            fbPost(generated_recap, user_input)
+        except:
+            print("error posting to FB")
         
         return render(request, "predictions/recaps.html", context)

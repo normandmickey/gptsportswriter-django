@@ -1,26 +1,4 @@
-window.onload = function(){
-
-    const spinnerBox = document.getElementById('spinner-box')
-    const dataBox = document.getElementById('data-box')
-
-
-
-    // console.log(spinnerBox)
-    console.log(game)
-
-    $.ajax({
-        type: 'GET',
-        url: '/predictions/',
-        success: function(response){
-            spinnerBox.classList.add('invisible')
-            console.log(response)
-        },
-        error: function(error){
-            console.log(error)
-        }
-    })
-
-    
+window.onload = function(){    
 
    let selector = document.querySelector("#sport");
     var pageTitle = document.title;
@@ -73,7 +51,6 @@ function ajax_requestb(id){
   };
   xhttp.open("GET", `/ajax_handlerb/${id}`, true);
   xhttp.send();
-  spinnerBox.classList.add('visible')
 }
 
 function add_option(val,text){

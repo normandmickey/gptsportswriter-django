@@ -3,9 +3,16 @@
 GPTSportsWriter - Recaps
 {% endblock %}
 {% block content %}
+<script>
+
+    function openLoader() {
+        document.getElementById("loadingModal").style.display = "block";
+      }
+    
+    </script>
 <p>AI Sports Recaps - Accurate, humorous and informative.</p>
 <div pagename="recaps" style="padding:1em; font-size:14pt;">
-    <form method="post" enctype="multipart/form-data">
+    <form onsubmit="openLoader()" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <select name="sport" style="width:30em;" id="sport">
             <option value="no_sport">Select a Sport</option>
@@ -22,6 +29,12 @@ GPTSportsWriter - Recaps
         <br/>
         <input type="submit" value="submit" style="width:8em; height:3em;">
     </form>
+    <div id="loadingModal" style="display: none;">
+        <button class="btn btn-primary" type="button" disabled>
+          <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+          Analyzing Match
+        </button>
+    </div>
     <p>
         <strong>Recap: {{ user_input }}</strong>
     </p>
