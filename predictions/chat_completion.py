@@ -74,7 +74,7 @@ def get_parlay(input_text):
 
 def generate_news(input_text):
     # Call the OpenAI API to generate the story
-    print("input text: " + input_text)
+    #print("input text: " + input_text)
     response = get_news(input_text)
     # Format and return the response
     return format_response(response)
@@ -104,7 +104,7 @@ def get_news(input_text):
 
 def generate_videoText(input_text):
     # Call the OpenAI API to generate the story
-    print("input text: " + input_text)
+    #print("input text: " + input_text)
     response = get_news(input_text)
     # Format and return the response
     return format_response(response)

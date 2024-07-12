@@ -84,7 +84,7 @@ def fbPost(text, title):
     postBody = title + "\n" + text
     gptsportswriterapi=fb.GraphAPI(os.environ.get('FACEBOOK_ACCESS_TOKEN'))
     response_photo = gptsportswriterapi.put_photo(open('img.jpg','rb'), message=postBody)
-    print(response_photo)
+    #print(response_photo)
     #photoJson = json.loads(response_photo)
     #photo_id = photoJson[0]['id']
     #gptsportswriterapi.put_object(parent_object="me",connection_name="feed",message=text,link="https://www.gptsportswriter.com",photo_id=photo_id)
@@ -97,7 +97,7 @@ def getSports():
     for i in range(len(sport)):
         if sport[i]['has_outrights'] == False:
             sports.append(sport[i]['key'])
-            print(sport[i]['key'])
+            #print(sport[i]['key'])
     return(sports)
             
 def ajax_handler(request,sport):
