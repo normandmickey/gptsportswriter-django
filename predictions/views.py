@@ -2,7 +2,7 @@ import re, os, praw, requests, pytz, time, json
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils.timezone import datetime
-from .chat_completion import generate_prediction, generate_recap, generate_tweet, generate_parlay, generate_news
+from .chat_completion import generate_prediction, generate_recap, generate_tweet, generate_parlay, generate_news, generate_videoText
 from .image_generation import generate_image, createImagePrompt
 from praw.models import InlineImage
 from dotenv import load_dotenv
@@ -10,6 +10,7 @@ from datetime import datetime as dtdt
 from django.http import JsonResponse
 import facebook as fb
 import tweepy
+import openai
 
 load_dotenv()
 
@@ -44,8 +45,8 @@ tweepy_auth = tweepy.OAuth1UserHandler(
 # send Tweet
 def sendTweet(text, redditURL):
     tweetText = createTweet(text)
-    tweetText = tweetText[:275]
-    #tweetText = tweetText + " " + redditURL
+    tweetText = tweetText[:260]
+    tweetText = tweetText + " " + redditURL
     print(tweetText)
     tweepy_api = tweepy.API(tweepy_auth)
     post = tweepy_api.simple_upload("img.jpg")
@@ -62,6 +63,16 @@ def sendTweet(text, redditURL):
     # Post Tweet
     response = client.create_tweet(text=tweetText, media_ids=[media_id])
     #print(response)
+
+def openAITTS(text):
+    speech_file_path = "speech.mp3"
+    response = openai.audio.speech.create(
+        model="tts-1",
+        voice="echo",
+        speed=1,
+        input=text
+        )
+    response.stream_to_file(speech_file_path)
 
 def createTweet(text):
     tweetText = generate_tweet(text)
@@ -86,6 +97,7 @@ def getSports():
     for i in range(len(sport)):
         if sport[i]['has_outrights'] == False:
             sports.append(sport[i]['key'])
+            print(sport[i]['key'])
     return(sports)
             
 def ajax_handler(request,sport):
@@ -233,10 +245,10 @@ def topnews(request):
         except:
             print("error submitting reddit post")
         
-        #try:
-        #    sendTweet(generated_news, redditURL)
-        #except:
-        #    print("error sending tweet")
+        try:
+            sendTweet(generated_news, redditURL)
+        except:
+            print("error sending tweet")
 
         try:
             fbPost(generated_news, user_input)
@@ -282,6 +294,8 @@ def predictions(request):
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
         selfText = "{image1}" + generated_prediction
+        videoText = generate_videoText(generated_prediction)
+        openAITTS(videoText)
         try:
             redditURL = subreddit.submit(title, inline_media=media, selftext=selfText)
             redditURL = "https://redd.it/" + str(redditURL)

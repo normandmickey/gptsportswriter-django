@@ -69,6 +69,9 @@ def get_parlay(input_text):
         max_tokens=1000
     )
 
+     # Return the API response
+    return response
+
 def generate_news(input_text):
     # Call the OpenAI API to generate the story
     print("input text: " + input_text)
@@ -98,6 +101,31 @@ def get_news(input_text):
 
     # Return the API response
     return response
+
+def generate_videoText(input_text):
+    # Call the OpenAI API to generate the story
+    print("input text: " + input_text)
+    response = get_news(input_text)
+    # Format and return the response
+    return format_response(response)
+
+def get_videoText(input_text):
+    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
+    # Make the API call
+    response = groq_client.chat.completions.create(
+        model=GPT_MODEL,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": "Rewrite the following article in a humorous way, keep it under 100 words.  Start out by telling the listener to smash the like and subscribe buttons in a funny way that's related to the sport mentioned." + input_text},
+        ],
+        temperature=0.3, 
+        max_tokens=200
+    )
+
+
+    # Return the API response
+    return response
+
 
 def generate_recap(input_text):
     # Call the OpenAI API to generate the story
