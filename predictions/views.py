@@ -294,8 +294,8 @@ def predictions(request):
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
         selfText = "{image1}" + generated_prediction
-        videoText = generate_videoText(generated_prediction)
-        openAITTS(videoText)
+        #videoText = generate_videoText(generated_prediction)
+        #openAITTS(videoText)
         try:
             redditURL = subreddit.submit(title, inline_media=media, selftext=selfText)
             redditURL = "https://redd.it/" + str(redditURL)
