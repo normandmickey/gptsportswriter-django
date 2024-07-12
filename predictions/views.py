@@ -271,8 +271,12 @@ def predictions(request):
             user_input += request.POST.get("game") + "\n"
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
-        
-        generated_prediction = generate_prediction(sport + " " + user_input)
+            res = re.split('\s+', user_input)
+            res.remove('VS')
+            res = res[:len(res)-3]
+            print(res)
+                           
+        generated_prediction = generate_prediction(sport + " " + user_input, res)
         image_prompt = createImagePrompt(sport + " " + user_input)
         #print(image_prompt)
         image_url = generate_image(image_prompt)
