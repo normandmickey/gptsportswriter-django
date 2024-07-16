@@ -99,6 +99,17 @@ def getSports():
             sports.append(sport[i]['key'])
             #print(sport[i]['key'])
     return(sports)
+
+def getLeagues():
+    leagues = []
+    sport = requests.get(f"https://api.the-odds-api.com/v4/sports/?apiKey={ODDSAPI_API_KEY}")
+    sport = sport.json()
+    for i in range(len(sport)):
+        if sport[i]['has_outrights'] == False:
+            leagues.append(sport[i]['description'])
+            #print(sport[i]['key'])
+    leagues = [i for n, i in enumerate(leagues) if i not in leagues[:n]]
+    return(leagues)
             
 def ajax_handler(request,sport):
     games = []
@@ -118,7 +129,7 @@ def ajax_handler(request,sport):
 
 def ajax_handlerb(request,sport):
     games = []
-    dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/scores/?apiKey={ODDSAPI_API_KEY}&daysFrom=1")
+    dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/scores/?apiKey={ODDSAPI_API_KEY}&daysFrom=3")
     dataMatch = dataMatch.json()
     #print("recaps: " + str(dataMatch))
     for i in range(len(dataMatch)):
@@ -204,19 +215,21 @@ def topnews(request):
     context = {}
     user_input = ""
     sport = ""
-    sports = getSports()
+    sports = getLeagues()
     
     if request.method == "GET":
-        dataSports = getSports()
+        dataSports = getLeagues()
         return render(request, "predictions/topnews.html", {'sports': dataSports})
     else:
         if "sport" in request.POST:
             user_input += request.POST.get("sport") + "\n"
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
+            res = re.split('\s+', user_input)
+            print(res)
         
         print("sport: " + sport)
-        generated_news = generate_news(sport)
+        generated_news = generate_news(sport, res)
         image_prompt = createImagePrompt(sport)
         #print(image_prompt)
         image_url = generate_image(image_prompt)
@@ -333,8 +346,12 @@ def recaps(request):
             user_input += request.POST.get("game") + "\n"
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
+            res = re.split('\s+', user_input)
+            res.remove('VS')
+            res = res[:len(res)-3]
+            
         
-        generated_recap = generate_recap(sport + " " + user_input)
+        generated_recap = generate_recap(sport + " " + user_input, res)
         image_prompt = createImagePrompt(sport + " " + user_input)
         #print(image_prompt)
         image_url = generate_image(image_prompt)

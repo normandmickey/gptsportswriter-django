@@ -72,18 +72,18 @@ def get_parlay(input_text):
      # Return the API response
     return response
 
-def generate_news(input_text):
+def generate_news(input_text, string_guarantee):
     # Call the OpenAI API to generate the story
     #print("input text: " + input_text)
-    response = get_news(input_text)
+    response = get_news(input_text, string_guarantee)
     # Format and return the response
     return format_response(response)
 
-def get_news(input_text):
+def get_news(input_text, string_guarantee):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
     print(input_text)
-    context = ask.news.search_news("Top News for " + input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end)).as_string
+    context = ask.news.search_news("Top News for " + input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_string
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
@@ -127,16 +127,16 @@ def get_videoText(input_text):
     return response
 
 
-def generate_recap(input_text):
+def generate_recap(input_text, string_guarantee):
     # Call the OpenAI API to generate the story
-    response = get_recap(input_text)
+    response = get_recap(input_text, string_guarantee)
     # Format and return the response
     return format_response(response)
 
-def get_recap(input_text):
+def get_recap(input_text, string_guarantee):
     start = (datetime.now() - timedelta(hours=12)).timestamp()
     end = datetime.now().timestamp()
-    context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end)).as_string
+    context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_string
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate.  """
