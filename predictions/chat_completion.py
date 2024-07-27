@@ -1,4 +1,4 @@
-import os
+import os, requests
 from asknews_sdk import AskNewsSDK
 from groq import Groq
 from datetime import datetime, timedelta
@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 GPT_MODEL= "llama3-70b-8192"
 ASKNEWS_CLIENT_ID = os.environ.get('ASKNEWS_CLIENT_ID')
 ASKNEWS_CLIENT_SECRET = os.environ.get('ASKNEWS_CLIENT_SECRET')
+ODDSAPI_API_KEY = os.environ.get('ODDSAPI_API_KEY')
 
 ask = AskNewsSDK(
         client_id=ASKNEWS_CLIENT_ID,
@@ -17,13 +18,18 @@ groq_client = Groq(
     api_key=os.environ.get("GROQ_API_KEY")
 )
 
-def generate_prediction(input_text, guaranteedWords):
+def generate_prediction(input_text, guaranteedWords, gameId, sportKey):
     # Call the OpenAI API to generate the story
-    response = get_prediction(input_text, guaranteedWords)
+    #sport = "baseball_mlb"
+    print(sportKey)
+    odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=h2h,spreads,totals&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
+    oddsJson = odds.json()
+    print(oddsJson)
+    response = get_prediction(input_text, guaranteedWords, oddsJson)
     # Format and return the response
     return format_response(response)
 
-def get_prediction(input_text, guaranteedWords):
+def get_prediction(input_text, guaranteedWords, oddsJson):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
     context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], string_guarantee=guaranteedWords, start_timestamp=int(start), end_timestamp=int(end)).as_string
@@ -35,7 +41,7 @@ def get_prediction(input_text, guaranteedWords):
         model=GPT_MODEL,
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Write a humorous prediction for the following matchup.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + input_text},
+            {"role": "user", "content": "Write a humorous prediction for the following matchup.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + str(oddsJson) + " " + input_text},
         ],
         temperature=0.3, 
         max_tokens=1000
@@ -92,10 +98,10 @@ def get_news(input_text, string_guarantee):
         model=GPT_MODEL,
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Write a summary of the following context." + context + input_text},
+            {"role": "user", "content": "Write a summary of the following context include details from the articles." + context + input_text},
         ],
         temperature=0.3, 
-        max_tokens=1000
+        max_tokens=2000
     )
 
 
@@ -172,7 +178,7 @@ def get_tweet(input_text):
         model=GPT_MODEL,
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Write a 150 character sarcastic tweet summarizing the following text.  Include only relevant stats and odds for the game in question do not make up any details. Use approprate hashtags and emojis. limit your reply to 150 characters." + " " + input_text},
+            {"role": "user", "content": "Write a 150 character funny tweet summarizing the following text.  Include only relevant stats and odds for the game in question do not make up any details. Use approprate hashtags, emojis and tags. limit your reply to 150 characters. write the tweet to maximize engagement." + " " + input_text},
         ],
         temperature=0.3, 
         max_tokens=200

@@ -42,6 +42,7 @@ tweepy_auth = tweepy.OAuth1UserHandler(
     "{}".format(os.environ.get("TWITTER_ACCESS_TOKEN")),
     "{}".format(os.environ.get("TWITTER_ACCESS_TOKEN_SECRET")),
 )
+
 # send Tweet
 def sendTweet(text, redditURL):
     tweetText = createTweet(text)
@@ -123,7 +124,7 @@ def ajax_handler(request,sport):
             t = "2024-02-25 12:00:00-05:00"
         utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
         esTime = utcTime.astimezone(ept)
-        games.append(dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime))
+        games.append(dataMatch[i]['id'] + ": " + dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime))
         
     return JsonResponse({'games': games})
 
@@ -215,10 +216,12 @@ def topnews(request):
     context = {}
     user_input = ""
     sport = ""
-    sports = getLeagues()
+    #sports = getLeagues()
+    sports = ['Baseball MLB','Basketball NCAA','Basketball NBA','Football NCAA','Football NFL','Golf PGA','Ice Hockey NHL','Soccer MLS','Soccer EPL','Tennis','Summer Olypmics 2024','2034 Winter Olympics','Olympic Breakdancing','SportyBet','Jake Paul MMA UFC']
     
     if request.method == "GET":
-        dataSports = getLeagues()
+        #dataSports = getLeagues()
+        dataSports = sports
         return render(request, "predictions/topnews.html", {'sports': dataSports})
     else:
         if "sport" in request.POST:
@@ -273,6 +276,7 @@ def topnews(request):
 def predictions(request):
     context = {}
     user_input = ""
+    sportKey = ""
     sport = ""
     sports = getSports()
     
@@ -282,15 +286,19 @@ def predictions(request):
     else:
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
+            gameSplit = user_input.split(':')
+            gameId=gameSplit[0]
+            match=gameSplit[1]
+            sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
-            res = re.split('\s+', user_input)
+            res = re.split('\s+', match)
             res.remove('VS')
             res = res[:len(res)-3]
             print(res)
                            
-        generated_prediction = generate_prediction(sport + " " + user_input, res)
-        image_prompt = createImagePrompt(sport + " " + user_input)
+        generated_prediction = generate_prediction(sport + " " + match, res, gameId, sportKey)
+        image_prompt = createImagePrompt(sport + " " + match)
         #print(image_prompt)
         image_url = generate_image(image_prompt)
         #print(image_url)
@@ -301,13 +309,13 @@ def predictions(request):
         f.close
             
         context = {
-            "user_input": user_input,
+            "user_input": match,
             "generated_prediction": generated_prediction.replace("\n", "<br/>"),
             "image_url": image_url,
             "sports": sports,
         }
 
-        title = "Prediction: " + user_input
+        title = "Prediction: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
         selfText = "{image1}" + generated_prediction
@@ -326,7 +334,7 @@ def predictions(request):
             print("error sending tweet")
 
         try:
-            fbPost(generated_prediction, user_input)
+            fbPost(generated_prediction, match)
         except:
             print("error posting to FB")
         

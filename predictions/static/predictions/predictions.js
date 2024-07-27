@@ -26,6 +26,7 @@ function ajax_request(id){
      console.log(this.responseText);
      res = JSON.parse(this.responseText)
      games = res.games;
+     odds = res.odds;
      removeChilds(document.getElementById('game'));
      for(const prop in games){
         add_option(games[prop],games[prop]);
