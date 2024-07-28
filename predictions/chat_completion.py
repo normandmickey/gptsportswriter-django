@@ -50,13 +50,16 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
     # Return the API response
     return response
 
-def generate_parlay(input_text):
+def generate_parlay(input_text, gameId, sportKey):
     # Call the OpenAI API to generate the story
-    response = get_parlay(input_text)
+    print(sportKey)
+    odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=h2h,spreads,totals&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
+    oddsJson = odds.json()
+    response = get_parlay(input_text, oddsJson)
     # Format and return the response
     return format_response(response)
 
-def get_parlay(input_text):
+def get_parlay(input_text, oddsJson):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
     input_text = "Same Game Parlays for " + input_text
@@ -69,7 +72,7 @@ def get_parlay(input_text):
         model=GPT_MODEL,
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Find the best same game parlay bet for the following match.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + input_text},
+            {"role": "user", "content": "Find the best same game parlay bet for the following match.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + str(oddsJson) + " " + input_text},
         ],
         temperature=0.3, 
         max_tokens=1000
@@ -133,13 +136,16 @@ def get_videoText(input_text):
     return response
 
 
-def generate_recap(input_text, string_guarantee):
+def generate_recap(input_text, string_guarantee, gameId, sportKey):
     # Call the OpenAI API to generate the story
-    response = get_recap(input_text, string_guarantee)
+    scores = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/scores/?daysFrom=2&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
+    scoresJson = scores.json()
+    print(scoresJson)
+    response = get_recap(input_text, string_guarantee, scoresJson)
     # Format and return the response
     return format_response(response)
 
-def get_recap(input_text, string_guarantee):
+def get_recap(input_text, string_guarantee, scoresJson):
     start = (datetime.now() - timedelta(hours=12)).timestamp()
     end = datetime.now().timestamp()
     context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_string
@@ -151,7 +157,7 @@ def get_recap(input_text, string_guarantee):
         model=GPT_MODEL,
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Write a humorous recap for the following matchup.  Include only relevant stats and odds for the game in question do not make up any details." + context + input_text},
+            {"role": "user", "content": "Write a humorous recap for the following matchup.  Include only relevant stats and odds for the game in question do not make up any details." + context + str(scoresJson) + " " + input_text},
         ],
         temperature=0.3, 
         max_tokens=1000

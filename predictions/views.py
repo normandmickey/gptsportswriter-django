@@ -130,7 +130,7 @@ def ajax_handler(request,sport):
 
 def ajax_handlerb(request,sport):
     games = []
-    dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/scores/?apiKey={ODDSAPI_API_KEY}&daysFrom=3")
+    dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/scores/?apiKey={ODDSAPI_API_KEY}&daysFrom=2")
     dataMatch = dataMatch.json()
     #print("recaps: " + str(dataMatch))
     for i in range(len(dataMatch)):
@@ -141,7 +141,7 @@ def ajax_handlerb(request,sport):
         utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
         esTime = utcTime.astimezone(ept)
         if dataMatch[i]['completed'] == True:
-            games.append(dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime))
+            games.append(dataMatch[i]['id'] + ": " + dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime))
         
     return JsonResponse({'games': games})
 
@@ -159,6 +159,7 @@ def fbprivacy(request):
 def parlays(request):
     context = {}
     user_input = ""
+    sportKey = ""
     sport = ""
     sports = getSports()
     
@@ -168,11 +169,15 @@ def parlays(request):
     else:
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
+            gameSplit = user_input.split(':')
+            gameId=gameSplit[0]
+            match=gameSplit[1]
+            sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
         
-        generated_parlay = generate_parlay(sport + " " + user_input)
-        image_prompt = createImagePrompt(sport + " " + user_input)
+        generated_parlay = generate_parlay(sport + " " + match, gameId, sportKey)
+        image_prompt = createImagePrompt(sport + " " + match)
         #print(image_prompt)
         image_url = generate_image(image_prompt)
         #print(image_url)
@@ -183,13 +188,13 @@ def parlays(request):
         f.close
             
         context = {
-            "user_input": user_input,
+            "user_input": match,
             "generated_parlay": generated_parlay.replace("\n", "<br/>"),
             "image_url": image_url,
             "sports": sports,
         }
 
-        title = "Parlay: " + user_input
+        title = "Parlay: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
         selfText = "{image1}" + generated_parlay
@@ -206,7 +211,7 @@ def parlays(request):
             print("error sending tweet")
 
         try:
-            fbPost(generated_parlay, user_input)
+            fbPost(generated_parlay, match)
         except:
             print("error posting to FB")
         
@@ -217,7 +222,7 @@ def topnews(request):
     user_input = ""
     sport = ""
     #sports = getLeagues()
-    sports = ['Baseball MLB','Basketball NCAA','Basketball NBA','Football NCAA','Football NFL','Golf PGA','Ice Hockey NHL','Soccer MLS','Soccer EPL','Tennis','Summer Olypmics 2024','2034 Winter Olympics','Olympic Breakdancing','Olympic Badminton','Olympic Soccer','Olympic Rowing','Olympic Basketball','Olympic Fencing','Olympic Judo','Olympic Rowing','Olympic Gymnastics','Olympic Diving','Olympic Swimming','Olympic Tennis','Olympic Surfing','Olympic Handball','Olympic Wrestling','Olympic Table Tennis','Olympic Volleyball','Olympic Water Polo','Olympic Track']
+    sports = ['Baseball MLB','Basketball NCAA','Basketball NBA','Football NCAA','Football NFL','Golf PGA','Ice Hockey NHL','Soccer MLS','Soccer EPL','Tennis','Summer Olypmics 2024','2034 Winter Olympics','Olympic Breakdancing','Olympic Badminton','Olympic Soccer','Olympic Rowing','Olympic Basketball','Olympic Fencing','Olympic Judo','Olympic Rowing','Olympic Gymnastics','Olympic Diving','Olympic Swimming','Olympic Tennis','Olympic Surfing','Olympic Handball','Olympic Wrestling','Olympic Table Tennis','Olympic Volleyball','Olympic Water Polo','Olympic Track','NASCAR Cup Series','Team USA Olympics']
     
     if request.method == "GET":
         #dataSports = getLeagues()
@@ -343,6 +348,7 @@ def predictions(request):
 def recaps(request):
     context = {}
     user_input = ""
+    sportKey = ""
     sports = getSports()
     sport = ""
     
@@ -352,15 +358,19 @@ def recaps(request):
     else:
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
+            gameSplit = user_input.split(':')
+            gameId=gameSplit[0]
+            match=gameSplit[1]
+            sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
-            res = re.split('\s+', user_input)
+            res = re.split('\s+', match)
             res.remove('VS')
             res = res[:len(res)-3]
             
         
-        generated_recap = generate_recap(sport + " " + user_input, res)
-        image_prompt = createImagePrompt(sport + " " + user_input)
+        generated_recap = generate_recap(sport + " " + match, res, gameId, sportKey)
+        image_prompt = createImagePrompt(sport + " " + match)
         #print(image_prompt)
         image_url = generate_image(image_prompt)
         #print(image_url)
@@ -371,13 +381,13 @@ def recaps(request):
         f.close
             
         context = {
-            "user_input": user_input,
+            "user_input": match,
             "generated_recap": generated_recap.replace("\n", "<br/>"),
             "image_url": image_url,
             "sports": sports,
         }
 
-        title = "Recap: " + user_input
+        title = "Recap: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
         selfText = "{image1}" + generated_recap
@@ -394,7 +404,7 @@ def recaps(request):
             print("error sending tweet")
 
         try:
-            fbPost(generated_recap, user_input)
+            fbPost(generated_recap, match)
         except:
             print("error posting to FB")
         
