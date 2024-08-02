@@ -3,7 +3,7 @@ from asknews_sdk import AskNewsSDK
 from groq import Groq
 from datetime import datetime, timedelta
 
-GPT_MODEL= "llama3.1-70b-Versatile"
+GPT_MODEL= "llama-3.1-70b-Versatile"
 ASKNEWS_CLIENT_ID = os.environ.get('ASKNEWS_CLIENT_ID')
 ASKNEWS_CLIENT_SECRET = os.environ.get('ASKNEWS_CLIENT_SECRET')
 ODDSAPI_API_KEY = os.environ.get('ODDSAPI_API_KEY')
