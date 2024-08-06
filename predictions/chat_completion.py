@@ -35,7 +35,7 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
     context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], string_guarantee=guaranteedWords, start_timestamp=int(start), end_timestamp=int(end)).as_string
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
-    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
+    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and sarcastic but very accurate and confident in your predictions.  """
     # Make the API call
     response = groq_client.chat.completions.create(
         model=GPT_MODEL,
