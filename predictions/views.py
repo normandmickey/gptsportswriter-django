@@ -2,7 +2,7 @@ import re, os, praw, requests, pytz, time, json
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils.timezone import datetime
-from .chat_completion import generate_prediction, generate_recap, generate_tweet, generate_parlay, generate_news, generate_videoText
+from .chat_completion import generate_prediction, generate_recap, generate_tweet, generate_parlay, generate_news, generate_videoText, generate_prop
 from .image_generation import generate_image, createImagePrompt
 from praw.models import InlineImage
 from dotenv import load_dotenv
@@ -344,6 +344,74 @@ def predictions(request):
             print("error posting to FB")
         
         return render(request, "predictions/predictions.html", context)
+
+def props(request):
+    context = {}
+    user_input = ""
+    sportKey = ""
+    sport = ""
+    sports = getSports()
+    
+    if request.method == "GET":
+        dataSports = getSports()
+        return render(request, "predictions/props.html", {'sports': dataSports})
+    else:
+        if "game" in request.POST:
+            user_input += request.POST.get("game") + "\n"
+            gameSplit = user_input.split(':')
+            gameId=gameSplit[0]
+            match=gameSplit[1]
+            sportKey += request.POST.get("sport")
+            sport += request.POST.get("sport") + "\n"
+            sport = sport.replace('_', " ")
+            res = re.split('\s+', match)
+            res.remove('VS')
+            res = res[:len(res)-3]
+            print(res)
+                           
+        generated_prop = generate_prop(sport + " " + match, res, gameId, sportKey)
+        image_prompt = createImagePrompt(sport + " " + match)
+        #print(image_prompt)
+        image_url = generate_image(image_prompt)
+        #print(image_url)
+        time.sleep(2)
+        data = requests.get(image_url).content
+        f = open('img.jpg', 'wb')
+        f.write(data)
+        f.close
+            
+        context = {
+            "user_input": match,
+            "generated_prediction": generated_prop.replace("\n", "<br/>"),
+            "image_url": image_url,
+            "sports": sports,
+        }
+
+        title = "Prediction: " + match
+        image = InlineImage(path="img.jpg", caption=title)
+        media = {"image1": image}
+        selfText = "{image1}" + generated_prop
+        #videoText = generate_videoText(generated_prediction)
+        #openAITTS(videoText)
+        try:
+            redditURL = subreddit.submit(title, inline_media=media, selftext=selfText)
+            redditURL = "https://redd.it/" + str(redditURL)
+            #print(redditURL)
+        except:
+            print("error submitting reddit post")
+        
+        try:
+            sendTweet(generated_prop, redditURL)
+        except:
+            print("error sending tweet")
+
+        try:
+            fbPost(generated_prop, match)
+        except:
+            print("error posting to FB")
+        
+        return render(request, "predictions/props.html", context)
+
 
 def recaps(request):
     context = {}

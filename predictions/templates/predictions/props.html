@@ -1,0 +1,54 @@
+{% extends "predictions/layout.html" %}
+{% block title %}
+GPTSportsWriter - Props
+{% endblock %}
+{% block content %}
+<script>
+
+    function openLoader() {
+        document.getElementById("loadingModal").style.display = "block";
+      }
+    
+    </script>
+
+<p>AI Sports Prop Bets - Accurate, humorous and informative.</p>
+<div pagename="props" style="padding:1em; font-size:14pt;">
+    <form onsubmit="openLoader()" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <select name="sport" style="width:30em;" id="sport">
+            <option value="no_sport">Select a Sport</option>
+            {% for sport in sports %}
+            <option value="{{sport}}">{{sport}}</option>
+            {% endfor %}
+        </select>
+        <br/>
+        <select name="game" style="width:60em;" id="game">
+            {% for game in games %}
+            <option value="{{game}}">{{game}}</option>
+            {% endfor %}
+        </select>
+        <br/>
+        <input type="submit" value="submit" style="width:8em; height:3em;">
+    </form>
+    <div id="loadingModal" style="display: none;">
+        <button class="btn btn-primary" type="button" disabled>
+          <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+          Analyzing Match
+        </button>
+    </div>
+       
+      <div id="data-box">
+        <p>
+            <strong>Prediction: {{ user_input }}</strong>
+        </p>
+
+        {% if image_url %}
+            <img src="{{ image_url }}" alt="Generated Image" style="max-width:80vw; width:30em; height:30em;">
+        </p>
+    {% endif %}
+    {% if generated_prediction %}
+        <p>{{ generated_prediction | safe }}</p>
+    {% endif %}
+    </div>
+</div>
+{% endblock %}

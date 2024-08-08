@@ -50,6 +50,38 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
     # Return the API response
     return response
 
+def generate_prop(input_text, guaranteedWords, gameId, sportKey):
+    # Call the OpenAI API to generate the story
+    #sport = "baseball_mlb"
+    print(sportKey)
+    odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=h2h,spreads,totals&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
+    oddsJson = odds.json()
+    print(oddsJson)
+    response = get_prop(input_text, guaranteedWords, oddsJson)
+    # Format and return the response
+    return format_response(response)
+
+def get_prop(input_text, guaranteedWords, oddsJson):
+    start = (datetime.now() - timedelta(hours=48)).timestamp()
+    end = datetime.now().timestamp()
+    context = ask.news.search_news("player prop bets for " + input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], string_guarantee=guaranteedWords, start_timestamp=int(start), end_timestamp=int(end)).as_string
+    #print(context)
+    # Construct the system prompt. Feel free to experiment with different prompts.
+    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
+    # Make the API call
+    response = groq_client.chat.completions.create(
+        model=GPT_MODEL,
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": "Write a humorous prediction for the following matchup.   Include only relevant stats and odds for the game in question. Do not make up any details.  Mentions any player prop bets found in the context." + context + str(oddsJson) + " " + input_text},
+        ],
+        temperature=0.3, 
+        max_tokens=1000
+    )
+
+    # Return the API response
+    return response
+
 def generate_parlay(input_text, gameId, sportKey):
     # Call the OpenAI API to generate the story
     print(sportKey)
