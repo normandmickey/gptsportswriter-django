@@ -3,7 +3,7 @@ from asknews_sdk import AskNewsSDK
 from groq import Groq
 from datetime import datetime, timedelta
 
-GPT_MODEL= "llama3-70b-8192"
+GPT_MODEL= "llama-3.1-70b-Versatile"
 ASKNEWS_CLIENT_ID = os.environ.get('ASKNEWS_CLIENT_ID')
 ASKNEWS_CLIENT_SECRET = os.environ.get('ASKNEWS_CLIENT_SECRET')
 ODDSAPI_API_KEY = os.environ.get('ODDSAPI_API_KEY')
@@ -35,7 +35,7 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
     context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], string_guarantee=guaranteedWords, start_timestamp=int(start), end_timestamp=int(end)).as_string
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
-    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
+    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and sarcastic but very accurate and confident in your predictions.  """
     # Make the API call
     response = groq_client.chat.completions.create(
         model=GPT_MODEL,
