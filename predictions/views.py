@@ -156,6 +156,12 @@ def about(request):
 def fbprivacy(request):
     return render(request, "predictions/fbprivacy.html")
 
+def discordTOS(request):
+    return render(request, "predictions/discordTOS.html")
+
+def discordPrivacy(request):
+    return render(request, "predictions/discordPrivacy.html")
+
 def parlays(request):
     context = {}
     user_input = ""
