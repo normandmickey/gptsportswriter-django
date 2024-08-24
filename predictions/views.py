@@ -239,7 +239,7 @@ def topnews(request):
             user_input += request.POST.get("sport") + "\n"
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
-            res = re.split('\s+', user_input)
+            #res = re.split('\s+', user_input)
             print(res)
         
         print("sport: " + sport)
