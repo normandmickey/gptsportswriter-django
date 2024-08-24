@@ -240,7 +240,7 @@ def topnews(request):
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
             #res = re.split('\s+', user_input)
-            print(res)
+            #print(res)
         
         print("sport: " + sport)
         generated_news = generate_news(sport, res)
