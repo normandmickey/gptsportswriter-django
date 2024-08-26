@@ -228,7 +228,7 @@ def topnews(request):
     user_input = ""
     sport = ""
     #sports = getLeagues()
-    sports = ['Baseball MLB','Basketball NCAA','Basketball NBA','Football NCAA','Football NFL','Golf PGA','Ice Hockey NHL','Soccer MLS','Soccer EPL','Tennis','Summer Olypmics 2024','2034 Winter Olympics','Olympic Breakdancing','Olympic Badminton','Olympic Soccer','Olympic Rowing','Olympic Basketball','Olympic Fencing','Olympic Judo','Olympic Rowing','Olympic Gymnastics','Olympic Diving','Olympic Swimming','Olympic Tennis','Olympic Surfing','Olympic Handball','Olympic Wrestling','Olympic Table Tennis','Olympic Volleyball','Olympic Water Polo','Olympic Track','NASCAR Cup Series','Team USA Olympics','Olympic Pole Vaulting']
+    sports = ['Baseball MLB','Basketball NCAA','Basketball NBA','Football NCAA','Football NFL','Golf PGA','Ice Hockey NHL','Soccer MLS','Soccer EPL','Tennis','NASCAR Cup Series']
     
     if request.method == "GET":
         #dataSports = getLeagues()
