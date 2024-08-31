@@ -5,11 +5,11 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 def createImagePrompt(text):
     response = client.chat.completions.create(
-    model="gpt-4",
+    model="gpt-4o-mini",
     messages=[
         {
         "role": "user",
-        "content": "create a prompt to create a meme like image in the style of digital art.  Find the mascot for the teams mentioned in the text and create an image of a game between them, include references to the cities or colleges and teams or mascots mentioned in the text, be creative, fun and whimsical. If there are no teams mentioned then use the subject of text as your inspiration. " + text
+        "content": "create a prompt to create a meme like image in the style of digital art.  Find the mascot for the teams mentioned in the text and create an image of a game between them, include references to the cities or colleges and teams or mascots mentioned in the text, be creative, fun and whimsical. If there are no teams mentioned then use the subject of text as your inspiration. Make sure the image is relevant to the sport mentioned." + text
         }
     ],
     temperature=0.5,
