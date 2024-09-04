@@ -2,8 +2,11 @@ import os, requests
 from asknews_sdk import AskNewsSDK
 from groq import Groq
 from datetime import datetime, timedelta
+from openai import OpenAI
+openAI_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 GPT_MODEL= "llama-3.1-70b-Versatile"
+OPENAI_GPT_MODEL = "gpt-4o"
 ASKNEWS_CLIENT_ID = os.environ.get('ASKNEWS_CLIENT_ID')
 ASKNEWS_CLIENT_SECRET = os.environ.get('ASKNEWS_CLIENT_SECRET')
 ODDSAPI_API_KEY = os.environ.get('ODDSAPI_API_KEY')
@@ -37,15 +40,26 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and sarcastic but very accurate and confident in your predictions.  """
     # Make the API call
-    response = groq_client.chat.completions.create(
-        model=GPT_MODEL,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Write a humorous prediction for the following matchup.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + str(oddsJson) + " " + input_text},
-        ],
-        temperature=0.3, 
-        max_tokens=1000
-    )
+    try:
+        response = groq_client.chat.completions.create(
+            model=GPT_MODEL,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": "Write a humorous prediction for the following matchup.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + str(oddsJson) + " " + input_text},
+            ],
+            temperature=0.3, 
+            max_tokens=1000
+        )
+    except:
+        response = openAI_client.chat.completions.create(
+            model=OPENAI_GPT_MODEL,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": "Write a humorous prediction for the following matchup.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + str(oddsJson) + " " + input_text},
+            ],
+            temperature=0.3, 
+            max_tokens=1000
+        )
 
     # Return the API response
     return response
