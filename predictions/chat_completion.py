@@ -138,7 +138,7 @@ def get_news(input_text, string_guarantee):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
     print(input_text)
-    context = ask.news.search_news("Top News for " + input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_string
+    context = ask.news.search_news("Top News for " + input_text, method='kw', return_type='string', n_articles=10, categories=["Sports","Politics"], start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_string
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
