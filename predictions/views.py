@@ -63,7 +63,7 @@ def sendTweet(text, redditURL):
 
     # Post Tweet
     response = client.create_tweet(text=tweetText, media_ids=[media_id])
-    #print(response)
+    print(response)
 
 def openAITTS(text):
     speech_file_path = "speech.mp3"
