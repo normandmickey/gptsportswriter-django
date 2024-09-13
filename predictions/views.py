@@ -329,7 +329,7 @@ def predictions(request):
         title = "Prediction: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
-        selfText = "{image1}" + generated_prediction + "<a href=\"https://record.revmasters.com/_8ejz3pKmFDsdHrf4TDP9mWNd7ZgqdRLk/1/\">BetUS - 125% Sign Up Bonus!</a>"
+        selfText = "{image1}" + generated_prediction
         #videoText = generate_videoText(generated_prediction)
         #openAITTS(videoText)
         try:
