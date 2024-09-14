@@ -86,10 +86,10 @@ def fbPost(text, title):
     gptsportswriterapi=fb.GraphAPI(os.environ.get('FACEBOOK_ACCESS_TOKEN'))
     response_photo = gptsportswriterapi.put_photo(open('img.jpg','rb'), message=postBody)
     #print(response_photo)
-    #photoJson = json.loads(response_photo)
-    #photo_id = photoJson[0]['id']
-    #gptsportswriterapi.put_object(parent_object="me",connection_name="feed",message=text,link="https://www.gptsportswriter.com",photo_id=photo_id)
-    #print(photo_id)
+    photoJson = json.loads(response_photo)
+    photo_id = photoJson[0]['id']
+    gptsportswriterapi.put_object(parent_object="me",connection_name="feed",message=text,link="https://www.gptsportswriter.com",photo_id=photo_id)
+    print(photo_id)
 
 def getSports():
     sports = []
@@ -114,7 +114,7 @@ def getLeagues():
             
 def ajax_handler(request,sport):
     games = []
-    dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/odds/?apiKey={ODDSAPI_API_KEY}&regions=us&markets=h2h&bookmakers=draftkings,fanduel")
+    dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/odds/?apiKey={ODDSAPI_API_KEY}&regions=us&markets=h2h&bookmakers=draftkings,betus")
     dataMatch = dataMatch.json()
     #print("predictions: " + str(dataMatch))
     for i in range(len(dataMatch)):
@@ -228,7 +228,7 @@ def topnews(request):
     user_input = ""
     sport = ""
     #sports = getLeagues()
-    sports = ['Baseball MLB','Basketball NCAA','Basketball NBA','Football NCAA','Football NFL','Golf PGA','Ice Hockey NHL','Soccer MLS','Soccer EPL','Tennis','NASCAR Cup Series','Donald Trump vs Kamala Harris US Presidential Debate']
+    sports = ['Baseball MLB','Basketball NCAA','Basketball NBA','Football NCAA','Football NFL','Golf PGA','Ice Hockey NHL','Soccer MLS','Soccer EPL','Tennis','NASCAR Cup Series']
     
     if request.method == "GET":
         #dataSports = getLeagues()
