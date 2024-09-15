@@ -12,7 +12,7 @@ import facebook as fb
 import tweepy
 import openai
 
-load_dotenv()
+load_dotenv(override=True)
 
 ODDSAPI_API_KEY=os.environ.get("ODDSAPI_API_KEY")
 consumer_key=os.environ.get('TWITTER_API_KEY')
@@ -20,6 +20,7 @@ consumer_secret=os.environ.get('TWITTER_API_SECRET')
 bearer_token=os.environ.get('TWITTER_BEARER_TOKEN')
 access_token_secret=os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
 access_token=os.environ.get('TWITTER_ACCESS_TOKEN')
+FACEBOOK_ACCESS_TOKEN=os.environ.get('FACEBOOK_ACCESS_TOKEN')
 
 ept = pytz.timezone('US/Eastern')
 utc = pytz.utc
@@ -82,10 +83,14 @@ def createTweet(text):
     return(tweetText)
 
 def fbPost(text, title):
+    #gptsportswriterapi=fb.GraphAPI("EAAK2IMS7Bb8BO2pYq60uSiYwuJwvMf8ZCcr02yuGwZCFoZCVtzhattkaq9QRQoGAGpZBvaISiZBxutz7hZAvfgDD9VD7T5AEUicF1VztjGtR1WzTFR4cr60YHE7zQZBWbjWwapUASOctQTXY9PPnUeqlJjEhBTdADDYjS22VlM4eZCKiGULGB6lHcDZBZBz8EF")
+    #gptsportswriterapi.put_object("me","feed",message=text,link="https://www.gptsportswriter.com")
+    #
     postBody = title + "\n" + text
-    gptsportswriterapi=fb.GraphAPI(os.environ.get('FACEBOOK_ACCESS_TOKEN'))
+    gptsportswriterapi=fb.GraphAPI(FACEBOOK_ACCESS_TOKEN)
+    print(FACEBOOK_ACCESS_TOKEN)
     response_photo = gptsportswriterapi.put_photo(open('img.jpg','rb'), message=postBody)
-    #print(response_photo)
+    print(response_photo)
     #photoJson = json.loads(response_photo)
     #photo_id = photoJson[0]['id']
     #gptsportswriterapi.put_object(parent_object="me",connection_name="feed",message=text,link="https://www.gptsportswriter.com",photo_id=photo_id)
@@ -94,9 +99,6 @@ def fbPost(text, title):
     #page_id_1=(os.environ.get('FACEBOOK_PAGE_ID'))
     #msg = title + "\n" + text
     #post_url = 'https://graph.facebook.com/{}/feed`.format(page_id_1)'
-
-
-
 
 def getSports():
     sports = []
