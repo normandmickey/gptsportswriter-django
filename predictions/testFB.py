@@ -1,6 +1,6 @@
 import facebook as fb
 
-api="EAAK2IMS7Bb8BO4K78mzmgi5sFSolTZCJnINjeA2LPSJJrPPyk1Al1TOtdW5hdWoaVc9zywATgPmw2RewAUjigXLKS7KpqdZBVWP8XHlR3yrvZApwrnQW36fZCL3cIb3v1681EF6uElO0ipkUU3b5HbIC5MTlloxlEjGKsPAaHvDqS1CALOz1F0Fxw66nK59flg9ev2V6yfnmUL0VZCr77"
+api="EAAK2IMS7Bb8BO9tZCRehUBRP0p0X2oJ0XqXPFPZBMRnqIpO3f4GtzBSuiulzt96ibJvZAY0UqXUyoR9XQ2zLkLRNLmUUuN9012oHB6qQvg1ZCxZAUl8jhl8irLp92jzKGcAIjV3HPx5kFqxRyuH4U3NZAL4xCqddGLJqw15IjFe2ZAYNCZAi3bIuzyXO8EpBskqIMvl0shv8ZCveDVMgqERYV"
 gptsportswriterapi=fb.GraphAPI(api)
 gptsportswriterapi.put_object("me","feed",message="Test post for GPTSportsWriter",link="https://www.gptsportswriter.com")
 print("post is done")
