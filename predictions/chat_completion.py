@@ -45,7 +45,7 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
             model=GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "Write a humorous prediction for the following matchup.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + str(oddsJson) + " " + input_text},
+                {"role": "user", "content": "Write a humorous prediction for the following matchup.  Include only relevant stats and odds for the game in question. Give your best bet based on the context provided take into account that underdogs win about 41 percent of the time in baseball and hockey, 35 percent in football and 25 percent in baskeball. Do not make up any details." + context + str(oddsJson) + " " + input_text},
             ],
             temperature=0.3, 
             max_tokens=1000
@@ -55,7 +55,7 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
             model=OPENAI_GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "Write a humorous prediction for the following matchup.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + str(oddsJson) + " " + input_text},
+                {"role": "user", "content": "Write a humorous prediction for the following matchup.  Give your best bet based on the context provided take into account that underdogs win about 41 percent of the time in baseball and hockey, 35 percent in football and 25 percent in baskeball.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + str(oddsJson) + " " + input_text},
             ],
             temperature=0.3, 
             max_tokens=1000
