@@ -35,7 +35,10 @@ def generate_prediction(input_text, guaranteedWords, gameId, sportKey):
 def get_prediction(input_text, guaranteedWords, oddsJson):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
-    context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], string_guarantee=guaranteedWords, start_timestamp=int(start), end_timestamp=int(end)).as_string
+    try: 
+        context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], string_guarantee=guaranteedWords, start_timestamp=int(start), end_timestamp=int(end)).as_string
+    except:
+        context = ""
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and sarcastic but very accurate and confident in your predictions.  """
@@ -138,7 +141,7 @@ def get_news(input_text, string_guarantee):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
     print(input_text)
-    context = ask.news.search_news("Top News for " + input_text, method='kw', return_type='string', n_articles=10, categories=["Sports","Politics"], start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_string
+    context = ask.news.search_news("Top News for " + input_text, method='kw', return_type='string', n_articles=10, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_string
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
@@ -230,7 +233,7 @@ def get_tweet(input_text):
         model=GPT_MODEL,
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Write a 150 character funny tweet summarizing the following text.  Include only relevant stats and odds for the game in question do not make up any details. Use approprate hashtags, emojis and tags. limit your reply to 150 characters. write the tweet to maximize engagement." + " " + input_text},
+            {"role": "user", "content": "Write a 150 character funny, sarcastic tweet summarizing the following text.  Include only relevant stats and odds for the game in question do not make up any details. Use approprate hashtags, emojis and tags. limit your reply to 150 characters. write the tweet to maximize engagement." + " " + input_text},
         ],
         temperature=0.3, 
         max_tokens=200
