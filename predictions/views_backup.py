@@ -51,9 +51,9 @@ def sendTweet(text, redditURL):
     #tweetText = tweetText + " " + redditURL
     print(tweetText)
     tweepy_api = tweepy.API(tweepy_auth)
-    #post = tweepy_api.simple_upload("img.jpg")
-    #text = str(post)
-    #media_id = re.search("media_id=(.+?),", text).group(1)
+    post = tweepy_api.simple_upload("img.jpg")
+    text = str(post)
+    media_id = re.search("media_id=(.+?),", text).group(1)
     
     client = tweepy.Client(
         consumer_key=consumer_key,
@@ -63,7 +63,7 @@ def sendTweet(text, redditURL):
     )
 
     # Post Tweet
-    response = client.create_tweet(text=tweetText)
+    response = client.create_tweet(text=tweetText, media_ids=[media_id])
     print(response)
 
 def openAITTS(text):
@@ -89,8 +89,8 @@ def fbPost(text, title):
     postBody = title + "\n" + text
     gptsportswriterapi=fb.GraphAPI(FACEBOOK_ACCESS_TOKEN)
     print(FACEBOOK_ACCESS_TOKEN)
-    #response_photo = gptsportswriterapi.put_photo(open('img.jpg','rb'), message=postBody)
-    #print(response_photo)
+    response_photo = gptsportswriterapi.put_photo(open('img.jpg','rb'), message=postBody)
+    print(response_photo)
     #photoJson = json.loads(response_photo)
     #photo_id = photoJson[0]['id']
     #gptsportswriterapi.put_object(parent_object="me",connection_name="feed",message=text,link="https://www.gptsportswriter.com",photo_id=photo_id)
@@ -192,28 +192,29 @@ def parlays(request):
             sport = sport.replace('_', " ")
         
         generated_parlay = generate_parlay(sport + " " + match, gameId, sportKey)
-        #image_prompt = createImagePrompt(sport + " " + match)
+        image_prompt = createImagePrompt(sport + " " + match)
         #print(image_prompt)
-        #image_url = generate_image(image_prompt)
+        image_url = generate_image(image_prompt)
         #print(image_url)
-        #time.sleep(2)
-        #data = requests.get(image_url).content
-        #f = open('img.jpg', 'wb')
-        #f.write(data)
-        #f.close
+        time.sleep(2)
+        data = requests.get(image_url).content
+        f = open('img.jpg', 'wb')
+        f.write(data)
+        f.close
             
         context = {
             "user_input": match,
             "generated_parlay": generated_parlay.replace("\n", "<br/>"),
+            "image_url": image_url,
             "sports": sports,
         }
 
         title = "Parlay: " + match
-        #image = InlineImage(path="img.jpg", caption=title)
-        #media = {"image1": image}
-        selfText = generated_parlay
+        image = InlineImage(path="img.jpg", caption=title)
+        media = {"image1": image}
+        selfText = "{image1}" + generated_parlay
         try:
-            redditURL = subreddit.submit(title, selftext=selfText)
+            redditURL = subreddit.submit(title, inline_media=media, selftext=selfText)
             redditURL = "https://redd.it/" + str(redditURL)
             #print(redditURL)
         except:
@@ -252,28 +253,29 @@ def topnews(request):
         
         print("sport: " + sport)
         generated_news = generate_news(sport, res)
-        #image_prompt = createImagePrompt(sport)
+        image_prompt = createImagePrompt(sport)
         #print(image_prompt)
-        #image_url = generate_image(image_prompt)
+        image_url = generate_image(image_prompt)
         #print(image_url)
-        #time.sleep(2)
-        #data = requests.get(image_url).content
-        #f = open('img.jpg', 'wb')
-        #f.write(data)
-        #f.close
+        time.sleep(2)
+        data = requests.get(image_url).content
+        f = open('img.jpg', 'wb')
+        f.write(data)
+        f.close
             
         context = {
             "user_input": user_input,
             "generated_news": generated_news.replace("\n", "<br/>"),
+            "image_url": image_url,
             "sports": sports,
         }
 
         title = "Top News: " + user_input
-        #image = InlineImage(path="img.jpg", caption=title)
-        #media = {"image1": image}
-        selfText = generated_news
+        image = InlineImage(path="img.jpg", caption=title)
+        media = {"image1": image}
+        selfText = "{image1}" + generated_news
         try:
-            redditURL = subreddit.submit(title, selftext=selfText)
+            redditURL = subreddit.submit(title, inline_media=media, selftext=selfText)
             redditURL = "https://redd.it/" + str(redditURL)
             #print(redditURL)
         except:
@@ -316,30 +318,31 @@ def predictions(request):
             print(res)
                            
         generated_prediction = generate_prediction(sport + " " + match, res, gameId, sportKey)
-        #image_prompt = createImagePrompt(sport + " " + match)
+        image_prompt = createImagePrompt(sport + " " + match)
         #print(image_prompt)
-        #image_url = generate_image(image_prompt)
+        image_url = generate_image(image_prompt)
         #print(image_url)
-        #time.sleep(2)
-        #data = requests.get(image_url).content
-        #f = open('img.jpg', 'wb')
-        #f.write(data)
-        #f.close
+        time.sleep(2)
+        data = requests.get(image_url).content
+        f = open('img.jpg', 'wb')
+        f.write(data)
+        f.close
             
         context = {
             "user_input": match,
             "generated_prediction": generated_prediction.replace("\n", "<br/>"),
+            "image_url": image_url,
             "sports": sports,
         }
 
         title = "Prediction: " + match
-        #image = InlineImage(path="img.jpg", caption=title)
-        #media = {"image1": image}
-        selfText = generated_prediction
+        image = InlineImage(path="img.jpg", caption=title)
+        media = {"image1": image}
+        selfText = "{image1}" + generated_prediction
         #videoText = generate_videoText(generated_prediction)
         #openAITTS(videoText)
         try:
-            redditURL = subreddit.submit(title, selftext=selfText)
+            redditURL = subreddit.submit(title, inline_media=media, selftext=selfText)
             redditURL = "https://redd.it/" + str(redditURL)
             #print(redditURL)
         except:
@@ -382,30 +385,31 @@ def props(request):
             print(res)
                            
         generated_prop = generate_prop(sport + " " + match, res, gameId, sportKey)
-        #image_prompt = createImagePrompt(sport + " " + match)
+        image_prompt = createImagePrompt(sport + " " + match)
         #print(image_prompt)
-        #image_url = generate_image(image_prompt)
+        image_url = generate_image(image_prompt)
         #print(image_url)
-        #time.sleep(2)
-        #data = requests.get(image_url).content
-        #f = open('img.jpg', 'wb')
-        #f.write(data)
-        #f.close
+        time.sleep(2)
+        data = requests.get(image_url).content
+        f = open('img.jpg', 'wb')
+        f.write(data)
+        f.close
             
         context = {
             "user_input": match,
             "generated_prediction": generated_prop.replace("\n", "<br/>"),
+            "image_url": image_url,
             "sports": sports,
         }
 
         title = "Prediction: " + match
-        #image = InlineImage(path="img.jpg", caption=title)
-        #media = {"image1": image}
-        selfText = generated_prop
+        image = InlineImage(path="img.jpg", caption=title)
+        media = {"image1": image}
+        selfText = "{image1}" + generated_prop
         #videoText = generate_videoText(generated_prediction)
         #openAITTS(videoText)
         try:
-            redditURL = subreddit.submit(title, selftext=selfText)
+            redditURL = subreddit.submit(title, inline_media=media, selftext=selfText)
             redditURL = "https://redd.it/" + str(redditURL)
             #print(redditURL)
         except:
@@ -449,29 +453,30 @@ def recaps(request):
             
         
         generated_recap = generate_recap(sport + " " + match, res, gameId, sportKey)
-        #image_prompt = createImagePrompt(sport + " " + match)
+        image_prompt = createImagePrompt(sport + " " + match)
         #print(image_prompt)
-        #image_url = generate_image(image_prompt)
+        image_url = generate_image(image_prompt)
         #print(image_url)
-        #time.sleep(2)
-        #data = requests.get(image_url).content
-        #f = open('img.jpg', 'wb')
-        #f.write(data)
-        #f.close
+        time.sleep(2)
+        data = requests.get(image_url).content
+        f = open('img.jpg', 'wb')
+        f.write(data)
+        f.close
             
         context = {
             "user_input": match,
             "generated_recap": generated_recap.replace("\n", "<br/>"),
+            "image_url": image_url,
             "sports": sports,
         }
 
         title = "Recap: " + match
-        #image = InlineImage(path="img.jpg", caption=title)
-        #media = {"image1": image}
-        selfText = generated_recap
+        image = InlineImage(path="img.jpg", caption=title)
+        media = {"image1": image}
+        selfText = "{image1}" + generated_recap
         try:
             #subreddit.submit(title, inline_media=media, selftext=selfText)
-            redditURL = subreddit.submit(title, selftext=selfText)
+            redditURL = subreddit.submit(title, inline_media=media, selftext=selfText)
             redditURL = "https://redd.it/" + str(redditURL)
         except:
             print("error submitting reddit post")
