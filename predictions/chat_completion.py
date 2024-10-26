@@ -5,8 +5,9 @@ from datetime import datetime, timedelta
 from openai import OpenAI
 openAI_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
-GPT_MODEL= "llama-3.1-70b-Versatile"
+GPT_MODEL= "llama-3.1-8b-instant"
 OPENAI_GPT_MODEL = "gpt-4o"
+#OPENAI_GPT_MODEL = "o1-preview"
 ASKNEWS_CLIENT_ID = os.environ.get('ASKNEWS_CLIENT_ID')
 ASKNEWS_CLIENT_SECRET = os.environ.get('ASKNEWS_CLIENT_SECRET')
 ODDSAPI_API_KEY = os.environ.get('ODDSAPI_API_KEY')
@@ -63,6 +64,7 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
             temperature=0.3, 
             max_tokens=1000
         )
+        print("gpt4o")
 
     # Return the API response
     return response
