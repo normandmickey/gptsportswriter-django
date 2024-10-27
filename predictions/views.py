@@ -171,6 +171,18 @@ def discordTOS(request):
 def discordPrivacy(request):
     return render(request, "predictions/discordPrivacy.html")
 
+def zoomTOS(request):
+    return render(request, "predictions/zoom-tos.html")
+
+def zoomPrivacy(request):
+    return render(request, "predictions/zoom-privacy.html")
+
+def zoomSupport(request):
+    return render(request, "predictions/zoom-support.html")
+
+def zoomDocumentation(request):
+    return render(request, "predictions/zoom-documentation.html")
+
 def parlays(request):
     context = {}
     user_input = ""
