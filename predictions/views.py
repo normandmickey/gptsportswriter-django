@@ -47,7 +47,7 @@ tweepy_auth = tweepy.OAuth1UserHandler(
 # send Tweet
 def sendTweet(text, redditURL):
     tweetText = createTweet(text)
-    tweetText = ".@betus https://tinyurl.com/GPTSW2" + " " + tweetText
+    tweetText = "BetUS https://tinyurl.com/GPTSW2" + " " + tweetText
     tweetText = tweetText[:270]
     #tweetText = tweetText + " " + redditURL
     print(tweetText)
