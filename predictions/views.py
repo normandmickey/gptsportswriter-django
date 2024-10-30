@@ -48,7 +48,7 @@ tweepy_auth = tweepy.OAuth1UserHandler(
 def sendTweet(text, redditURL):
     tweetText = createTweet(text)
     tweetText = "BetUS https://tinyurl.com/GPTSW2" + " " + tweetText
-    tweetText = tweetText[:270]
+    tweetText = tweetText[:260]
     #tweetText = tweetText + " " + redditURL
     print(tweetText)
     tweepy_api = tweepy.API(tweepy_auth)
@@ -124,7 +124,7 @@ def getLeagues():
             
 def ajax_handler(request,sport):
     games = []
-    dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/odds/?apiKey={ODDSAPI_API_KEY}&regions=us&markets=h2h&bookmakers=draftkings,betus")
+    dataMatch = requests.get(f"https://api.the-odds-api.com/v4/sports/{sport}/odds/?apiKey={ODDSAPI_API_KEY}&regions=us&markets=h2h&bookmakers=draftkings,fanduel,betus")
     dataMatch = dataMatch.json()
     #print("predictions: " + str(dataMatch))
     for i in range(len(dataMatch)):
