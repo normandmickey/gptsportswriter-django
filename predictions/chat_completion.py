@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from openai import OpenAI
 openAI_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
-GPT_MODEL= "llama-3.1-70b-versatile"
+GPT_MODEL= "llama-3.3-70b-versatile"
 OPENAI_GPT_MODEL = "gpt-4o"
 #OPENAI_GPT_MODEL = "o1-preview"
 ASKNEWS_CLIENT_ID = os.environ.get('ASKNEWS_CLIENT_ID')
@@ -37,7 +37,10 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
     try: 
-        context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"], string_guarantee=guaranteedWords, start_timestamp=int(start), end_timestamp=int(end)).as_string
+        newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], string_guarantee=guaranteedWords, start_timestamp=int(start), end_timestamp=int(end)).as_dicts
+        context = ""
+        for article in newsArticles:
+            context += article.summary
     except:
         context = ""
     #print(context)
@@ -114,7 +117,10 @@ def get_parlay(input_text, oddsJson):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
     input_text = "Same Game Parlays for " + input_text
-    context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end)).as_string
+    newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end)).as_dicts
+    context = ""
+    for article in newsArticles:
+        context += article.summary
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
@@ -143,7 +149,10 @@ def get_news(input_text, string_guarantee):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
     print(input_text)
-    context = ask.news.search_news("Top News for " + input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_string
+    newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_dicts
+    context = ""
+    for article in newsArticles:
+        context += article.summary
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
@@ -199,7 +208,10 @@ def generate_recap(input_text, string_guarantee, gameId, sportKey):
 def get_recap(input_text, string_guarantee, scoresJson):
     start = (datetime.now() - timedelta(hours=12)).timestamp()
     end = datetime.now().timestamp()
-    context = ask.news.search_news(input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_string
+    newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_dicts
+    context = ""
+    for article in newsArticles:
+        context += article.summary
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate.  """
