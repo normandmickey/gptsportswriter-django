@@ -6,7 +6,7 @@ from openai import OpenAI
 openAI_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 GPT_MODEL= "llama-3.3-70b-versatile"
-TWEET_MODEL="llama-3.1-70b-versatile"
+TWEET_MODEL="llama-3.3-70b-versatile"
 OPENAI_GPT_MODEL = "gpt-4o"
 #OPENAI_GPT_MODEL = "o1-preview"
 ASKNEWS_CLIENT_ID = os.environ.get('ASKNEWS_CLIENT_ID')
