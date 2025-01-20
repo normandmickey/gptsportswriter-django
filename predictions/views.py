@@ -329,15 +329,15 @@ def predictions(request):
             print(res)
                            
         generated_prediction = generate_prediction(sport + " " + match, res, gameId, sportKey)
-        image_prompt = createImagePrompt(sport + " " + match)
-        print(image_prompt)
-        image_url = generate_image(image_prompt)
+        #image_prompt = createImagePrompt(sport + " " + match)
+        #print(image_prompt)
+        #image_url = generate_image(image_prompt)
         #print(image_url)
-        time.sleep(2)
-        data = requests.get(image_url).content
-        f = open('img.jpg', 'wb')
-        f.write(data)
-        f.close
+        #time.sleep(2)
+        #data = requests.get(image_url).content
+        #f = open('img.jpg', 'wb')
+        #f.write(data)
+        #f.close
             
         context = {
             "user_input": match,
@@ -352,8 +352,8 @@ def predictions(request):
         #videoText = generate_videoText(generated_prediction)
         #openAITTS(videoText)
         try:
-            redditURL = subreddit.submit(title, inline_media=media, selftext=selfText)
-            #redditURL = subreddit.submit(title, selftext=selfText)
+            #redditURL = subreddit.submit(title, inline_media=media, selftext=selfText)
+            redditURL = subreddit.submit(title, selftext=selfText)
             redditURL = "https://redd.it/" + str(redditURL)
             #print(redditURL)
         except:
