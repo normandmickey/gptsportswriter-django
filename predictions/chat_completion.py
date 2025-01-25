@@ -26,10 +26,10 @@ groq_client = Groq(
 def generate_prediction(input_text, guaranteedWords, gameId, sportKey):
     # Call the OpenAI API to generate the story
     #sport = "baseball_mlb"
-    print(sportKey)
+    #print(sportKey)
     odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=h2h,spreads,totals&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
     oddsJson = odds.json()
-    print(oddsJson)
+    #print(oddsJson)
     response = get_prediction(input_text, guaranteedWords, oddsJson)
     # Format and return the response
     return format_response(response)
@@ -68,7 +68,7 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
             temperature=0.3, 
             max_tokens=1000
         )
-        print("gpt4o")
+        #print("gpt4o")
 
     # Return the API response
     return response
@@ -76,10 +76,10 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
 def generate_prop(input_text, guaranteedWords, gameId, sportKey):
     # Call the OpenAI API to generate the story
     #sport = "baseball_mlb"
-    print(sportKey)
+    #print(sportKey)
     odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=h2h,spreads,totals&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
     oddsJson = odds.json()
-    print(oddsJson)
+    #print(oddsJson)
     response = get_prop(input_text, guaranteedWords, oddsJson)
     # Format and return the response
     return format_response(response)
@@ -107,7 +107,7 @@ def get_prop(input_text, guaranteedWords, oddsJson):
 
 def generate_parlay(input_text, gameId, sportKey):
     # Call the OpenAI API to generate the story
-    print(sportKey)
+    #print(sportKey)
     odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=h2h,spreads,totals&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
     oddsJson = odds.json()
     response = get_parlay(input_text, oddsJson)
@@ -149,7 +149,7 @@ def generate_news(input_text, string_guarantee):
 def get_news(input_text, string_guarantee):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
-    print(input_text)
+    #print(input_text)
     newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_dicts
     context = ""
     for article in newsArticles:
@@ -201,7 +201,7 @@ def generate_recap(input_text, string_guarantee, gameId, sportKey):
     # Call the OpenAI API to generate the story
     scores = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/scores/?daysFrom=2&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
     scoresJson = scores.json()
-    print(scoresJson)
+    #print(scoresJson)
     response = get_recap(input_text, string_guarantee, scoresJson)
     # Format and return the response
     return format_response(response)
@@ -231,6 +231,7 @@ def get_recap(input_text, string_guarantee, scoresJson):
     return response
 
 def generate_tweet(input_text):
+    #print(input_text)
     # Call the OpenAI API to generate the story
     response = get_tweet(input_text)
     # Format and return the response
@@ -244,17 +245,20 @@ def get_tweet(input_text):
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate and write like a sports betting bro.  """
     # Make the API call
-    response = groq_client.chat.completions.create(
-        model=TWEET_MODEL,
+    #response = groq_client.chat.completions.create(
+    response = openAI_client.chat.completions.create(
+        #model=TWEET_MODEL,
+        model=OPENAI_GPT_MODEL,
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Write a 150 character funny, sarcastic tweet summarizing the following text. Use funny but approprate hashtags, emojis and tags. limit your reply to 150 characters. write the tweet to maximize engagement." + " " + input_text},
+            {"role": "user", "content": "Write a funny, sarcastic tweet summarizing the following text. Use funny but approprate hashtags, emojis and tags. limit your reply to 150 characters." + " " + input_text},
         ],
         temperature=0.3, 
         max_tokens=200
     )
 
     # Return the API response
+    #print(response)
     return response
 
 
