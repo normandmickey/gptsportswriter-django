@@ -45,7 +45,7 @@ tweepy_auth = tweepy.OAuth1UserHandler(
 )
 
 # send Tweet
-def sendTweet(text, redditURL):
+def sendTweet(text):
     tweetText = createTweet(text)
     tweetText = "BetUS https://tinyurl.com/GPTSW2" + " " + tweetText
     tweetText = tweetText[:260]
@@ -230,13 +230,13 @@ def parlays(request):
         try:
             subreddit.submit(title, inline_media=media, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)
-            redditURL = "https://redd.it/" + str(redditURL)
+            #redditURL = "https://redd.it/" + str(redditURL)
             #print(redditURL)
         except:
             print("error submitting reddit post")
         
         try:
-            sendTweet(generated_parlay, redditURL)
+            sendTweet(generated_parlay)
         except:
             print("error sending tweet")
 
@@ -292,13 +292,13 @@ def topnews(request):
         try:
             subreddit.submit(title, inline_media=media, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)
-            redditURL = "https://redd.it/" + str(redditURL)
+            #redditURL = "https://redd.it/" + str(redditURL)
             #print(redditURL)
         except:
             print("error submitting reddit post")
         
         try:
-            sendTweet(generated_news, redditURL)
+            sendTweet(generated_news)
         except:
             print("error sending tweet")
 
@@ -358,15 +358,15 @@ def predictions(request):
         #videoText = generate_videoText(generated_prediction)
         #openAITTS(videoText)
         try:
-            redditURL = subreddit.submit(title, inline_media=media, selftext=selfText)
+            subreddit.submit(title, inline_media=media, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)
-            redditURL = "https://redd.it/" + str(redditURL)
+            #redditURL = "https://redd.it/" + str(redditURL)
             #print(redditURL)
         except:
             print("error submitting reddit post")
         
         try:
-            sendTweet(generated_prediction, redditURL)
+            sendTweet(generated_prediction)
         except:
             print("error sending tweet")
 
@@ -428,13 +428,13 @@ def props(request):
         try:
             subreddit.submit(title, inline_media=media, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)
-            redditURL = "https://redd.it/" + str(redditURL)
+            #redditURL = "https://redd.it/" + str(redditURL)
             #print(redditURL)
         except:
             print("error submitting reddit post")
         
         try:
-            sendTweet(generated_prop, redditURL)
+            sendTweet(generated_prop)
         except:
             print("error sending tweet")
 
@@ -495,12 +495,12 @@ def recaps(request):
         try:
             subreddit.submit(title, inline_media=media, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)
-            redditURL = "https://redd.it/" + str(redditURL)
+            #redditURL = "https://redd.it/" + str(redditURL)
         except:
             print("error submitting reddit post")
 
         try:
-            sendTweet(generated_recap, redditURL)
+            sendTweet(generated_recap)
         except:
             print("error sending tweet")
 
