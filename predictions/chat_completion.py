@@ -126,15 +126,28 @@ def get_parlay(input_text, oddsJson):
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
     # Make the API call
-    response = groq_client.chat.completions.create(
-        model=GPT_MODEL,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Find the best same game parlay bet for the following match.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + str(oddsJson) + " " + input_text},
-        ],
-        temperature=0.3, 
-        max_tokens=1000
-    )
+    try:
+        response = groq_client.chat.completions.create(
+            model=GPT_MODEL,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": "Find the best same game parlay bet for the following match.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + str(oddsJson) + " " + input_text},
+            ],
+            temperature=0.3, 
+            max_tokens=1000
+        )
+    except:
+        response = openAI_client.chat.completions.create(
+            model=OPENAI_GPT_MODEL,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": "Find the best same game parlay bet for the following match.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + str(oddsJson) + " " + input_text},
+            ],
+            temperature=0.3, 
+            max_tokens=1000
+        )
+        #print("gpt4o")
+
 
      # Return the API response
     return response
@@ -158,18 +171,28 @@ def get_news(input_text, string_guarantee):
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
     # Make the API call
-    response = groq_client.chat.completions.create(
-        model=GPT_MODEL,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Write a summary of the following context include details from the articles." + context + input_text},
-        ],
-        temperature=0.3, 
-        max_tokens=2000
-    )
-
-
-    # Return the API response
+    try:
+        response = groq_client.chat.completions.create(
+            model=GPT_MODEL,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": "Write a summary of the following context include details from the articles." + context + input_text},
+            ],
+            temperature=0.3, 
+            max_tokens=2000
+        )
+    except:
+        response = openAI_client.chat.completions.create(
+            model=OPENAI_GPT_MODEL,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": "Write a summary of the following context include details from the articles." + context + input_text},
+            ],
+            temperature=0.3, 
+            max_tokens=1000
+        )
+        #print("gpt4o")
+        # Return the API response
     return response
 
 def generate_videoText(input_text):
@@ -217,15 +240,27 @@ def get_recap(input_text, string_guarantee, scoresJson):
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate.  """
     # Make the API call
-    response = groq_client.chat.completions.create(
-        model=GPT_MODEL,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Write a humorous recap for the following matchup.  Include only relevant stats and odds for the game in question do not make up any details." + context + str(scoresJson) + " " + input_text},
-        ],
-        temperature=0.3, 
-        max_tokens=1000
-    )
+    try:
+        response = groq_client.chat.completions.create(
+            model=GPT_MODEL,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": "Write a humorous recap for the following matchup.  Include only relevant stats and odds for the game in question do not make up any details." + context + str(scoresJson) + " " + input_text},
+            ],
+            temperature=0.3, 
+            max_tokens=1000
+        )
+    except:
+        response = openAI_client.chat.completions.create(
+            model=OPENAI_GPT_MODEL,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": "Write a humorous recap for the following matchup.  Include only relevant stats and odds for the game in question do not make up any details." + context + str(scoresJson) + " " + input_text},
+            ],
+            temperature=0.3, 
+            max_tokens=1000
+        )
+
 
     # Return the API response
     return response
