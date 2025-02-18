@@ -226,7 +226,7 @@ def parlays(request):
         title = "Parlay: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
-        selfText = "{image1}" + generated_parlay
+        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay
         try:
             subreddit.submit(title, inline_media=media, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)
@@ -251,8 +251,8 @@ def topnews(request):
     context = {}
     user_input = ""
     sport = ""
-    #sports = getLeagues()
-    sports = ['Baseball MLB','Basketball NCAA','Basketball NBA','Football NCAA','Football NFL','Golf PGA','Ice Hockey NHL','Soccer MLS','Soccer EPL','Tennis','NASCAR Cup Series','Sports Betting Money Management']
+    sports = getLeagues()
+    #sports = ['Baseball MLB','Basketball NCAA','Basketball NBA','Football NCAA','Football NFL','Golf PGA','Ice Hockey NHL','Soccer MLS','Soccer EPL','Tennis','NASCAR Cup Series','Sports Betting Money Management']
     
     if request.method == "GET":
         #dataSports = getLeagues()
@@ -268,6 +268,7 @@ def topnews(request):
         
         #print("sport: " + sport)
         generated_news = generate_news(sport, res)
+        print("News: " + generated_news)
         image_prompt = createImagePrompt(sport)
         #print(image_prompt)
         image_url = generate_image(image_prompt)
@@ -289,6 +290,7 @@ def topnews(request):
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
         selfText = "{image1}" + generated_news
+        '''
         try:
             subreddit.submit(title, inline_media=media, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)
@@ -306,6 +308,7 @@ def topnews(request):
             fbPost(generated_news, user_input)
         except:
             print("error posting to FB")
+        '''
         
         return render(request, "predictions/topnews.html", context)
 
@@ -354,7 +357,7 @@ def predictions(request):
         title = "Prediction: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
-        selfText = "{image1}" + generated_prediction
+        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction
         #videoText = generate_videoText(generated_prediction)
         #openAITTS(videoText)
         try:
@@ -422,7 +425,7 @@ def props(request):
         title = "Prediction: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
-        selfText = "{image1}" + generated_prop
+        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop
         #videoText = generate_videoText(generated_prediction)
         #openAITTS(videoText)
         try:
@@ -491,7 +494,7 @@ def recaps(request):
         title = "Recap: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
-        selfText = "{image1}" + generated_recap
+        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_recap
         try:
             subreddit.submit(title, inline_media=media, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)

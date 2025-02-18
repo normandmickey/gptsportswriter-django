@@ -171,6 +171,7 @@ def get_news(input_text, string_guarantee):
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
     # Make the API call
+    print(context)
     try:
         response = groq_client.chat.completions.create(
             model=GPT_MODEL,
