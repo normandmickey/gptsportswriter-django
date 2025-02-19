@@ -89,13 +89,14 @@ def fbPost(text, title):
     #gptsportswriterapi.put_object("me","feed",message=text,link="https://www.gptsportswriter.com")
     #
     postBody = title + "\n" + text
-    gptsportswriterapi=fb.GraphAPI(FACEBOOK_ACCESS_TOKEN)
+    gptsportswriterapi=fb.GraphAPI("EAAK2IMS7Bb8BO1CC4ZAaksBEJdHjK2hTJj8Q8NKkoKfJ1aggKorr2ysTPee2cdbzMQt5cDpk4Wp7aOJm02IVaryoBv6wBb3s4ZAuUeaYM3EZBbplD4dZAJaoarAEKTOsg01Jwj8gXlyHVvhYJvXd803GrSQJUlnELygJcBEmqm4CONU9rZAuFZCzRyiiHi")
     print(FACEBOOK_ACCESS_TOKEN)
     response_photo = gptsportswriterapi.put_photo(open('img.jpg','rb'), message=postBody)
     #print(response_photo)
     photoJson = json.loads(response_photo)
     photo_id = photoJson[0]['id']
     #print(photo_id)
+    text = "by https://www.gptsportswriter.com " + text
     gptsportswriterapi.put_object(parent_object="me",connection_name="feed",message=text,link="https://www.gptsportswriter.com",photo_id=photo_id)
     #gptsportswriterapi.put_object("me","feed",message=text,link="https://www.gptsportswriter.com")
     #facebook_access_token_1=(os.environ.get('FACEBOOK_ACCESS_TOKEN'))
