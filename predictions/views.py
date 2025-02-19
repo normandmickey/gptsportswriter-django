@@ -50,7 +50,7 @@ def sendTweet(text):
     tweetText = "BetUS https://tinyurl.com/GPTSW2" + " " + tweetText
     tweetText = tweetText[:260]
     #tweetText = tweetText + " " + redditURL
-    #print(tweetText)
+    print(tweetText)
     tweepy_api = tweepy.API(tweepy_auth)
     post = tweepy_api.simple_upload("img.jpg")
     text = str(post)
@@ -91,12 +91,13 @@ def fbPost(text, title):
     postBody = title + "\n" + text
     gptsportswriterapi=fb.GraphAPI(FACEBOOK_ACCESS_TOKEN)
     #print(FACEBOOK_ACCESS_TOKEN)
-    #response_photo = gptsportswriterapi.put_photo(open('img.jpg','rb'), message=postBody)
+    response_photo = gptsportswriterapi.put_photo(open('img.jpg','rb'), message=postBody)
     #print(response_photo)
-    #photoJson = json.loads(response_photo)
-    #photo_id = photoJson[0]['id']
-    #gptsportswriterapi.put_object(parent_object="me",connection_name="feed",message=text,link="https://www.gptsportswriter.com",photo_id=photo_id)
+    photoJson = json.loads(response_photo)
+    photo_id = photoJson[0]['id']
     #print(photo_id)
+    gptsportswriterapi.put_object(parent_object="me",connection_name="feed",message=text,link="https://www.gptsportswriter.com",photo_id=photo_id)
+    #gptsportswriterapi.put_object("me","feed",message=text,link="https://www.gptsportswriter.com")
     #facebook_access_token_1=(os.environ.get('FACEBOOK_ACCESS_TOKEN'))
     #page_id_1=(os.environ.get('FACEBOOK_PAGE_ID'))
     #msg = title + "\n" + text
