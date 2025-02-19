@@ -90,7 +90,7 @@ def fbPost(text, title):
     #
     postBody = title + "\n" + text
     gptsportswriterapi=fb.GraphAPI(FACEBOOK_ACCESS_TOKEN)
-    #print(FACEBOOK_ACCESS_TOKEN)
+    print(FACEBOOK_ACCESS_TOKEN)
     response_photo = gptsportswriterapi.put_photo(open('img.jpg','rb'), message=postBody)
     #print(response_photo)
     photoJson = json.loads(response_photo)
