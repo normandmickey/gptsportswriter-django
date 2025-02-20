@@ -88,16 +88,16 @@ def fbPost(text, title):
     #gptsportswriterapi=fb.GraphAPI("EAAK2IMS7Bb8BO2pYq60uSiYwuJwvMf8ZCcr02yuGwZCFoZCVtzhattkaq9QRQoGAGpZBvaISiZBxutz7hZAvfgDD9VD7T5AEUicF1VztjGtR1WzTFR4cr60YHE7zQZBWbjWwapUASOctQTXY9PPnUeqlJjEhBTdADDYjS22VlM4eZCKiGULGB6lHcDZBZBz8EF")
     #gptsportswriterapi.put_object("me","feed",message=text,link="https://www.gptsportswriter.com")
     #
-    postBody = title + "\n" + text
+    postBody = title + "\n" + "by https://www.gptsportswriter.com" + "\n" + text + "\n\n" + "BetUS - Get 125% Bonus On Your First 3 Deposits, click on the link below..." + "\n" + "https://record.revmasters.com/_8ejz3pKmFDuMKNOJN2Xw7mNd7ZgqdRLk/1/"
     #print(FACEBOOK_ACCESS_TOKEN)
     gptsportswriterapi=fb.GraphAPI(FACEBOOK_ACCESS_TOKEN)
-    response_photo = gptsportswriterapi.put_photo(open('img.jpg','rb'), message=postBody)
+    gptsportswriterapi.put_photo(open('img.jpg','rb'), message=postBody)
     #print(response_photo)
-    photoJson = json.loads(response_photo)
-    photo_id = photoJson[0]['id']
+    #photoJson = json.loads(response_photo)
+    #photo_id = photoJson[0]['id']
     #print(photo_id)
-    text = "by https://www.gptsportswriter.com " + text
-    gptsportswriterapi.put_object(parent_object="me",connection_name="feed",message=text,link="https://www.gptsportswriter.com",photo_id=photo_id)
+    #text = "by https://www.gptsportswriter.com " + text
+    #gptsportswriterapi.put_object(parent_object="me",connection_name="feed",message=text,link="https://www.gptsportswriter.com",photo_id=photo_id)
     #gptsportswriterapi.put_object("me","feed",message=text,link="https://www.gptsportswriter.com")
     #facebook_access_token_1=(os.environ.get('FACEBOOK_ACCESS_TOKEN'))
     #page_id_1=(os.environ.get('FACEBOOK_PAGE_ID'))
