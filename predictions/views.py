@@ -234,16 +234,22 @@ def parlays(request):
             #redditURL = subreddit.submit(title, selftext=selfText)
             #redditURL = "https://redd.it/" + str(redditURL)
             #print(redditURL)
+            with open("reddit_parlay.txt", "a") as file:
+                file.write("\n" + gameId)
         except:
             print("error submitting reddit post")
         
         try:
             sendTweet(generated_parlay)
+            with open("twitter_parlay.txt", "a") as file:
+                file.write("\n" + gameId)
         except:
             print("error sending tweet")
 
         try:
             fbPost(generated_parlay, match)
+            with open("facebook_parlay.txt", "a") as file:
+                file.write("\n" + gameId)
         except:
             print("error posting to FB")
         
@@ -363,20 +369,42 @@ def predictions(request):
         #videoText = generate_videoText(generated_prediction)
         #openAITTS(videoText)
         try:
-            subreddit.submit(title, inline_media=media, selftext=selfText)
+            #subreddit.submit(title, inline_media=media, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)
             #redditURL = "https://redd.it/" + str(redditURL)
             #print(redditURL)
+            with open(r'reddit_predictions.txt', 'r') as file:
+                content = file.read()
+                if gameId in content:
+                    print("duplicate reddit post")
+                else:
+                    subreddit.submit(title, inline_media=media, selftext=selfText) 
+                    with open("reddit_predictions.txt", "a") as file:
+                        file.write("\n" + gameId)
         except:
             print("error submitting reddit post")
         
         try:
-            sendTweet(generated_prediction)
+            with open(r'twitter_predictions.txt', 'r') as file:
+                content = file.read()
+                if gameId in content:
+                    print("duplicate twitter post")
+                else:
+                    sendTweet(generated_prediction)   
+                    with open("twitter_predictions.txt", "a") as file:
+                        file.write("\n" + gameId)
         except:
             print("error sending tweet")
 
         try:
-            fbPost(generated_prediction, match)
+            with open(r'facebook_predictions.txt', 'r') as file:
+                content = file.read()
+                if gameId in content:
+                   print("duplicate FB post")
+                else:
+                   fbPost(generated_prediction, match)  
+                   with open("facebook_predictions.txt", "a") as file:
+                       file.write("\n" + gameId)
         except:
             print("error posting to FB")
         
