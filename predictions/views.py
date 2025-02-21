@@ -368,6 +368,7 @@ def predictions(request):
         selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction
         #videoText = generate_videoText(generated_prediction)
         #openAITTS(videoText)
+        #post to reddit
         try:
             #subreddit.submit(title, inline_media=media, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)
@@ -384,27 +385,30 @@ def predictions(request):
         except:
             print("error submitting reddit post")
         
+        #post to twitter
         try:
+            print("sending tweet")
             with open(r'twitter_predictions.txt', 'r') as file:
                 content = file.read()
                 if gameId in content:
                     print("duplicate twitter post")
                 else:
-                    sendTweet(generated_prediction)   
                     with open("twitter_predictions.txt", "a") as file:
                         file.write("\n" + gameId)
+                    sendTweet(generated_prediction)   
         except:
             print("error sending tweet")
 
+        #post to facebook
         try:
             with open(r'facebook_predictions.txt', 'r') as file:
                 content = file.read()
                 if gameId in content:
                    print("duplicate FB post")
                 else:
-                   fbPost(generated_prediction, match)  
-                   with open("facebook_predictions.txt", "a") as file:
-                       file.write("\n" + gameId)
+                    fbPost(generated_prediction, match)  
+                    with open("facebook_predictions.txt", "a") as file:
+                        file.write("\n" + gameId)
         except:
             print("error posting to FB")
         

@@ -8,7 +8,7 @@ openAI_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 GPT_MODEL= "llama-3.3-70b-versatile"
 TWEET_MODEL="llama-3.3-70b-versatile"
 OPENAI_GPT_MODEL = "gpt-4o"
-#OPENAI_GPT_MODEL = "o1-preview"
+#OPENAI_GPT_MODEL = "o3-mini"
 ASKNEWS_CLIENT_ID = os.environ.get('ASKNEWS_CLIENT_ID')
 ASKNEWS_CLIENT_SECRET = os.environ.get('ASKNEWS_CLIENT_SECRET')
 ODDSAPI_API_KEY = os.environ.get('ODDSAPI_API_KEY')
