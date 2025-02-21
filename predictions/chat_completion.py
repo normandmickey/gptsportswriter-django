@@ -37,14 +37,18 @@ def generate_prediction(input_text, guaranteedWords, gameId, sportKey):
 def get_prediction(input_text, guaranteedWords, oddsJson):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
+    context = ""
     try: 
-        newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], string_guarantee=guaranteedWords, premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_dicts
+        newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_dicts
         context = ""
         for article in newsArticles:
+            print(article.summary)
             context += article.summary
     except:
         context = ""
-    #print(context)
+    
+     
+  
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and sarcastic but very accurate and confident in your predictions.  """
     # Make the API call
@@ -87,7 +91,7 @@ def generate_prop(input_text, guaranteedWords, gameId, sportKey):
 def get_prop(input_text, guaranteedWords, oddsJson):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
-    context = ask.news.search_news("player prop bets for " + input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"], string_guarantee=guaranteedWords, premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_string
+    context = ask.news.search_news("player prop bets for " + input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_string
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
@@ -162,12 +166,14 @@ def generate_news(input_text, string_guarantee):
 def get_news(input_text, string_guarantee):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
-    #print(input_text)
-    newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_dicts
-    context = ""
+    print("top News input: " + str(input_text))
+    print("top News string guarantee: " + str(string_guarantee))
+    #newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_dicts
+    newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_dicts
     for article in newsArticles:
         context += article.summary
-    #print(context)
+        print(article.summary)
+    print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
     # Make the API call

@@ -49,7 +49,6 @@ def sendTweet(text):
     tweetText = createTweet(text)
     tweetText = "BetUS https://tinyurl.com/GPTSW2" + " " + tweetText
     tweetText = tweetText[:260]
-    #tweetText = tweetText + " " + redditURL
     print(tweetText)
     tweepy_api = tweepy.API(tweepy_auth)
     post = tweepy_api.simple_upload("img.jpg")
