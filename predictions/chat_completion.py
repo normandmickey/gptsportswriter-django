@@ -168,6 +168,7 @@ def get_news(input_text, string_guarantee):
     end = datetime.now().timestamp()
     print("top News input: " + str(input_text))
     print("top News string guarantee: " + str(string_guarantee))
+    context=""
     #newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_dicts
     newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_dicts
     for article in newsArticles:
