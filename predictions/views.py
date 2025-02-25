@@ -47,7 +47,7 @@ tweepy_auth = tweepy.OAuth1UserHandler(
 # send Tweet
 def sendTweet(text):
     tweetText = createTweet(text)
-    tweetText = "by https://www.gptsporswriter.com" + " " + tweetText
+    tweetText = "by https://www.gptsportswriter.com" + " " + tweetText
     tweetText = tweetText[:260]
     print(tweetText)
     tweepy_api = tweepy.API(tweepy_auth)
@@ -412,9 +412,10 @@ def predictions(request):
                 if gameId in content:
                     print("duplicate twitter post")
                 else:
+                    sendTweet(generated_prediction) 
                     with open("twitter_predictions.txt", "a") as file:
                         file.write("\n" + gameId)
-                    sendTweet(generated_prediction)   
+                      
         except:
             print("error sending tweet")
 
