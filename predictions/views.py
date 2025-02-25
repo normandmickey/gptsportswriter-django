@@ -47,7 +47,7 @@ tweepy_auth = tweepy.OAuth1UserHandler(
 # send Tweet
 def sendTweet(text):
     tweetText = createTweet(text)
-    tweetText = "BetUS https://tinyurl.com/GPTSW2" + " " + tweetText
+    tweetText = "by https://www.gptsporswriter.com" + " " + tweetText
     tweetText = tweetText[:260]
     print(tweetText)
     tweepy_api = tweepy.API(tweepy_auth)
@@ -122,6 +122,7 @@ def getLeagues():
             leagues.append(sport[i]['description'])
             #print(sport[i]['key'])
     leagues = [i for n, i in enumerate(leagues) if i not in leagues[:n]]
+    leagues.append("Sports Betting Money Management Tips")
     return(leagues)
             
 def ajax_handler(request,sport):
@@ -229,26 +230,45 @@ def parlays(request):
         media = {"image1": image}
         selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay
         try:
-            subreddit.submit(title, inline_media=media, selftext=selfText)
+            #subreddit.submit(title, inline_media=media, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)
             #redditURL = "https://redd.it/" + str(redditURL)
             #print(redditURL)
-            with open("reddit_parlay.txt", "a") as file:
-                file.write("\n" + gameId)
+            with open(r'reddit_parlays.txt', 'r') as file:
+                content = file.read()
+                if gameId in content:
+                    print("duplicate reddit post")
+                else:
+                    subreddit.submit(title, inline_media=media, selftext=selfText) 
+                    with open("reddit_parlays.txt", "a") as file:
+                        file.write("\n" + gameId)
         except:
             print("error submitting reddit post")
         
         try:
-            sendTweet(generated_parlay)
-            with open("twitter_parlay.txt", "a") as file:
-                file.write("\n" + gameId)
+            #sendTweet(generated_parlay)
+            with open(r'twitter_parlays.txt', 'r') as file:
+                content = file.read()
+                if gameId in content:
+                    print("duplicate twitter post")
+                else:
+                    sendTweet(generated_parlay)
+                    with open("twitter_parlays.txt", "a") as file:
+                        file.write("\n" + gameId)
         except:
             print("error sending tweet")
 
         try:
-            fbPost(generated_parlay, match)
-            with open("facebook_parlay.txt", "a") as file:
-                file.write("\n" + gameId)
+            #fbPost(generated_parlay, match)
+            with open(r'facebook_parlays.txt', 'r') as file:
+                content = file.read()
+                if gameId in content:
+                    print("duplicate facebook post")
+                else:
+                    fbPost(generated_parlay, match)
+                    with open("facebook_parlays.txt", "a") as file:
+                        file.write("\n" + gameId)
+            
         except:
             print("error posting to FB")
         
@@ -259,6 +279,7 @@ def topnews(request):
     user_input = ""
     sport = ""
     sports = getLeagues()
+    #sports = sports.append("Sports Betting Money Management")
     #sports = ['Baseball MLB','Basketball NCAA','Basketball NBA','Football NCAA','Football NFL','Golf PGA','Ice Hockey NHL','Soccer MLS','Soccer EPL','Tennis','NASCAR Cup Series','Sports Betting Money Management']
     
     if request.method == "GET":
@@ -297,7 +318,7 @@ def topnews(request):
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
         selfText = "{image1}" + generated_news
-        '''
+        
         try:
             subreddit.submit(title, inline_media=media, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)
@@ -315,7 +336,6 @@ def topnews(request):
             fbPost(generated_news, user_input)
         except:
             print("error posting to FB")
-        '''
         
         return render(request, "predictions/topnews.html", context)
 
