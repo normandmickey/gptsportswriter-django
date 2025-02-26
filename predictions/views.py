@@ -47,7 +47,7 @@ tweepy_auth = tweepy.OAuth1UserHandler(
 # send Tweet
 def sendTweet(text):
     tweetText = createTweet(text)
-    tweetText = "by https://www.gptsportswriter.com" + " " + tweetText
+    tweetText = "https://www.gptsportswriter.com" + " " + tweetText
     tweetText = tweetText[:260]
     print(tweetText)
     tweepy_api = tweepy.API(tweepy_auth)
