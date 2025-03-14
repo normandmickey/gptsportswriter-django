@@ -39,7 +39,8 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
     end = datetime.now().timestamp()
     context = ""
     try: 
-        newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_dicts
+        #newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_dicts
+        newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True).as_dicts
         context = ""
         for article in newsArticles:
             print(article.summary)
@@ -92,7 +93,8 @@ def generate_prop(input_text, guaranteedWords, gameId, sportKey):
 def get_prop(input_text, guaranteedWords, oddsJson):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
-    context = ask.news.search_news("player prop bets for " + input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_string
+    #context = ask.news.search_news("player prop bets for " + input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_string
+    context = ask.news.search_news("player prop bets for " + input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"], premium=True).as_string
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
@@ -123,7 +125,8 @@ def get_parlay(input_text, oddsJson):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
     input_text = "Same Game Parlays for " + input_text
-    newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_dicts
+    #newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_dicts
+    newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True).as_dicts
     context = ""
     for article in newsArticles:
         context += article.summary
@@ -171,7 +174,7 @@ def get_news(input_text, string_guarantee):
     print("top News string guarantee: " + str(string_guarantee))
     context=""
     #newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_dicts
-    newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_dicts
+    newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True).as_dicts
     for article in newsArticles:
         context += article.summary
         print(article.summary)
@@ -185,7 +188,7 @@ def get_news(input_text, string_guarantee):
             model=GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "Write a summary of the following context include details from the articles." + context + input_text},
+                {"role": "user", "content": "Write a summary of the following context include details from the articles. Limit your response to 200 words be funny and sarcastic. " + context + input_text},
             ],
             temperature=0.3, 
             max_tokens=2000
@@ -195,7 +198,7 @@ def get_news(input_text, string_guarantee):
             model=OPENAI_GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "Write a summary of the following context include details from the articles." + context + input_text},
+                {"role": "user", "content": "Write a summary of the following context include details from the articles. limit your reponse to 200 words be funny and sarcastic. " + context + input_text},
             ],
             temperature=0.3, 
             max_tokens=1000
@@ -207,7 +210,7 @@ def get_news(input_text, string_guarantee):
 def generate_videoText(input_text):
     # Call the OpenAI API to generate the story
     #print("input text: " + input_text)
-    response = get_news(input_text)
+    response = get_news(input_text, "string_guarantee")
     # Format and return the response
     return format_response(response)
 
@@ -241,7 +244,8 @@ def generate_recap(input_text, string_guarantee, gameId, sportKey):
 def get_recap(input_text, string_guarantee, scoresJson):
     start = (datetime.now() - timedelta(hours=12)).timestamp()
     end = datetime.now().timestamp()
-    newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_dicts
+    #newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_dicts
+    newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True).as_dicts
     context = ""
     for article in newsArticles:
         context += article.summary
