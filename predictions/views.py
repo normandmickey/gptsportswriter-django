@@ -122,7 +122,8 @@ def getLeagues():
             leagues.append(sport[i]['description'])
             #print(sport[i]['key'])
     leagues = [i for n, i in enumerate(leagues) if i not in leagues[:n]]
-    leagues.append("Sports Betting Money Management Tips" ,"March Madness 2025")
+    leagues.append("March Madness 2025")
+    leagues.append("Sortsbetting Money Management")
     return(leagues)
             
 def ajax_handler(request,sport):
@@ -228,7 +229,7 @@ def parlays(request):
         title = "Parlay: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
-        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay + "\nCheck out our new Telegram Bot https://t.me/GPTSportsWriter_bot"
+        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay + "\n\nCheck out our new Telegram Bot https://t.me/GPTSportsWriter_bot"
         try:
             #subreddit.submit(title, inline_media=media, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)
@@ -317,7 +318,7 @@ def topnews(request):
         title = "Top News: " + user_input
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
-        selfText = "{image1}" + generated_news + "\nCheck out our new Telegram Bot https://t.me/GPTSportsWriter_bot"
+        selfText = "{image1}" + generated_news + "\n\nCheck out our new Telegram Bot https://t.me/GPTSportsWriter_bot"
         
         try:
             subreddit.submit(title, inline_media=media, selftext=selfText)
@@ -384,7 +385,7 @@ def predictions(request):
         title = "Prediction: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
-        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction + "\nCheck out our new Telegram Bot https://t.me/GPTSportsWriter_bot"
+        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction + "\n\nCheck out our new Telegram Bot https://t.me/GPTSportsWriter_bot"
         #videoText = generate_videoText(generated_prediction)
         #openAITTS(videoText)
         #post to reddit
@@ -479,7 +480,7 @@ def props(request):
         title = "Prop Bets: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
-        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop + "\nCheck out our new Telegram Bot https://t.me/GPTSportsWriter_bot"
+        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop + "\n\nCheck out our new Telegram Bot https://t.me/GPTSportsWriter_bot"
         #videoText = generate_videoText(generated_prediction)
         #openAITTS(videoText)
         try:
@@ -548,7 +549,7 @@ def recaps(request):
         title = "Recap: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
-        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_recap + "\nCheck out our new Telegram Bot https://t.me/GPTSportsWriter_bot"
+        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_recap + "\n\nCheck out our new Telegram Bot https://t.me/GPTSportsWriter_bot"
         try:
             subreddit.submit(title, inline_media=media, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)
