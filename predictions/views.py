@@ -47,7 +47,6 @@ tweepy_auth = tweepy.OAuth1UserHandler(
 # send Tweet
 def sendTweet(text):
     tweetText = createTweet(text)
-    tweetText = "https://www.gptsportswriter.com" + " " + tweetText
     tweetText = tweetText[:260]
     print(tweetText)
     tweepy_api = tweepy.API(tweepy_auth)
@@ -229,7 +228,7 @@ def parlays(request):
         title = "Parlay: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
-        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay + "\n\nCheck out our new Telegram Bot https://t.me/GPTSportsWriter_bot"
+        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay
         try:
             #subreddit.submit(title, inline_media=media, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)
