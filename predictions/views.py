@@ -47,7 +47,7 @@ tweepy_auth = tweepy.OAuth1UserHandler(
 # send Tweet
 def sendTweet(text):
     tweetText = createTweet(text)
-    tweetText = tweetText[:260]
+    tweetText = tweetText[:20000]
     print(tweetText)
     tweepy_api = tweepy.API(tweepy_auth)
     post = tweepy_api.simple_upload("img.jpg")

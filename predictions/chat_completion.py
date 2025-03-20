@@ -299,10 +299,10 @@ def get_tweet(input_text):
         model=OPENAI_GPT_MODEL,
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Write a funny, sarcastic tweet summarizing the following text. Use funny but approprate hashtags, emojis and tags. limit your reply to 150 characters." + " " + input_text},
+            {"role": "user", "content": "Write a funny, sarcastic tweet summarizing the following text. Use funny but approprate hashtags, emojis and tags." + " " + input_text},
         ],
         temperature=0.3, 
-        max_tokens=200
+        max_tokens=2000
     )
 
     # Return the API response
