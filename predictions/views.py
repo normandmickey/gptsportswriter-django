@@ -381,7 +381,7 @@ def predictions(request):
             "sports": sports,
         }
 
-        title = "Prediction: " + league + " " + match
+        title = "Prediction: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
         selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction
