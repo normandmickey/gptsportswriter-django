@@ -228,7 +228,7 @@ def parlays(request):
         title = "Parlay: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
-        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay
+        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay + "\n\nVisit http://www.gptsportswriter.com for more predictions."
         try:
             #subreddit.submit(title, inline_media=media, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)
@@ -384,7 +384,7 @@ def predictions(request):
         title = "Prediction: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
-        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction
+        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction + "\n\nVisit http://www.gptsportswriter.com for more predictions."
         #videoText = generate_videoText(generated_prediction)
         #openAITTS(videoText)
         #post to reddit
@@ -479,7 +479,7 @@ def props(request):
         title = "Prop Bets: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
-        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop
+        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop + "\n\nVisit http://www.gptsportswriter.com for more predictions."
         #videoText = generate_videoText(generated_prediction)
         #openAITTS(videoText)
         try:
@@ -548,7 +548,7 @@ def recaps(request):
         title = "Recap: " + match
         image = InlineImage(path="img.jpg", caption=title)
         media = {"image1": image}
-        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_recap
+        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_recap + "\n\nVisit http://www.gptsportswriter.com for more predictions."
         try:
             subreddit.submit(title, inline_media=media, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)
