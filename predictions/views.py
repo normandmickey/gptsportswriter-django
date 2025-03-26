@@ -253,7 +253,7 @@ def parlays(request):
                 if gameId in content:
                     print("duplicate twitter post")
                 else:
-                    sendTweet(generated_parlay)
+                    sendTweet(generated_parlay, match)
                     with open("twitter_parlays.txt", "a") as file:
                         file.write("\n" + gameId)
         except:
@@ -329,7 +329,7 @@ def topnews(request):
             print("error submitting reddit post")
         
         try:
-            sendTweet(generated_news)
+            sendTweet(generated_news, "Top News " + sport + " " )
         except:
             print("error sending tweet")
 
@@ -492,7 +492,7 @@ def props(request):
             print("error submitting reddit post")
         
         try:
-            sendTweet(generated_prop)
+            sendTweet(generated_prop, "Prop Bets " + match + " ")
         except:
             print("error sending tweet")
 
@@ -558,7 +558,7 @@ def recaps(request):
             print("error submitting reddit post")
 
         try:
-            sendTweet(generated_recap)
+            sendTweet(generated_recap, "Recap " + match + " ")
         except:
             print("error sending tweet")
 
