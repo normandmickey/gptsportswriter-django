@@ -48,7 +48,7 @@ tweepy_auth = tweepy.OAuth1UserHandler(
 def sendTweet(text, match):
     tweetText = createTweet(text)
     tweetText = match + ": " + tweetText
-    tweetText = tweetText
+    tweetText = tweetText + " Affiliate Link BetUS - 125% Sign Up Bonus! - https://record.revmasters.com/_8ejz3pKmFDsdHrf4TDP9mWNd7ZgqdRLk/1/"
     print(tweetText)
     tweepy_api = tweepy.API(tweepy_auth)
     post = tweepy_api.simple_upload("img.jpg")
