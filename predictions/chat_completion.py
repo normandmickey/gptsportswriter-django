@@ -43,7 +43,7 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
         newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True).as_dicts
         context = ""
         for article in newsArticles:
-            print(article.summary)
+            #print(article.summary)
             context += article.summary
     except:
         context = ""

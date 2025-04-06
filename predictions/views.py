@@ -46,25 +46,44 @@ tweepy_auth = tweepy.OAuth1UserHandler(
 
 # send Tweet
 def sendTweet(text, match):
+    tweepy_api = tweepy.API(tweepy_auth)
+    #rate_limit_status = tweepy_api.rate_limit_status()
+    #rate_limit_status = json.dumps(rate_limit_status)
+    #print(rate_limit_status)
+    #tweet_endpoint_limit = rate_limit_status['resources']['/tweets&post']['remaining']
+    #print(tweet_endpoint_limit)
+    #if tweet_endpoint_limit > 0:
+    client = tweepy.Client(
+    consumer_key=consumer_key,
+    consumer_secret=consumer_secret,
+    access_token=access_token,
+    access_token_secret=access_token_secret
+        #wait_on_rate_limit=True
+    )
+
+    
     tweetText = createTweet(text)
     tweetText = match + ": " + tweetText
     tweetText = tweetText + " Affiliate Link BetUS - 125% Sign Up Bonus! - https://tinyurl.com/GPTSW2"
     print(tweetText)
-    tweepy_api = tweepy.API(tweepy_auth)
+
     post = tweepy_api.simple_upload("img.jpg")
     text = str(post)
     media_id = re.search("media_id=(.+?),", text).group(1)
     
-    client = tweepy.Client(
-        consumer_key=consumer_key,
-        consumer_secret=consumer_secret,
-        access_token=access_token,
-        access_token_secret=access_token_secret
-    )
 
     # Post Tweet
+    #rate_limit_status = client.rate_limit_status()
+    #print(rate_limit_status)
+    #tweet_endpoint_limit = rate_limit_status['resources']['statuses']['/statuses/update']['remaining']
+    #print(tweet_endpoint_limit)
+    #if tweet_endpoint_limit > 0:
     response = client.create_tweet(text=tweetText, media_ids=[media_id])
-    print(response)
+    print(response.data['id'])
+    #else:
+        
+        #print("Rate limit exceeded. Please wait before tweeting again.")
+    #print("twitter: " + response)
 
 def openAITTS(text):
     speech_file_path = "speech.mp3"
@@ -246,6 +265,7 @@ def parlays(request):
         except:
             print("error submitting reddit post")
         
+        '''
         try:
             #sendTweet(generated_parlay)
             with open(r'twitter_parlays.txt', 'r') as file:
@@ -257,7 +277,8 @@ def parlays(request):
                     with open("twitter_parlays.txt", "a") as file:
                         file.write("\n" + gameId)
         except:
-            print("error sending tweet")
+            print("error sending tweet")'
+        '''
 
         try:
             #fbPost(generated_parlay, match)
@@ -328,10 +349,12 @@ def topnews(request):
         except:
             print("error submitting reddit post")
         
+        '''
         try:
             sendTweet(generated_news, "Top News " + sport + " " )
         except:
             print("error sending tweet")
+        '''
 
         try:
             fbPost(generated_news, user_input)
@@ -406,6 +429,8 @@ def predictions(request):
             print("error submitting reddit post")
         
         #post to twitter
+        #sendTweet(generated_prediction, match)
+        '''
         try:
             print("sending tweet")
             with open(r'twitter_predictions.txt', 'r') as file:
@@ -418,7 +443,8 @@ def predictions(request):
                         file.write("\n" + gameId)
                       
         except:
-            print("error sending tweet")
+            print("error sending tweet")'
+        '''
 
         #post to facebook
         try:
@@ -490,11 +516,12 @@ def props(request):
             #print(redditURL)
         except:
             print("error submitting reddit post")
-        
+        '''
         try:
             sendTweet(generated_prop, "Prop Bets " + match + " ")
         except:
-            print("error sending tweet")
+            print("error sending tweet")'
+        '''
 
         try:
             fbPost(generated_prop, match)
@@ -557,10 +584,12 @@ def recaps(request):
         except:
             print("error submitting reddit post")
 
+        '''
         try:
             sendTweet(generated_recap, "Recap " + match + " ")
         except:
-            print("error sending tweet")
+            print("error sending tweet")'
+        '''
 
         try:
             fbPost(generated_recap, match)
