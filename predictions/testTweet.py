@@ -28,6 +28,6 @@ client = tweepy.Client(
 
 # Example 1: Create a regular Tweet
 response = client.create_tweet(
-    text="This Tweet was Tweeted using Tweepy and Twitter API v2!"
+    text="Test 04082025"
 )
 print(f"https://twitter.com/user/status/{response.data['id']}")

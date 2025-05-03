@@ -265,7 +265,7 @@ def parlays(request):
         except:
             print("error submitting reddit post")
         
-        '''
+        
         try:
             #sendTweet(generated_parlay)
             with open(r'twitter_parlays.txt', 'r') as file:
@@ -277,8 +277,8 @@ def parlays(request):
                     with open("twitter_parlays.txt", "a") as file:
                         file.write("\n" + gameId)
         except:
-            print("error sending tweet")'
-        '''
+            print("error sending tweet")
+        
 
         try:
             #fbPost(generated_parlay, match)
@@ -349,12 +349,12 @@ def topnews(request):
         except:
             print("error submitting reddit post")
         
-        '''
+        
         try:
             sendTweet(generated_news, "Top News " + sport + " " )
         except:
             print("error sending tweet")
-        '''
+        
 
         try:
             fbPost(generated_news, user_input)
@@ -430,7 +430,7 @@ def predictions(request):
         
         #post to twitter
         #sendTweet(generated_prediction, match)
-        '''
+        
         try:
             print("sending tweet")
             with open(r'twitter_predictions.txt', 'r') as file:
@@ -443,8 +443,8 @@ def predictions(request):
                         file.write("\n" + gameId)
                       
         except:
-            print("error sending tweet")'
-        '''
+            print("error sending tweet")
+        
 
         #post to facebook
         try:
@@ -516,12 +516,12 @@ def props(request):
             #print(redditURL)
         except:
             print("error submitting reddit post")
-        '''
+        
         try:
             sendTweet(generated_prop, "Prop Bets " + match + " ")
         except:
-            print("error sending tweet")'
-        '''
+            print("error sending tweet")
+        
 
         try:
             fbPost(generated_prop, match)
@@ -584,12 +584,12 @@ def recaps(request):
         except:
             print("error submitting reddit post")
 
-        '''
+        
         try:
             sendTweet(generated_recap, "Recap " + match + " ")
         except:
-            print("error sending tweet")'
-        '''
+            print("error sending tweet")
+        
 
         try:
             fbPost(generated_recap, match)

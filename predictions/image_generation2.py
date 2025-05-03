@@ -9,7 +9,7 @@ def createImagePrompt(text):
     messages=[
         {
         "role": "user",
-        "content": "create a prompt to create a meme like image in the style of digital art." + text
+        "content": "you are a grapic designer" + text
         }
     ],
     temperature=0.3,
@@ -25,7 +25,7 @@ def createImagePrompt(text):
 def generate_image(text_prompt):
     response = client.images.generate(
         model="dall-e-3",
-        prompt="create a banner image for a website called GPTSportsWriter.com.  The site provides AI powered sports betting predictions and advice.",
+        prompt="create an image for a chat bot called TLDR the image should be warm and appealing",
         size="1024x1024",
         quality="standard",
         n=1,
