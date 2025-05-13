@@ -226,73 +226,85 @@ def parlays(request):
             sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
-        
-        generated_parlay = generate_parlay(sport + " " + match, gameId, sportKey)
-        image_prompt = createImagePrompt(sport + " " + match)
-        #print(image_prompt)
-        image_url = generate_image(image_prompt)
-        #print(image_url)
-        time.sleep(2)
-        data = requests.get(image_url).content
-        f = open('img.jpg', 'wb')
-        f.write(data)
-        f.close
-            
-        context = {
-            "user_input": match,
-            "generated_parlay": generated_parlay.replace("\n", "<br/>"),
-            "image_url": image_url,
-            "sports": sports,
-        }
 
-        title = "Parlay: " + match
-        image = InlineImage(path="img.jpg", caption=title)
-        media = {"image1": image}
-        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay + "\n\nVisit http://www.gptsportswriter.com for more predictions."
-        try:
-            #subreddit.submit(title, inline_media=media, selftext=selfText)
-            #redditURL = subreddit.submit(title, selftext=selfText)
-            #redditURL = "https://redd.it/" + str(redditURL)
-            #print(redditURL)
-            with open(r'reddit_parlays.txt', 'r') as file:
+            with open(r'parlays.txt', 'r') as file:
                 content = file.read()
                 if gameId in content:
-                    print("duplicate reddit post")
+                   context = {
+                        "user_input": match,
+                        "generated_parlay": "Parlay Already Created Please Visit <a href='https://www.reddit.com/r/GPTSportsWriter/'>Reddit.com</a> to view",
+                        "sports": sports,
+                    }
                 else:
-                    subreddit.submit(title, inline_media=media, selftext=selfText) 
-                    with open("reddit_parlays.txt", "a") as file:
-                        file.write("\n" + gameId)
-        except:
-            print("error submitting reddit post")
+                    generated_parlay = generate_parlay(sport + " " + match, gameId, sportKey)
+                    image_prompt = createImagePrompt(sport + " " + match)
+                    #print(image_prompt)
+                    image_url = generate_image(image_prompt)
+                    #print(image_url)
+                    time.sleep(2)
+                    data = requests.get(image_url).content
+                    f = open('img.jpg', 'wb')
+                    f.write(data)
+                    f.close
+            
+                    context = {
+                        "user_input": match,
+                        "generated_parlay": generated_parlay.replace("\n", "<br/>"),
+                        "image_url": image_url,
+                        "sports": sports,
+                    }
+
+                    title = "Parlay: " + match
+                    image = InlineImage(path="img.jpg", caption=title)
+                    media = {"image1": image}
+                    selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay + "\n\nVisit http://www.gptsportswriter.com for more predictions."
+                    try:
+                        #subreddit.submit(title, inline_media=media, selftext=selfText)
+                        #redditURL = subreddit.submit(title, selftext=selfText)
+                        #redditURL = "https://redd.it/" + str(redditURL)
+                        #print(redditURL)
+                        with open(r'reddit_parlays.txt', 'r') as file:
+                            content = file.read()
+                            if gameId in content:
+                                print("duplicate reddit post")
+                            else:
+                                subreddit.submit(title, inline_media=media, selftext=selfText) 
+                                with open("reddit_parlays.txt", "a") as file:
+                                    file.write("\n" + gameId)
+                    except:
+                        print("error submitting reddit post")
         
         
-        try:
-            #sendTweet(generated_parlay)
-            with open(r'twitter_parlays.txt', 'r') as file:
-                content = file.read()
-                if gameId in content:
-                    print("duplicate twitter post")
-                else:
-                    sendTweet(generated_parlay, match)
-                    with open("twitter_parlays.txt", "a") as file:
-                        file.write("\n" + gameId)
-        except:
-            print("error sending tweet")
+                    try:
+                        #sendTweet(generated_parlay)
+                        with open(r'twitter_parlays.txt', 'r') as file:
+                            content = file.read()
+                            if gameId in content:
+                                print("duplicate twitter post")
+                            else:
+                                sendTweet(generated_parlay, match)
+                                with open("twitter_parlays.txt", "a") as file:
+                                    file.write("\n" + gameId)
+                    except:
+                        print("error sending tweet")
         
 
-        try:
-            #fbPost(generated_parlay, match)
-            with open(r'facebook_parlays.txt', 'r') as file:
-                content = file.read()
-                if gameId in content:
-                    print("duplicate facebook post")
-                else:
-                    fbPost(generated_parlay, match)
-                    with open("facebook_parlays.txt", "a") as file:
-                        file.write("\n" + gameId)
+                    try:
+                        #fbPost(generated_parlay, match)
+                        with open(r'facebook_parlays.txt', 'r') as file:
+                            content = file.read()
+                            if gameId in content:
+                                print("duplicate facebook post")
+                            else:
+                                fbPost(generated_parlay, match)
+                                with open("facebook_parlays.txt", "a") as file:
+                                    file.write("\n" + gameId)
             
-        except:
-            print("error posting to FB")
+                    except:
+                        print("error posting to FB")
+                    
+                    with open("parlays.txt", "a") as file:
+                                    file.write("\n" + gameId)
         
         return render(request, "predictions/parlays.html", context)
 
@@ -387,79 +399,90 @@ def predictions(request):
             res = res[:len(res)-3]
             #print(res)
                            
-        generated_prediction = generate_prediction(sport + " " + match, res, gameId, sportKey)
-        image_prompt = createImagePrompt(sport + " " + match)
-        #print(image_prompt)
-        image_url = generate_image(image_prompt)
-        print(image_url)
-        time.sleep(2)
-        data = requests.get(image_url).content
-        f = open('img.jpg', 'wb')
-        f.write(data)
-        f.close
+        with open(r'predictions.txt', 'r') as file:
+                content = file.read()
+                if gameId in content:
+                   context = {
+                        "user_input": match,
+                        "generated_prediction": "Prediction Already Created Please Visit <a href='https://www.reddit.com/r/GPTSportsWriter/'>Reddit.com</a> to view",
+                        "sports": sports,
+                    }
+                else:
+                    generated_prediction = generate_prediction(sport + " " + match, res, gameId, sportKey)
+                    image_prompt = createImagePrompt(sport + " " + match)
+                    #print(image_prompt)
+                    image_url = generate_image(image_prompt)
+                    print(image_url)
+                    time.sleep(2)
+                    data = requests.get(image_url).content
+                    f = open('img.jpg', 'wb')
+                    f.write(data)
+                    f.close
             
-        context = {
-            "user_input": match,
-            "generated_prediction": generated_prediction.replace("\n", "<br/>"),
-            "image_url": image_url,
-            "sports": sports,
-        }
+                    context = {
+                        "user_input": match,
+                        "generated_prediction": generated_prediction.replace("\n", "<br/>"),
+                        "image_url": image_url,
+                        "sports": sports,
+                    }
 
-        title = "Prediction: " + match
-        image = InlineImage(path="img.jpg", caption=title)
-        media = {"image1": image}
-        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction + "\n\nVisit http://www.gptsportswriter.com for more predictions."
-        #videoText = generate_videoText(generated_prediction)
-        #openAITTS(videoText)
-        #post to reddit
-        try:
-            #subreddit.submit(title, inline_media=media, selftext=selfText)
-            #redditURL = subreddit.submit(title, selftext=selfText)
-            #redditURL = "https://redd.it/" + str(redditURL)
-            #print(redditURL)
-            with open(r'reddit_predictions.txt', 'r') as file:
-                content = file.read()
-                if gameId in content:
-                    print("duplicate reddit post")
-                else:
-                    subreddit.submit(title, inline_media=media, selftext=selfText) 
-                    with open("reddit_predictions.txt", "a") as file:
-                        file.write("\n" + gameId)
-        except:
-            print("error submitting reddit post")
+                    title = "Prediction: " + match
+                    image = InlineImage(path="img.jpg", caption=title)
+                    media = {"image1": image}
+                    selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction + "\n\nVisit http://www.gptsportswriter.com for more predictions."
+                    #videoText = generate_videoText(generated_prediction)
+                    #openAITTS(videoText)
+                    #post to reddit
+                    try:
+                        #subreddit.submit(title, inline_media=media, selftext=selfText)
+                        #redditURL = subreddit.submit(title, selftext=selfText)
+                        #redditURL = "https://redd.it/" + str(redditURL)
+                        #print(redditURL)
+                        with open(r'reddit_predictions.txt', 'r') as file:
+                            content = file.read()
+                            if gameId in content:
+                                print("duplicate reddit post")
+                            else:
+                                subreddit.submit(title, inline_media=media, selftext=selfText) 
+                                with open("reddit_predictions.txt", "a") as file:
+                                    file.write("\n" + gameId)
+                    except:
+                        print("error submitting reddit post")
         
-        #post to twitter
-        #sendTweet(generated_prediction, match)
+                    #post to twitter
+                    #sendTweet(generated_prediction, match)
         
-        try:
-            print("sending tweet")
-            with open(r'twitter_predictions.txt', 'r') as file:
-                content = file.read()
-                if gameId in content:
-                    print("duplicate twitter post")
-                else:
-                    sendTweet(generated_prediction, match) 
-                    with open("twitter_predictions.txt", "a") as file:
-                        file.write("\n" + gameId)
+                    try:
+                        print("sending tweet")
+                        with open(r'twitter_predictions.txt', 'r') as file:
+                            content = file.read()
+                            if gameId in content:
+                                print("duplicate twitter post")
+                            else:
+                                sendTweet(generated_prediction, match) 
+                                with open("twitter_predictions.txt", "a") as file:
+                                    file.write("\n" + gameId)
                       
-        except:
-            print("error sending tweet")
+                    except:
+                        print("error sending tweet")
         
 
-        #post to facebook
-        try:
-            with open(r'facebook_predictions.txt', 'r') as file:
-                content = file.read()
-                if gameId in content:
-                   print("duplicate FB post")
-                else:
-                    fbPost(generated_prediction, match)  
-                    with open("facebook_predictions.txt", "a") as file:
-                        file.write("\n" + gameId)
-        except:
-            print("error posting to FB")
-        
-        return render(request, "predictions/predictions.html", context)
+                    #post to facebook
+                    try:
+                        with open(r'facebook_predictions.txt', 'r') as file:
+                            content = file.read()
+                            if gameId in content:
+                                print("duplicate FB post")
+                            else:
+                                fbPost(generated_prediction, match)  
+                                with open("facebook_predictions.txt", "a") as file:
+                                    file.write("\n" + gameId)
+                    except:
+                        print("error posting to FB")
+
+                    with open("predictions.txt", "a") as file:
+                                    file.write("\n" + gameId)
+    return render(request, "predictions/predictions.html", context)
 
 def props(request):
     context = {}
@@ -484,49 +507,61 @@ def props(request):
             res.remove('VS')
             res = res[:len(res)-3]
             print(res)
-                           
-        generated_prop = generate_prop(sport + " " + match, res, gameId, sportKey)
-        image_prompt = createImagePrompt(sport + " " + match)
-        #print(image_prompt)
-        image_url = generate_image(image_prompt)
-        #print(image_url)
-        time.sleep(2)
-        data = requests.get(image_url).content
-        f = open('img.jpg', 'wb')
-        f.write(data)
-        f.close
+
+            with open(r'props.txt', 'r') as file:
+                content = file.read()
+                if gameId in content:
+                   context = {
+                        "user_input": match,
+                        "generated_prediction": "Prop Already Created Please Visit <a href='https://www.reddit.com/r/GPTSportsWriter/'>Reddit.com</a> to view",
+                        "sports": sports,
+                    }
+                else:                  
+                    generated_prop = generate_prop(sport + " " + match, res, gameId, sportKey)
+                    image_prompt = createImagePrompt(sport + " " + match)
+                    #print(image_prompt)
+                    image_url = generate_image(image_prompt)
+                    #print(image_url)
+                    time.sleep(2)
+                    data = requests.get(image_url).content
+                    f = open('img.jpg', 'wb')
+                    f.write(data)
+                    f.close
             
-        context = {
-            "user_input": match,
-            "generated_prediction": generated_prop.replace("\n", "<br/>"),
-            "image_url": image_url,
-            "sports": sports,
-        }
+                    context = {
+                        "user_input": match,
+                        "generated_prediction": generated_prop.replace("\n", "<br/>"),
+                        "image_url": image_url,
+                        "sports": sports,
+                    }
 
-        title = "Prop Bets: " + match
-        image = InlineImage(path="img.jpg", caption=title)
-        media = {"image1": image}
-        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop + "\n\nVisit http://www.gptsportswriter.com for more predictions."
-        #videoText = generate_videoText(generated_prediction)
-        #openAITTS(videoText)
-        try:
-            subreddit.submit(title, inline_media=media, selftext=selfText)
-            #redditURL = subreddit.submit(title, selftext=selfText)
-            #redditURL = "https://redd.it/" + str(redditURL)
-            #print(redditURL)
-        except:
-            print("error submitting reddit post")
+                    title = "Prop Bets: " + match
+                    image = InlineImage(path="img.jpg", caption=title)
+                    media = {"image1": image}
+                    selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop + "\n\nVisit http://www.gptsportswriter.com for more predictions."
+                    #videoText = generate_videoText(generated_prediction)
+                    #openAITTS(videoText)
+                    try:
+                        subreddit.submit(title, inline_media=media, selftext=selfText)
+                        #redditURL = subreddit.submit(title, selftext=selfText)
+                        #redditURL = "https://redd.it/" + str(redditURL)
+                        #print(redditURL)
+                    except:
+                        print("error submitting reddit post")
         
-        try:
-            sendTweet(generated_prop, "Prop Bets " + match + " ")
-        except:
-            print("error sending tweet")
+                    try:
+                        sendTweet(generated_prop, "Prop Bets " + match + " ")
+                    except:
+                        print("error sending tweet")
         
 
-        try:
-            fbPost(generated_prop, match)
-        except:
-            print("error posting to FB")
+                    try:
+                        fbPost(generated_prop, match)
+                    except:
+                        print("error posting to FB")
+                    
+                    with open("props.txt", "a") as file:
+                                    file.write("\n" + gameId)
         
         return render(request, "predictions/props.html", context)
 
@@ -553,47 +588,58 @@ def recaps(request):
             res = re.split('\s+', match)
             res.remove('VS')
             res = res[:len(res)-3]
+
+            with open(r'recaps.txt', 'r') as file:
+                content = file.read()
+                if gameId in content:
+                   context = {
+                        "user_input": match,
+                        "generated_recap": "Recap Already Created Please Visit <a href='https://www.reddit.com/r/GPTSportsWriter/'>Reddit.com</a> to view",
+                        "sports": sports,
+                    }
+                else:        
+                    generated_recap = generate_recap(sport + " " + match, res, gameId, sportKey)
+                    image_prompt = createImagePrompt(sport + " " + match)
+                    #print(image_prompt)
+                    image_url = generate_image(image_prompt)
+                    #print(image_url)
+                    time.sleep(2)
+                    data = requests.get(image_url).content
+                    f = open('img.jpg', 'wb')
+                    f.write(data)
+                    f.close
             
-        
-        generated_recap = generate_recap(sport + " " + match, res, gameId, sportKey)
-        image_prompt = createImagePrompt(sport + " " + match)
-        #print(image_prompt)
-        image_url = generate_image(image_prompt)
-        #print(image_url)
-        time.sleep(2)
-        data = requests.get(image_url).content
-        f = open('img.jpg', 'wb')
-        f.write(data)
-        f.close
-            
-        context = {
-            "user_input": match,
-            "generated_recap": generated_recap.replace("\n", "<br/>"),
-            "image_url": image_url,
-            "sports": sports,
-        }
+                    context = {
+                        "user_input": match,
+                        "generated_recap": generated_recap.replace("\n", "<br/>"),
+                        "image_url": image_url,
+                        "sports": sports,
+                    }
 
-        title = "Recap: " + match
-        image = InlineImage(path="img.jpg", caption=title)
-        media = {"image1": image}
-        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_recap + "\n\nVisit http://www.gptsportswriter.com for more predictions."
-        try:
-            subreddit.submit(title, inline_media=media, selftext=selfText)
-            #redditURL = subreddit.submit(title, selftext=selfText)
-            #redditURL = "https://redd.it/" + str(redditURL)
-        except:
-            print("error submitting reddit post")
+                    title = "Recap: " + match
+                    image = InlineImage(path="img.jpg", caption=title)
+                    media = {"image1": image}
+                    selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_recap + "\n\nVisit http://www.gptsportswriter.com for more predictions."
+                    try:
+                        subreddit.submit(title, inline_media=media, selftext=selfText)
+                        #redditURL = subreddit.submit(title, selftext=selfText)
+                        #redditURL = "https://redd.it/" + str(redditURL)
+                    except:
+                        print("error submitting reddit post")
 
         
-        try:
-            sendTweet(generated_recap, "Recap " + match + " ")
-        except:
-            print("error sending tweet")
+                    try:
+                        sendTweet(generated_recap, "Recap " + match + " ")
+                    except:
+                        print("error sending tweet")
         
 
-        try:
-            fbPost(generated_recap, match)
-        except:
-            print("error posting to FB")
+                    try:
+                        fbPost(generated_recap, match)
+                    except:
+                        print("error posting to FB")
+
+                    with open("recaps.txt", "a") as file:
+                                    file.write("\n" + gameId)
         
         return render(request, "predictions/recaps.html", context)
