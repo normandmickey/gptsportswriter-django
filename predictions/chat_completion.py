@@ -5,8 +5,8 @@ from datetime import datetime, timedelta
 from openai import OpenAI
 openAI_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
-GPT_MODEL= "meta-llama/llama-4-maverick-17b-128e-instruct"
-TWEET_MODEL="meta-llama/llama-4-maverick-17b-128e-instruct"
+GPT_MODEL= "llama-3.3-70b-versatile"
+TWEET_MODEL="llama-3.3-70b-versatile"
 OPENAI_GPT_MODEL = "gpt-4o"
 #OPENAI_GPT_MODEL = "o3-mini"
 ASKNEWS_CLIENT_ID = os.environ.get('ASKNEWS_CLIENT_ID')
