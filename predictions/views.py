@@ -13,6 +13,7 @@ import tweepy
 import openai
 import psycopg2
 import base64
+from .models import Predictions, Recaps, Parlays, Props
 
 load_dotenv(override=True)
 
@@ -51,6 +52,10 @@ tweepy_auth = tweepy.OAuth1UserHandler(
     "{}".format(os.environ.get("TWITTER_ACCESS_TOKEN")),
     "{}".format(os.environ.get("TWITTER_ACCESS_TOKEN_SECRET")),
 )
+
+def recent_articles(request):
+        data = Predictions.objects.all()
+        return render(request, 'predictions/recent_articles.html', {'data': data})
 
 # send Tweet
 def sendTweet(text, match):
@@ -187,70 +192,6 @@ def ajax_handlerb(request,sport):
     return JsonResponse({'games': games})
 
 
-def create_connection():
-    # Connect to the database
-    # using the psycopg2 adapter.
-    # Pass your database name ,# username , password , 
-    # hostname and port number
-    
-    conn = psycopg2.connect(dbname=DB_NAME,
-                            user=DB_USER,
-                            password=DB_PASSWORD,
-                            host=DB_HOST,
-                            sslmode='require')
-    # Get the cursor object from the connection object
-    curr = conn.cursor()
-    return conn, curr
-
-def create_table(table):
-    try:
-        # Get the cursor object from the connection object
-        conn, curr = create_connection()
-        try:
-            # Fire the CREATE query
-            curr.execute(f"CREATE TABLE IF NOT EXISTS \
-            {table}(id TEXT, content TEXT,\
-            gameimg BYTEA)")
-            
-        except(Exception, psycopg2.Error) as error:
-            # Print exception
-            print("Error while creating {table} table", error)
-        finally:
-            # Close the connection object
-            conn.commit()
-            conn.close()
-    finally:
-        # Since we do not have to do anything here we will pass
-        pass
-
-def write_to_database(id,content,file_path,table):
-    create_table(table)
-    try:
-        # Read data from a image file
-        drawing = open(file_path, 'rb').read()
-        # Read database configuration
-        conn, cursor = create_connection()
-        try:           
-            # Execute the INSERT statement
-            # Convert the image data to Binary
-            cursor.execute(f"INSERT INTO {table}\
-            (id,content,gameimg) " +
-                    "VALUES(%s,%s,%s)",
-                    (id,content, psycopg2.Binary(drawing)))
-                    #(id,content))
-            # Commit the changes to the database
-            conn.commit()
-        except (Exception, psycopg2.DatabaseError) as error:
-            print(f"Error while inserting data in {table} table", error)
-        finally:
-            # Close the connection object
-            conn.close()
-    finally:
-        # Since we do not have to do
-        # anything here we will pass
-        pass
-
-
 # Create your views here.
 def home(request):
     return render(request, "predictions/home.html")
@@ -285,8 +226,6 @@ def parlays(request):
     sportKey = ""
     sport = ""
     sports = getSports()
-    dbTable = "parlays"
-    create_table(dbTable)
     
     if request.method == "GET":
         dataSports = getSports()
@@ -300,16 +239,13 @@ def parlays(request):
             sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
-            conn, cursor = create_connection()
-            query = f"select content, gameimg from {dbTable} where id = '{gameId}'";
-            cursor.execute(query)
-            rows = cursor.fetchall()              
-            if rows:
-                for row in rows:
-                    imageBytes = get_image_base64([row][0][1])
+            articles = Parlays.objects.filter(id=gameId)
+            if articles:
+                for article in articles:
+                    imageBytes = get_image_base64(article.gameimg)
                     context = {
                         "user_input": match,
-                        "generated_parlay": row[0].replace("\n", "<br/>"),
+                        "generated_parlay": article.content.replace("\n", "<br/>"),
                         "sports": sports,
                         "image_url":  f"data:;base64,{imageBytes}"
                     }
@@ -336,7 +272,8 @@ def parlays(request):
                 image = InlineImage(path="img.jpg", caption=title)
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay + "\n\nVisit http://www.gptsportswriter.com for more predictions."
-                write_to_database(gameId,generated_parlay,"img.jpg",dbTable)
+                drawing = open("img.jpg", 'rb').read()
+                parlay = Parlays.objects.create(id=gameId, content=generated_parlay, gameimg=drawing, title=title)
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText) 
                 except:
@@ -432,8 +369,6 @@ def predictions(request):
     sportKey = ""
     sport = ""
     sports = getSports()
-    dbTable = "predictions"
-    create_table(dbTable)
 
     if request.method == "GET":
         dataSports = getSports()
@@ -450,17 +385,15 @@ def predictions(request):
             res = re.split('\s+', match)
             res.remove('VS')
             res = res[:len(res)-3]
-            
-            conn, cursor = create_connection()
-            query = f"select content, gameimg from {dbTable} where id = '{gameId}'";
-            cursor.execute(query)
-            rows = cursor.fetchall()              
-            if rows:
-                for row in rows:
-                    imageBytes = get_image_base64([row][0][1])
+                   
+            articles = Predictions.objects.filter(id=gameId)
+            if articles:
+                for article in articles:
+                    #print("title: " + article.title)
+                    imageBytes = get_image_base64(article.gameimg)
                     context = {
                         "user_input": match,
-                        "generated_prediction": row[0].replace("\n", "<br/>"),
+                        "generated_prediction": article.content.replace("\n", "<br/>"),
                         "sports": sports,
                         "image_url":  f"data:;base64,{imageBytes}"
                     }
@@ -489,7 +422,9 @@ def predictions(request):
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction + "\n\nVisit http://www.gptsportswriter.com for more predictions."
                 
                 #write to database
-                write_to_database(gameId,generated_prediction,"img.jpg",dbTable)
+                #write_to_database(gameId,generated_prediction,"img.jpg",dbTable)
+                drawing = open("img.jpg", 'rb').read()
+                prediction = Predictions.objects.create(id=gameId, content=generated_prediction, gameimg=drawing, title=title)
                 
                 #post to reddit
                 try:
@@ -517,8 +452,6 @@ def props(request):
     sportKey = ""
     sport = ""
     sports = getSports()
-    dbTable = "props"
-    create_table(dbTable)
     
     if request.method == "GET":
         dataSports = getSports()
@@ -535,18 +468,13 @@ def props(request):
             res = re.split('\s+', match)
             res.remove('VS')
             res = res[:len(res)-3]
-            print(res)
-
-            conn, cursor = create_connection()
-            query = f"select content, gameimg from {dbTable} where id = '{gameId}'";
-            cursor.execute(query)
-            rows = cursor.fetchall()              
-            if rows:
-                for row in rows:
-                    imageBytes = get_image_base64([row][0][1])
+            articles = Props.objects.filter(id=gameId)
+            if articles:
+                for article in articles:
+                    imageBytes = get_image_base64(article.gameimg)
                     context = {
                         "user_input": match,
-                        "generated_prediction": row[0].replace("\n", "<br/>"),
+                        "generated_prediction": article.content.replace("\n", "<br/>"),
                         "sports": sports,
                         "image_url":  f"data:;base64,{imageBytes}"
                     }
@@ -573,9 +501,8 @@ def props(request):
                 image = InlineImage(path="img.jpg", caption=title)
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop + "\n\nVisit http://www.gptsportswriter.com for more predictions."
-
-                write_to_database(gameId,generated_prop,"img.jpg",dbTable)
-                
+                drawing = open("img.jpg", 'rb').read()
+                prop = Props.objects.create(id=gameId, content=generated_prop, gameimg=drawing, title=title)
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText)
                 except:
@@ -601,8 +528,6 @@ def recaps(request):
     sportKey = ""
     sports = getSports()
     sport = ""
-    dbTable="recaps"
-    create_table(dbTable)
     
     if request.method == "GET":
         dataSports = getSports()
@@ -620,16 +545,13 @@ def recaps(request):
             res.remove('VS')
             res = res[:len(res)-3]
 
-            conn, cursor = create_connection()
-            query = f"select content, gameimg from {dbTable} where id = '{gameId}'";
-            cursor.execute(query)
-            rows = cursor.fetchall()              
-            if rows:
-                for row in rows:
-                    imageBytes = get_image_base64([row][0][1])
+            articles = Recaps.objects.filter(id=gameId)
+            if articles:
+                for article in articles:
+                    imageBytes = get_image_base64(article.gameimg)
                     context = {
                         "user_input": match,
-                        "generated_recap": row[0].replace("\n", "<br/>"),
+                        "generated_recap": article.content.replace("\n", "<br/>"),
                         "sports": sports,
                         "image_url":  f"data:;base64,{imageBytes}"
                     }
@@ -656,8 +578,9 @@ def recaps(request):
                 image = InlineImage(path="img.jpg", caption=title)
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_recap + "\n\nVisit http://www.gptsportswriter.com for more predictions."
-
-                write_to_database(gameId,generated_recap,"img.jpg",dbTable)
+                drawing = open("img.jpg", 'rb').read()
+                recap = Recaps.objects.create(id=gameId, content=generated_recap, gameimg=drawing, title=title)
+                
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText)
                 except:

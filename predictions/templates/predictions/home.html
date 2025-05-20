@@ -3,39 +3,154 @@
 GPTSportsWriter
 {% endblock %}
 {% block content %}
-<h1>Welcome to GPT SportsWriter: Your AI-Powered Sports News Destination</h1>
-	</header>
-	<main>
-		<section>
-			<h2>Our Story</h2>
-			<p>As sports enthusiasts ourselves, we recognized a gap in the market for reliable, data-driven sports coverage. Traditional sports media often relies on human bias and opinion, leading to inconsistent and inaccurate reporting. We saw an opportunity to harness the power of artificial intelligence to provide a more objective, informative, and engaging sports news experience.</p>
-		</section>
-		<section>
-			<h2>How We Work</h2>
-			<p>Our AI engine, powered by advanced natural language processing and machine learning algorithms, analyzes vast amounts of sports data to generate high-quality content. This includes:</p>
-			<ul>
-				<li><strong>Predictions</strong>: Our AI analyzes team and player performance, injury reports, and other factors to provide accurate predictions for upcoming games and matches.</li>
-				<li><strong>Recaps</strong>: Our AI generates detailed summaries of completed games, highlighting key moments, player performances, and game-changing events.</li>
-				<li><strong>News</strong>: Our AI stays on top of breaking sports news, providing users with the latest updates, rumors, and developments from around the world of sports.</li>
-			</ul>
-		</section>
-		<section>
-			<h2>What Sets Us Apart</h2>
-			<p>At GPT SportsWriter, we're committed to delivering the most comprehensive and reliable sports news experience possible. Here's what sets us apart:</p>
-			<ul>
-				<li><strong>Unbiased reporting</strong>: Our AI engine eliminates human bias, providing users with objective, fact-based reporting.</li>
-				<li><strong>Real-time updates</strong>: Our AI engine operates 24/7, ensuring users receive the latest news and updates as they happen.</li>
-				<li><strong>In-depth analysis</strong>: Our AI-generated content provides users with a deeper understanding of the sports they love, including advanced statistics, trends, and insights.</li>
-			</ul>
-		</section>
-		<section>
-			<h2>Join the GPT SportsWriter Community</h2>
-			<p>Whether you're a die-hard sports fan or just looking for insightful analysis, GPT SportsWriter is your ultimate destination for sports news and predictions. Browse our site for the latest coverage, and join our community of like-minded sports enthusiasts.</p>
-		</section>
-		<section>
-			<h2>Stay Ahead of the Game with GPT SportsWriter</h2>
-			<ul>
-				<li><a href="https://x.com/gptsportswriter">Follow us on social media</a></li>
-			</ul>
-		</section>
+<style>
+body {
+ font-family: Arial, sans-serif;
+ margin:0;
+ padding:0;
+ background-color: #f7f7f7;
+}
+
+header {
+ background-color: #3498db;
+ color: #fff;
+ padding:1em;
+ text-align: center;
+}
+
+main {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ padding:2em;
+}
+
+.body-content {
+ max-width:800px;
+ margin:0 auto;
+ padding:2em;
+ background-color: #fff;
+ box-shadow:02px4px rgba(0,0,0,0.1);
+ border-radius:10px;
+}
+
+.section-story, .section-how-we-work, .section-what-sets-us-apart, .section-join-community, .section-stay-ahead {
+ background-color: #f7f7f7;
+ padding:1em;
+ margin-bottom:1em;
+ box-shadow:02px4px rgba(0,0,0,0.1);
+ border-radius:10px;
+}
+
+h1 {
+ font-size:36px;
+ line-height:1.2;
+ color: #f7dc6f; /* Complementary orange color */
+}
+
+h2 {
+ margin-top:0;
+ font-size:24px;
+ line-height:1.2;
+ color: #337ab7; /* Blue text */
+}
+
+p {
+ margin-bottom:1em;
+ line-height:1.6;
+}
+
+ul {
+ list-style: none;
+ padding:0;
+ margin:0;
+}
+
+li {
+ margin-bottom:0.5em;
+}
+
+a {
+ text-decoration: none;
+ color: #337ab7; /* Blue links */
+}
+
+a:hover {
+ color: #23527c; /* Darker blue on hover */
+}
+
+footer {
+ background-color: #3498db; /* Blue background */
+ color: #f7dc6f; /* Complementary orange text */
+ padding:1em;
+ text-align: center;
+}
+
+footer a {
+ color: #fff; /* White links */
+}
+
+footer a:hover {
+ color: #f7dc6f; /* Complementary orange on hover */
+}
+
+@media (max-width:768px) {
+ main {
+ padding:1em;
+ }
+ .body-content {
+ padding:1em;
+ }
+}
+
+@media (max-width:480px) {
+ h1 {
+ font-size:24px;
+ }
+ h2 {
+ font-size:18px;
+ }
+ p {
+ font-size:14px;
+ }
+}
+</style>
+<header>
+  <h1>Welcome to GPT SportsWriter: Your AI-Powered Sports News Destination</h1>
+</header>
+<main>
+  <section class="section-story">
+    <h2>Our Story</h2>
+    <p>As sports enthusiasts ourselves, we recognized a gap in the market for reliable, data-driven sports coverage. Traditional sports media often relies on human bias and opinion, leading to inconsistent and inaccurate reporting. We saw an opportunity to harness the power of artificial intelligence to provide a more objective, informative, and engaging sports news experience.</p>
+  </section>
+  <section class="section-how-we-work">
+    <h2>How We Work</h2>
+    <p>Our AI engine, powered by advanced natural language processing and machine learning algorithms, analyzes vast amounts of sports data to generate high-quality content. This includes:</p>
+    <ul class="list-features">
+      <li><strong>Predictions</strong>: Our AI analyzes team and player performance, injury reports, and other factors to provide accurate predictions for upcoming games and matches.</li>
+      <li><strong>Recaps</strong>: Our AI generates detailed summaries of completed games, highlighting key moments, player performances, and game-changing events.</li>
+      <li><strong>News</strong>: Our AI stays on top of breaking sports news, providing users with the latest updates, rumors, and developments from around the world of sports.</li>
+    </ul>
+  </section>
+  <section class="section-what-sets-us-apart">
+    <h2>What Sets Us Apart</h2>
+    <p>At GPT SportsWriter, we're committed to delivering the most comprehensive and reliable sports news experience possible. Here's what sets us apart:</p>
+    <ul class="list-benefits">
+      <li><strong>Unbiased reporting</strong>: Our AI engine eliminates human bias, providing users with objective, fact-based reporting.</li>
+      <li><strong>Real-time updates</strong>: Our AI engine operates 24/7, ensuring users receive the latest news and updates as they happen.</li>
+      <li><strong>In-depth analysis</strong>: Our AI-generated content provides users with a deeper understanding of the sports they love, including advanced statistics, trends, and insights.</li>
+    </ul>
+  </section>
+  <section class="section-join-community">
+    <h2>Join the GPT SportsWriter Community</h2>
+    <p>Whether you're a die-hard sports fan or just looking for insightful analysis, GPT SportsWriter is your ultimate destination for sports news and predictions. Browse our site for the latest coverage, and join our community of like-minded sports enthusiasts.</p>
+  </section>
+  <section class="section-stay-ahead">
+    <h2>Stay Ahead of the Game with GPT SportsWriter</h2>
+    <ul class="list-actions">
+      <li><a href="https://x.com/gptsportswriter" class="btn-social">Follow us on X</a></li>
+	  <li><a href="https://reddit.com/r/gptsportswriter" class="btn-social">Follow us on Reddit</a></li>
+    </ul>
+  </section>
+</main>
 {% endblock %}

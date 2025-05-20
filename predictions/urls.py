@@ -3,6 +3,7 @@ from predictions import views
 
 urlpatterns = [
     path("", views.home, name="home"),
+    path('recent-articles/', views.recent_articles, name='recent_articles'),
     path("about/", views.about, name="about"),
     path("fbprivacy/", views.fbprivacy, name="fbprivacy"),
     path("discordTOS/", views.discordTOS, name="discordTOS"),
