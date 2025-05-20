@@ -431,7 +431,7 @@ def predictions(request):
                 title = "Prediction: " + match
                 image = InlineImage(path="img.jpg", caption=title)
                 media = {"image1": image}
-                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction.replace("\n", "<br/>") + "\n\nVisit http://www.gptsportswriter.com for more predictions."
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction + "\n\nVisit http://www.gptsportswriter.com for more predictions."
                 
                 #write to database
                 #write_to_database(gameId,generated_prediction,"img.jpg",dbTable)
