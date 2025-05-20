@@ -167,7 +167,7 @@ def getLeagues():
             #print(sport[i]['key'])
     leagues = [i for n, i in enumerate(leagues) if i not in leagues[:n]]
     leagues.append("March Madness 2025")
-    leagues.append("Sortsbetting Money Management")
+    leagues.append("Sportsbetting Money Management")
     return(leagues)
             
 def ajax_handler(request,sport):
@@ -431,7 +431,7 @@ def predictions(request):
                 title = "Prediction: " + match
                 image = InlineImage(path="img.jpg", caption=title)
                 media = {"image1": image}
-                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction + "\n\nVisit http://www.gptsportswriter.com for more predictions."
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction.replace("\n", "<br/>") + "\n\nVisit http://www.gptsportswriter.com for more predictions."
                 
                 #write to database
                 #write_to_database(gameId,generated_prediction,"img.jpg",dbTable)
@@ -514,7 +514,7 @@ def props(request):
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop + "\n\nVisit http://www.gptsportswriter.com for more predictions."
                 drawing = open("img.jpg", 'rb').read()
-                prop = Props.objects.create(id=gameId, content=generated_prop, gameimg=drawing, title=title)
+                prop = Props.objects.create(id=gameId, content=generated_prop.replace("\n", "<br/>") , gameimg=drawing, title=title)
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText)
                 except:
@@ -591,7 +591,7 @@ def recaps(request):
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_recap + "\n\nVisit http://www.gptsportswriter.com for more predictions."
                 drawing = open("img.jpg", 'rb').read()
-                recap = Recaps.objects.create(id=gameId, content=generated_recap, gameimg=drawing, title=title)
+                recap = Recaps.objects.create(id=gameId, content=generated_recap.replace("\n", "<br/>"), gameimg=drawing, title=title)
                 
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText)
