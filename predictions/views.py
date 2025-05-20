@@ -53,9 +53,21 @@ tweepy_auth = tweepy.OAuth1UserHandler(
     "{}".format(os.environ.get("TWITTER_ACCESS_TOKEN_SECRET")),
 )
 
-def recent_articles(request):
+def recent_predictions(request):
         data = Predictions.objects.all()
-        return render(request, 'predictions/recent_articles.html', {'data': data})
+        return render(request, 'predictions/recent_predictions.html', {'data': data})
+
+def recent_parlays(request):
+        data = Parlays.objects.all()
+        return render(request, 'predictions/recent_parlays.html', {'data': data})
+
+def recent_props(request):
+        data = Props.objects.all()
+        return render(request, 'predictions/recent_props.html', {'data': data})
+
+def recent_recaps(request):
+        data = Recaps.objects.all()
+        return render(request, 'predictions/recent_recaps.html', {'data': data})
 
 # send Tweet
 def sendTweet(text, match):
@@ -273,7 +285,7 @@ def parlays(request):
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay + "\n\nVisit http://www.gptsportswriter.com for more predictions."
                 drawing = open("img.jpg", 'rb').read()
-                parlay = Parlays.objects.create(id=gameId, content=generated_parlay, gameimg=drawing, title=title)
+                parlay = Parlays.objects.create(id=gameId, content=generated_parlay.replace("\n", "<br/>"), gameimg=drawing, title=title)
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText) 
                 except:

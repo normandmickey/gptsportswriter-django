@@ -1,0 +1,11 @@
+{% extends "predictions/layout.html" %}
+{% block title %}
+GPTSportsWriter - Recent Props
+{% endblock %}
+{% block content %}
+<ul>
+        {% for item in data %}
+        <li><strong>{{ item.title | safe }}: </strong>{{ item.content | safe }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

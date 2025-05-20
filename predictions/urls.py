@@ -3,7 +3,10 @@ from predictions import views
 
 urlpatterns = [
     path("", views.home, name="home"),
-    path('recent-articles/', views.recent_articles, name='recent_articles'),
+    path('recent-predictions/', views.recent_predictions, name='recent_predictions'),
+    path('recent-parlays/', views.recent_parlays, name='recent_parlays'),
+    path('recent-recaps/', views.recent_recaps, name='recent_recaps'),
+    path('recent-props/', views.recent_props, name='recent_props'),
     path("about/", views.about, name="about"),
     path("fbprivacy/", views.fbprivacy, name="fbprivacy"),
     path("discordTOS/", views.discordTOS, name="discordTOS"),

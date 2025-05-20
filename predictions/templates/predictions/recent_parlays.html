@@ -1,11 +1,11 @@
 {% extends "predictions/layout.html" %}
 {% block title %}
-GPTSportsWriter - Predictions
+GPTSportsWriter - Recent Parlays
 {% endblock %}
 {% block content %}
 <ul>
         {% for item in data %}
-        <li><strong>{{ item.title }}: </strong>{{ item.content }}</li>
+        <li><strong>{{ item.title | safe }}: </strong>{{ item.content | safe }}</li>
         {% endfor %}
     </ul>
 {% endblock %}
