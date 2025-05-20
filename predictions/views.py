@@ -436,7 +436,7 @@ def predictions(request):
                 #write to database
                 #write_to_database(gameId,generated_prediction,"img.jpg",dbTable)
                 drawing = open("img.jpg", 'rb').read()
-                prediction = Predictions.objects.create(id=gameId, content=generated_prediction, gameimg=drawing, title=title)
+                prediction = Predictions.objects.create(id=gameId, content=generated_prediction.replace("\n", "<br/>"), gameimg=drawing, title=title)
                 
                 #post to reddit
                 try:
