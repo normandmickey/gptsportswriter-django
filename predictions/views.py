@@ -414,7 +414,7 @@ def predictions(request):
             articles = Predictions.objects.filter(id=gameId)
             if articles:
                 for article in articles:
-                    #print("title: " + article.title)
+                    print("title: " + article.title)
                     imageBytes = get_image_base64(article.gameimg)
                     context = {
                         "user_input": match,
