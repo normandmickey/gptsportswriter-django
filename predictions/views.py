@@ -2,6 +2,7 @@ import re, os, praw, requests, pytz, time, json
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils.timezone import datetime
+from django.utils import timezone
 from .chat_completion import generate_prediction, generate_recap, generate_tweet, generate_parlay, generate_news, generate_videoText, generate_prop
 from .image_generation import generate_image, createImagePrompt
 from praw.models import InlineImage
@@ -54,20 +55,28 @@ tweepy_auth = tweepy.OAuth1UserHandler(
 )
 
 def recent_predictions(request):
-        data = Predictions.objects.all()
-        return render(request, 'predictions/recent_predictions.html', {'data': data})
+    now = timezone.now()
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
+    data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago)
+    return render(request, 'predictions/recent_predictions.html', {'data': data})
 
 def recent_parlays(request):
-        data = Parlays.objects.all()
-        return render(request, 'predictions/recent_parlays.html', {'data': data})
+    now = timezone.now()
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
+    data = Parlays.objects.filter(created_at__gte=twenty_fours_hours_ago)
+    return render(request, 'predictions/recent_parlays.html', {'data': data})
 
 def recent_props(request):
-        data = Props.objects.all()
-        return render(request, 'predictions/recent_props.html', {'data': data})
+    now = timezone.now()
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
+    data = Props.objects.filter(created_at__gte=twenty_fours_hours_ago)
+    return render(request, 'predictions/recent_props.html', {'data': data})
 
 def recent_recaps(request):
-        data = Recaps.objects.all()
-        return render(request, 'predictions/recent_recaps.html', {'data': data})
+    now = timezone.now()
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
+    data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago)
+    return render(request, 'predictions/recent_recaps.html', {'data': data})
 
 # send Tweet
 def sendTweet(text, match):
