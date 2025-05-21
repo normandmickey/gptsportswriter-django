@@ -56,30 +56,30 @@ tweepy_auth = tweepy.OAuth1UserHandler(
 
 def recent_predictions(request):
     now = timezone.now()
-    twenty_fours_hours_ago = now - timezone.timedelta(minutes=5)
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
     #data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago)
-    data = Predictions.objects.values('title', 'content', 'created_at')
+    data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at')
     return render(request, 'predictions/recent_predictions.html', {'data': data})
 
 def recent_parlays(request):
     now = timezone.now()
     twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
     #data = Parlays.objects.filter(created_at__gte=twenty_fours_hours_ago)
-    data = Parlays.objects.values('title', 'content', 'created_at')
+    data = Parlays.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at')
     return render(request, 'predictions/recent_parlays.html', {'data': data})
 
 def recent_props(request):
     now = timezone.now()
     twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
     #data = Props.objects.filter(created_at__gte=twenty_fours_hours_ago)
-    data = Props.objects.values('title', 'content', 'created_at')
+    data = Props.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at')
     return render(request, 'predictions/recent_props.html', {'data': data})
 
 def recent_recaps(request):
     now = timezone.now()
     twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
     #data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago)
-    data = Recaps.objects.values('title', 'content', 'created_at')
+    data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at')
     return render(request, 'predictions/recent_recaps.html', {'data': data})
 
 # send Tweet
