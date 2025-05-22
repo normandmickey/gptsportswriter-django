@@ -1,5 +1,5 @@
 import re, os, praw, requests, pytz, time, json
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.utils.timezone import datetime
 from django.utils import timezone
@@ -58,7 +58,7 @@ def recent_predictions(request):
     now = timezone.now()
     twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
     #data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago)
-    data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at')
+    data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('id', 'title', 'content', 'created_at', 'slug')
     return render(request, 'predictions/recent_predictions.html', {'data': data})
 
 def recent_parlays(request):
@@ -81,6 +81,10 @@ def recent_recaps(request):
     #data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago)
     data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at')
     return render(request, 'predictions/recent_recaps.html', {'data': data})
+
+def article_detail(request, slug):
+    article = get_object_or_404(Predictions, slug=slug)
+    return render(request, 'article_detail.html', {'article': article})
 
 # send Tweet
 def sendTweet(text, match):

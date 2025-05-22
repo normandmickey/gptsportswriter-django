@@ -7,6 +7,7 @@ urlpatterns = [
     path('recent-parlays/', views.recent_parlays, name='recent_parlays'),
     path('recent-recaps/', views.recent_recaps, name='recent_recaps'),
     path('recent-props/', views.recent_props, name='recent_props'),
+    path('article/<slug:slug>/', views.article_detail, name='article_detail'),
     path("about/", views.about, name="about"),
     path("fbprivacy/", views.fbprivacy, name="fbprivacy"),
     path("discordTOS/", views.discordTOS, name="discordTOS"),
