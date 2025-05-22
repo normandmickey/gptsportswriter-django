@@ -5,7 +5,7 @@ GPTSportsWriter - Recent Predictions
 {% block content %}
 <ul>
         {% for item in data %}
-        <li><strong>{{ item.title | safe }}: </strong>{{ item.content | safe }} {{ item.created_at }} GMT</li>
+        <li><strong><a href="https://www.gptsportswriter.com/article/{{ item.slug }}">{{ item.title | safe }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}

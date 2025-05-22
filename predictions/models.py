@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
+from django.urls import reverse
 
 class Predictions(models.Model):
     id = models.TextField(primary_key=True)
@@ -14,6 +15,9 @@ class Predictions(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+    
+    def get_absolute_url(self):
+        return reverse("article_detail", kwargs={"slug": self.slug})
 
     
 class Recaps(models.Model):
@@ -28,6 +32,9 @@ class Recaps(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+    
+    def get_absolute_url(self):
+        return reverse("article_detail", kwargs={"slug": self.slug})
  
 
 class Parlays(models.Model):
@@ -42,6 +49,9 @@ class Parlays(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+    
+    def get_absolute_url(self):
+        return reverse("article_detail", kwargs={"slug": self.slug})
  
 
 class Props(models.Model):
@@ -56,3 +66,6 @@ class Props(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+    
+    def get_absolute_url(self):
+        return reverse("article_detail", kwargs={"slug": self.slug})

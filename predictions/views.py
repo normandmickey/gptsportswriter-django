@@ -84,7 +84,7 @@ def recent_recaps(request):
 
 def article_detail(request, slug):
     article = get_object_or_404(Predictions, slug=slug)
-    return render(request, 'article_detail.html', {'article': article})
+    return render(request, 'predictions/article_detail.html', {'article': article})
 
 # send Tweet
 def sendTweet(text, match):

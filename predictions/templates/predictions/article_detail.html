@@ -8,6 +8,6 @@ GPTSportsWriter - Predictions
     </head>
     <body>
         <h1>{{ article.title }}</h1>
-        <p>{{ article.content }}</p>
+        <p>{{ article.content | safe }}</p>
     </body>
 {% endblock %}
