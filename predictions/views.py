@@ -58,7 +58,9 @@ def recent_predictions(request):
     now = timezone.now()
     twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
     #data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago)
-    data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('id', 'title', 'content', 'created_at', 'slug')
+    data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('id', 'title', 'created_at', 'slug')
+    for item in data:
+        item['title'] = item['title'].replace("Prediction: ", "")
     return render(request, 'predictions/recent_predictions.html', {'data': data})
 
 def recent_parlays(request):
@@ -66,6 +68,8 @@ def recent_parlays(request):
     twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
     #data = Parlays.objects.filter(created_at__gte=twenty_fours_hours_ago)
     data = Parlays.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at')
+    for item in data:
+        item['title'] = item['title'].replace("Parlay: ", "")
     return render(request, 'predictions/recent_parlays.html', {'data': data})
 
 def recent_props(request):
@@ -73,6 +77,8 @@ def recent_props(request):
     twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
     #data = Props.objects.filter(created_at__gte=twenty_fours_hours_ago)
     data = Props.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at')
+    for item in data:
+        item['title'] = item['title'].replace("Prop Bets: ", "")
     return render(request, 'predictions/recent_props.html', {'data': data})
 
 def recent_recaps(request):
@@ -80,6 +86,8 @@ def recent_recaps(request):
     twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
     #data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago)
     data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at')
+    for item in data:
+        item['title'] = item['title'].replace("Recap: ", "")
     return render(request, 'predictions/recent_recaps.html', {'data': data})
 
 def article_detail(request, slug):
@@ -291,13 +299,13 @@ def parlays(request):
                 f.close
             
                 context = {
-                    "user_input": match,
+                    "user_input": match[:-2],
                     "generated_parlay": generated_parlay.replace("\n", "<br/>"),
                     "image_url": image_url,
                     "sports": sports,
                 }
 
-                title = "Parlay: " + match
+                title = "Parlay: " + match[:-2]
                 image = InlineImage(path="img.jpg", caption=title)
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay + "\n\nVisit http://www.gptsportswriter.com for more predictions."
@@ -445,7 +453,7 @@ def predictions(request):
                     "sports": sports,
                 }
 
-                title = "Prediction: " + match
+                title = "Prediction: " + match[:-2]
                 image = InlineImage(path="img.jpg", caption=title)
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction + "\n\nVisit http://www.gptsportswriter.com for more predictions."
@@ -526,7 +534,7 @@ def props(request):
                     "sports": sports,
                 }
 
-                title = "Prop Bets: " + match
+                title = "Prop Bets: " + match[:-2]
                 image = InlineImage(path="img.jpg", caption=title)
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop + "\n\nVisit http://www.gptsportswriter.com for more predictions."
@@ -603,7 +611,7 @@ def recaps(request):
                     "sports": sports,
                 }
 
-                title = "Recap: " + match
+                title = "Recap: " + match[:-2]
                 image = InlineImage(path="img.jpg", caption=title)
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_recap + "\n\nVisit http://www.gptsportswriter.com for more predictions."
