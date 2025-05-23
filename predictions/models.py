@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 from django.urls import reverse
+import base64
 
 class Predictions(models.Model):
     id = models.TextField(primary_key=True)
@@ -18,6 +19,9 @@ class Predictions(models.Model):
     
     def get_absolute_url(self):
         return reverse("article_detail", kwargs={"slug": self.slug})
+    
+    def get_image_bytes(self):
+        return base64.b64encode(self.gameimg).decode('utf-8')
 
     
 class Recaps(models.Model):
@@ -35,6 +39,9 @@ class Recaps(models.Model):
     
     def get_absolute_url(self):
         return reverse("article_detail", kwargs={"slug": self.slug})
+    
+    def get_image_bytes(self):
+        return base64.b64encode(self.gameimg).decode('utf-8')
  
 
 class Parlays(models.Model):
@@ -52,6 +59,9 @@ class Parlays(models.Model):
     
     def get_absolute_url(self):
         return reverse("article_detail", kwargs={"slug": self.slug})
+    
+    def get_image_bytes(self):
+        return base64.b64encode(self.gameimg).decode('utf-8')
  
 
 class Props(models.Model):
@@ -69,3 +79,7 @@ class Props(models.Model):
     
     def get_absolute_url(self):
         return reverse("article_detail", kwargs={"slug": self.slug})
+    
+    def get_image_bytes(self):
+        return base64.b64encode(self.gameimg).decode('utf-8')
+    

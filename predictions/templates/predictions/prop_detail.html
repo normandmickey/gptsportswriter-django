@@ -7,7 +7,9 @@ GPTSportsWriter - Prop Detail
         <title>{{ article.title }}</title>
     </head>
     <body>
-        <h1>{{ article.title }}</h1>
+        <h1>{{ article.title }} </h1>
+        <img src="data:;base64,{{article.get_image_bytes}}" alt="Generated Image" style="max-width:80vw; width:30em; height:30em;">
         <p>{{ article.content | safe }}</p>
+        <p>Created: {{ article.created_at }}</p>
     </body>
 {% endblock %}
