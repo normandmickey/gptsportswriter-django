@@ -67,7 +67,7 @@ def recent_parlays(request):
     now = timezone.now()
     twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
     #data = Parlays.objects.filter(created_at__gte=twenty_fours_hours_ago)
-    data = Parlays.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at')
+    data = Parlays.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug')
     for item in data:
         item['title'] = item['title'].replace("Parlay: ", "")
     return render(request, 'predictions/recent_parlays.html', {'data': data})
@@ -76,7 +76,7 @@ def recent_props(request):
     now = timezone.now()
     twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
     #data = Props.objects.filter(created_at__gte=twenty_fours_hours_ago)
-    data = Props.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at')
+    data = Props.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug')
     for item in data:
         item['title'] = item['title'].replace("Prop Bets: ", "")
     return render(request, 'predictions/recent_props.html', {'data': data})
@@ -85,14 +85,26 @@ def recent_recaps(request):
     now = timezone.now()
     twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
     #data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago)
-    data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at')
+    data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug')
     for item in data:
         item['title'] = item['title'].replace("Recap: ", "")
     return render(request, 'predictions/recent_recaps.html', {'data': data})
 
-def article_detail(request, slug):
+def prediction_detail(request, slug):
     article = get_object_or_404(Predictions, slug=slug)
-    return render(request, 'predictions/article_detail.html', {'article': article})
+    return render(request, 'predictions/prediction_detail.html', {'article': article})
+
+def prop_detail(request, slug):
+    article = get_object_or_404(Props, slug=slug)
+    return render(request, 'predictions/prop_detail.html', {'article': article})
+
+def recap_detail(request, slug):
+    article = get_object_or_404(Recaps, slug=slug)
+    return render(request, 'predictions/recap_detail.html', {'article': article})
+
+def parlay_detail(request, slug):
+    article = get_object_or_404(Parlays, slug=slug)
+    return render(request, 'predictions/parlay_detail.html', {'article': article})
 
 # send Tweet
 def sendTweet(text, match):

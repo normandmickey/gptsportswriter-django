@@ -1,0 +1,14 @@
+{% extends "predictions/layout.html" %}
+{% block title %}
+GPTSportsWriter - Prediction Detail
+{% endblock %}
+{% block content %}
+<head>
+        <title>{{ article.title }}</title>
+    </head>
+    <body>
+        <h1>{{ article.title }}</h1>
+        <img src="{{ image_url }}" alt="Generated Image" style="max-width:80vw; width:30em; height:30em;">
+        <p>{{ article.content | safe }}</p>
+    </body>
+{% endblock %}
