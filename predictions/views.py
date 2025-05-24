@@ -56,7 +56,7 @@ tweepy_auth = tweepy.OAuth1UserHandler(
 
 def recent_predictions(request):
     now = timezone.now()
-    twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=48)
     #data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago)
     data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('id', 'title', 'created_at', 'slug')
     for item in data:
@@ -65,7 +65,7 @@ def recent_predictions(request):
 
 def recent_parlays(request):
     now = timezone.now()
-    twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=48)
     #data = Parlays.objects.filter(created_at__gte=twenty_fours_hours_ago)
     data = Parlays.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug')
     for item in data:
@@ -74,7 +74,7 @@ def recent_parlays(request):
 
 def recent_props(request):
     now = timezone.now()
-    twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=48)
     #data = Props.objects.filter(created_at__gte=twenty_fours_hours_ago)
     data = Props.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug')
     for item in data:
@@ -83,7 +83,7 @@ def recent_props(request):
 
 def recent_recaps(request):
     now = timezone.now()
-    twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=48)
     #data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago)
     data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug')
     for item in data:

@@ -5,7 +5,7 @@ GPTSportsWriter - Recent Recaps
 {% block content %}
 <ul>
         {% for item in data %}
-         <li><strong><a href="{{ request.META.HTTP_NAME }}/recap-detail/{{ item.slug }}">{{ item.title | safe }}</a></li>
+         <li><a href="{{ request.META.HTTP_NAME }}/recap-detail/{{ item.slug }}">{{ item.title | safe }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}
