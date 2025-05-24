@@ -114,6 +114,7 @@ footer a:hover {
 </style>
 <head>
  <meta charset="utf-8"/>
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
  <title>{% block title %}{% endblock %}</title>
  {% load static %}
  <link rel="stylesheet" href="{% static 'styles.css' %}">
@@ -158,18 +159,6 @@ footer a:hover {
  </li>
  <li class="nav-item">
  <a class="nav-link" href="{% url 'props' %}" style="color: #fff;">Create Props</a>
- </li>
-<li class="nav-item">
- <a class="nav-link" href="{% url 'recent_predictions' %}" style="color: #fff;">Recent Predictions</a>
- </li>
- <li class="nav-item">
- <a class="nav-link" href="{% url 'recent_recaps' %}" style="color: #fff;">Recent Recaps</a>
- </li>
- <li class="nav-item">
- <a class="nav-link" href="{% url 'recent_parlays' %}" style="color: #fff;">Recent Parlays</a>
- </li>
- <li class="nav-item">
- <a class="nav-link" href="{% url 'recent_props' %}" style="color: #fff;">Recent Props</a>
  </li>
  </ul>
  </div>
