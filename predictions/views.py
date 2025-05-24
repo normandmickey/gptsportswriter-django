@@ -322,7 +322,7 @@ def parlays(request):
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay + "\n\nVisit http://www.gptsportswriter.com for more predictions."
                 drawing = open("img.jpg", 'rb').read()
-                parlay = Parlays.objects.create(id=gameId, content=generated_parlay.replace("\n", "<br/>"), gameimg=drawing, title=title)
+                parlay = Parlays.objects.create(id=gameId, content=generated_parlay.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey)
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText) 
                 except:
@@ -473,7 +473,7 @@ def predictions(request):
                 #write to database
                 #write_to_database(gameId,generated_prediction,"img.jpg",dbTable)
                 drawing = open("img.jpg", 'rb').read()
-                prediction = Predictions.objects.create(id=gameId, content=generated_prediction.replace("\n", "<br/>"), gameimg=drawing, title=title)
+                prediction = Predictions.objects.create(id=gameId, content=generated_prediction.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey)
                 
                 #post to reddit
                 try:
@@ -494,6 +494,18 @@ def predictions(request):
                 except:
                     print("error posting to FB")
     return render(request, "predictions/predictions.html", context)
+
+def current_odds(request):
+    context = {}
+    user_input = ""
+    sportKey = ""
+    sport = ""
+    sports = getSports()
+
+    if request.method == "GET":
+        dataSports = getSports()
+        return render(request, "predictions/current_odds.html", {'sports': dataSports})
+    return render(request, "predictions/current_odds.html", {'sports': ['baseball_mlb','basketball_nba']})
 
 def props(request):
     context = {}
@@ -551,7 +563,7 @@ def props(request):
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop + "\n\nVisit http://www.gptsportswriter.com for more predictions."
                 drawing = open("img.jpg", 'rb').read()
-                prop = Props.objects.create(id=gameId, content=generated_prop.replace("\n", "<br/>") , gameimg=drawing, title=title)
+                prop = Props.objects.create(id=gameId, content=generated_prop.replace("\n", "<br/>") , gameimg=drawing, title=title, sport_key=sportKey)
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText)
                 except:
@@ -628,7 +640,7 @@ def recaps(request):
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_recap + "\n\nVisit http://www.gptsportswriter.com for more predictions."
                 drawing = open("img.jpg", 'rb').read()
-                recap = Recaps.objects.create(id=gameId, content=generated_recap.replace("\n", "<br/>"), gameimg=drawing, title=title)
+                recap = Recaps.objects.create(id=gameId, content=generated_recap.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey)
                 
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText)

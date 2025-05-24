@@ -1,0 +1,41 @@
+{% extends "predictions/layout.html" %}
+{% block title %}
+GPTSportsWriter - Current Odds
+{% endblock %}
+{% block content %}
+<script>
+
+    function openLoader() {
+        document.getElementById("loadingModal").style.display = "block";
+      }
+    
+    </script>
+
+<p><center>AI Sports Predictions - Accurate, humorous and informative.</center></p>
+<p><center><a href="{% url 'recent_predictions' %}">Recent Predictions</center></a>
+<div pagename="predictions" style="padding:1em; font-size:14pt;">
+    <form onsubmit="openLoader()" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <select name="sport" style="width:30em;" id="sport">
+            <option value="no_sport">Select a Sport</option>
+            {% for sport in sports %}
+            <option value="{{sport}}">{{sport}}</option>
+            {% endfor %}
+        </select>
+        <br/>
+        <input type="submit" value="submit" style="width:8em; height:3em;">
+    </form>
+    <div id="loadingModal" style="display: none;">
+        <button class="btn btn-primary" type="button" disabled>
+          <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+          Getting Odds
+        </button>
+    </div>
+    <div id="data-box"></div>
+        <center>
+            <iframe title="Sports Odds Widget" style="width: 20rem; height: 25rem; border: 1px solid black;" src="https://widget.the-odds-api.com/v1/sports/baseball_mlb/events/?accessKey=wk_edb89831f051a7f11a8b368cb42817fe&bookmakerKeys=draftkings&oddsFormat=american&markets=h2h%2Cspreads%2Ctotals&marketNames=h2h%3AMoneyline%2Cspreads%3ASpreads%2Ctotals%3AOver%2FUnder" ></iframe>
+        </center>
+    </div>
+      
+</div>
+{% endblock %}
