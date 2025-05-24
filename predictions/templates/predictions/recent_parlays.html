@@ -3,9 +3,13 @@
 GPTSportsWriter - Recent Parlays
 {% endblock %}
 {% block content %}
+<body>
+<p><center><h1>Recent Parlays</center></h1></p>
+<p><center><a href="{% url 'parlays' %}">Create Parlays</a></center></p>
 <ul>
         {% for item in data %}
          <li><a href="{{ request.META.HTTP_NAME }}/parlay-detail/{{ item.slug }}">{{ item.title | safe }}</a></li>
         {% endfor %}
     </ul>
+</body>
 {% endblock %}

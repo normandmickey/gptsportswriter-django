@@ -7,6 +7,7 @@ GPTSportsWriter - Prop Detail
         <title>{{ article.title }}</title>
     </head>
     <body>
+        <p><center><a href="{% url 'props' %}">Create Prop</center></a>
         <h1><center>{{ article.title }} </center></h1>
         <p><center><img src="data:;base64,{{article.get_image_bytes}}" alt="Generated Image" style="max-width:80vw; width:30em; height:30em;"></center></p>
         <p>{{ article.content | safe }}</p>

@@ -4,8 +4,8 @@ GPTSportsWriter - Recent Predictions
 {% endblock %}
 {% block content %}
 <body>
-    <p><center><h1>Predictions Created in Past 48 Hours</center></h1></p>
-    <p><center><h2><a href="{% url 'predictions' %}">Create Predictions</a></h2></center></p>
+    <p><center><h1>Recent Predictions</h1></center></p>
+    <p><center><a href="{% url 'predictions' %}">Create Predictions</a></center></p>
 <ul>
         {% for item in data %}
         <li><a href="{{ request.META.HTTP_NAME }}/prediction-detail/{{ item.slug }}">{{ item.title | safe }}</a></li>

@@ -3,9 +3,13 @@
 GPTSportsWriter - Recent Props
 {% endblock %}
 {% block content %}
+<body>
+<p><center><h1>Recent Props</center></h1></p>
+<p><center><a href="{% url 'props' %}">Create Props</a></center></p>
 <ul>
         {% for item in data %}
          <li><a href="{{ request.META.HTTP_NAME }}/prop-detail/{{ item.slug }}">{{ item.title | safe }}</a></li>
         {% endfor %}
     </ul>
+</body>
 {% endblock %}
