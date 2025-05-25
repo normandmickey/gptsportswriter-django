@@ -1,4 +1,4 @@
-import re, os, praw, requests, pytz, time, json
+import re, os, praw, requests, pytz, time, json, uuid
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.utils.timezone import datetime
@@ -107,7 +107,7 @@ def parlay_detail(request, slug):
     return render(request, 'predictions/parlay_detail.html', {'article': article})
 
 # send Tweet
-def sendTweet(text, match):
+def sendTweet(text, match, file):
     tweepy_api = tweepy.API(tweepy_auth)
     #rate_limit_status = tweepy_api.rate_limit_status()
     #rate_limit_status = json.dumps(rate_limit_status)
@@ -129,7 +129,7 @@ def sendTweet(text, match):
     tweetText = tweetText + " Affiliate Link BetUS - 125% Sign Up Bonus! - https://tinyurl.com/GPTSW2"
     print(tweetText)
 
-    post = tweepy_api.simple_upload("img.jpg")
+    post = tweepy_api.simple_upload(file)
     text = str(post)
     media_id = re.search("media_id=(.+?),", text).group(1)
     
@@ -164,14 +164,14 @@ def createTweet(text):
     #print(tweetText)
     return(tweetText)
 
-def fbPost(text, title):
+def fbPost(text, title, file):
     #gptsportswriterapi=fb.GraphAPI("EAAK2IMS7Bb8BO2pYq60uSiYwuJwvMf8ZCcr02yuGwZCFoZCVtzhattkaq9QRQoGAGpZBvaISiZBxutz7hZAvfgDD9VD7T5AEUicF1VztjGtR1WzTFR4cr60YHE7zQZBWbjWwapUASOctQTXY9PPnUeqlJjEhBTdADDYjS22VlM4eZCKiGULGB6lHcDZBZBz8EF")
     #gptsportswriterapi.put_object("me","feed",message=text,link="https://www.gptsportswriter.com")
     #
     postBody = "Prediction" + title + "\n" + "by https://www.gptsportswriter.com" + "\n" + text + "\n\n" + "BetUS - Get 125% Bonus On Your First 3 Deposits, click on the link below..." + "\n" + "https://record.revmasters.com/_8ejz3pKmFDuMKNOJN2Xw7mNd7ZgqdRLk/1/"
     #print(FACEBOOK_ACCESS_TOKEN)
     gptsportswriterapi=fb.GraphAPI(FACEBOOK_ACCESS_TOKEN)
-    gptsportswriterapi.put_photo(open('img.jpg','rb'), message=postBody)
+    gptsportswriterapi.put_photo(open(file,'rb'), message=postBody)
     #print(response_photo)
     #photoJson = json.loads(response_photo)
     #photo_id = photoJson[0]['id']
@@ -312,7 +312,8 @@ def parlays(request):
                 #print(image_url)
                 time.sleep(2)
                 data = requests.get(image_url).content
-                f = open('img.jpg', 'wb')
+                file_name = str(uuid.uuid4()) + ".jpg"
+                f = open(file_name, 'wb')
                 f.write(data)
                 f.close
             
@@ -324,10 +325,10 @@ def parlays(request):
                 }
 
                 title = "Parlay: " + match[:-2]
-                image = InlineImage(path="img.jpg", caption=title)
+                image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay + "\n\nVisit http://www.gptsportswriter.com for more predictions."
-                drawing = open("img.jpg", 'rb').read()
+                drawing = open(file_name, 'rb').read()
                 parlay = Parlays.objects.create(id=gameId, content=generated_parlay.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey)
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText) 
@@ -336,13 +337,13 @@ def parlays(request):
         
         
                 try:
-                    sendTweet(generated_parlay, match)
+                    sendTweet(generated_parlay, match, file_name)
                 except:
                     print("error sending tweet")
         
 
                 try:
-                    fbPost(generated_parlay, match)
+                    fbPost(generated_parlay, match, file_name)
                 except:
                     print("error posting to FB")
         
@@ -377,7 +378,8 @@ def topnews(request):
         #print(image_url)
         time.sleep(2)
         data = requests.get(image_url).content
-        f = open('img.jpg', 'wb')
+        file_name = str(uuid.uuid4()) + ".jpg"
+        f = open(file_name, 'wb')
         f.write(data)
         f.close
             
@@ -389,7 +391,7 @@ def topnews(request):
         }
 
         title = "Top News: " + user_input
-        image = InlineImage(path="img.jpg", caption=title)
+        image = InlineImage(path=file_name, caption=title)
         media = {"image1": image}
         selfText = "{image1}" + generated_news
         
@@ -403,13 +405,13 @@ def topnews(request):
         
         
         try:
-            sendTweet(generated_news, "Top News " + sport + " " )
+            sendTweet(generated_news, "Top News " + sport + " ", file_name )
         except:
             print("error sending tweet")
         
 
         try:
-            fbPost(generated_news, user_input)
+            fbPost(generated_news, user_input, file_name)
         except:
             print("error posting to FB")
         
@@ -460,7 +462,8 @@ def predictions(request):
                 print(image_url)
                 time.sleep(2)
                 data = requests.get(image_url).content
-                f = open('img.jpg', 'wb')
+                file_name = str(uuid.uuid4()) + ".jpg"
+                f = open(file_name, 'wb')
                 f.write(data)
                 f.close
             
@@ -472,13 +475,13 @@ def predictions(request):
                 }
 
                 title = "Prediction: " + match[:-2]
-                image = InlineImage(path="img.jpg", caption=title)
+                image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction + "\n\nVisit http://www.gptsportswriter.com for more predictions."
                 
                 #write to database
                 #write_to_database(gameId,generated_prediction,"img.jpg",dbTable)
-                drawing = open("img.jpg", 'rb').read()
+                drawing = open(file_name, 'rb').read()
                 prediction = Predictions.objects.create(id=gameId, content=generated_prediction.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey)
                 
                 #post to reddit
@@ -490,13 +493,13 @@ def predictions(request):
                 #post to twitter
                 try:
                     print("sending tweet")
-                    sendTweet(generated_prediction, match)  
+                    sendTweet(generated_prediction, match, file_name)  
                 except:
                     print("error sending tweet")
     
                 #post to facebook
                 try:
-                    fbPost(generated_prediction, match)
+                    fbPost(generated_prediction, match, file_name)
                 except:
                     print("error posting to FB")
     return render(request, "predictions/predictions.html", context)
@@ -553,7 +556,8 @@ def props(request):
                 #print(image_url)
                 time.sleep(2)
                 data = requests.get(image_url).content
-                f = open('img.jpg', 'wb')
+                file_name = str(uuid.uuid4()) + ".jpg"
+                f = open(file_name, 'wb')
                 f.write(data)
                 f.close
             
@@ -565,10 +569,10 @@ def props(request):
                 }
 
                 title = "Prop Bets: " + match[:-2]
-                image = InlineImage(path="img.jpg", caption=title)
+                image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop + "\n\nVisit http://www.gptsportswriter.com for more predictions."
-                drawing = open("img.jpg", 'rb').read()
+                drawing = open(file_name, 'rb').read()
                 prop = Props.objects.create(id=gameId, content=generated_prop.replace("\n", "<br/>") , gameimg=drawing, title=title, sport_key=sportKey)
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText)
@@ -576,13 +580,13 @@ def props(request):
                     print("error submitting reddit post")
         
                 try:
-                    sendTweet(generated_prop, "Prop Bets " + match + " ")
+                    sendTweet(generated_prop, "Prop Bets " + match + " ", file_name)
                 except:
                     print("error sending tweet")
         
 
                 try:
-                    fbPost(generated_prop, match)
+                    fbPost(generated_prop, match, file_name)
                 except:
                     print("error posting to FB")
                     
@@ -630,7 +634,8 @@ def recaps(request):
                 #print(image_url)
                 time.sleep(2)
                 data = requests.get(image_url).content
-                f = open('img.jpg', 'wb')
+                file_name = str(uuid.uuid4()) + ".jpg"
+                f = open(file_name, 'wb')
                 f.write(data)
                 f.close
             
@@ -642,10 +647,10 @@ def recaps(request):
                 }
 
                 title = "Recap: " + match[:-2]
-                image = InlineImage(path="img.jpg", caption=title)
+                image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_recap + "\n\nVisit http://www.gptsportswriter.com for more predictions."
-                drawing = open("img.jpg", 'rb').read()
+                drawing = open(file_name, 'rb').read()
                 recap = Recaps.objects.create(id=gameId, content=generated_recap.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey)
                 
                 try:
@@ -654,12 +659,12 @@ def recaps(request):
                     print("error submitting reddit post")
 
                 try:
-                    sendTweet(generated_recap, "Recap " + match + " ")
+                    sendTweet(generated_recap, "Recap " + match + " ", file_name)
                 except:
                     print("error sending tweet")
     
                 try:
-                    fbPost(generated_recap, match)
+                    fbPost(generated_recap, match, file_name)
                 except:
                     print("error posting to FB")
 
