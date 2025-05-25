@@ -186,25 +186,28 @@ def fbPost(text, title):
 
 def getSports():
     sports = []
+    excluded_leagues = ['americanfootball_nfl_preseason','americanfootball_nfl','americanfootball_ncaaf']
     sport = requests.get(f"https://api.the-odds-api.com/v4/sports/?apiKey={ODDSAPI_API_KEY}")
     sport = sport.json()
     for i in range(len(sport)):
-        if sport[i]['has_outrights'] == False:
+        if sport[i]['has_outrights'] == False and sport[i]['key'] not in excluded_leagues:
             sports.append(sport[i]['key'])
             #print(sport[i]['key'])
     return(sports)
 
 def getLeagues():
+    excluded_leagues = ['americanfootball_nfl_preseason','americanfootball_nfl','americanfootball_ncaaf']
     leagues = []
     sport = requests.get(f"https://api.the-odds-api.com/v4/sports/?apiKey={ODDSAPI_API_KEY}")
     sport = sport.json()
     for i in range(len(sport)):
-        if sport[i]['has_outrights'] == False:
+        print(sport[i]['key'])
+        if sport[i]['has_outrights'] == False and sport[i]['key'] not in excluded_leagues:
             leagues.append(sport[i]['description'])
             #print(sport[i]['key'])
     leagues = [i for n, i in enumerate(leagues) if i not in leagues[:n]]
-    leagues.append("March Madness 2025")
-    leagues.append("Sportsbetting Money Management")
+    #leagues.append("March Madness 2025")
+    #leagues.append("Sportsbetting Money Management")
     return(leagues)
             
 def ajax_handler(request,sport):
@@ -219,7 +222,10 @@ def ajax_handler(request,sport):
             t = "2024-02-25 12:00:00-05:00"
         utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
         esTime = utcTime.astimezone(ept)
-        games.append(dataMatch[i]['id'] + ": " + dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime))
+        now = timezone.now()
+        one_week_from_now = now + timezone.timedelta(hours=168)
+        print(str(t) + ":" + str(one_week_from_now))
+        games.append(dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime) + ": " + dataMatch[i]['id'])
         
     return JsonResponse({'games': games})
 
@@ -236,7 +242,7 @@ def ajax_handlerb(request,sport):
         utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
         esTime = utcTime.astimezone(ept)
         if dataMatch[i]['completed'] == True:
-            games.append(dataMatch[i]['id'] + ": " + dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime))
+            games.append(dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime) + ": " + dataMatch[i]['id'])
         
     return JsonResponse({'games': games})
 
@@ -283,8 +289,8 @@ def parlays(request):
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
             gameSplit = user_input.split(':')
-            gameId=gameSplit[0]
-            match=gameSplit[1]
+            gameId=gameSplit[1]
+            match=gameSplit[0]
             sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
@@ -426,8 +432,8 @@ def predictions(request):
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
             gameSplit = user_input.split(':')
-            gameId=gameSplit[0]
-            match=gameSplit[1]
+            gameId=gameSplit[1]
+            match=gameSplit[0]
             sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
@@ -521,8 +527,8 @@ def props(request):
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
             gameSplit = user_input.split(':')
-            gameId=gameSplit[0]
-            match=gameSplit[1]
+            gameId=gameSplit[1]
+            match=gameSplit[0]
             sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
@@ -597,8 +603,8 @@ def recaps(request):
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
             gameSplit = user_input.split(':')
-            gameId=gameSplit[0]
-            match=gameSplit[1]
+            gameId=gameSplit[1]
+            match=gameSplit[0]
             sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
