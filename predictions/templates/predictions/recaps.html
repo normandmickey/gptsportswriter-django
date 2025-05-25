@@ -15,14 +15,14 @@ GPTSportsWriter - Recaps
 <div pagename="recaps" style="padding:1em; font-size:14pt;">
     <form onsubmit="openLoader()" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <select name="sport" style="width:30em;" id="sport">
+        <select name="sport" style="width:15em;" id="sport">
             <option value="no_sport">Select a Sport</option>
             {% for sport in sports %}
             <option value="{{sport}}">{{sport}}</option>
             {% endfor %}
         </select>
         <br/>
-        <select name="game" style="width:30em;" id="game">
+        <select name="game" style="width:15em;" id="game">
             {% for game in games %}
             <option value="{{game}}">{{game}}</option>
             {% endfor %}
