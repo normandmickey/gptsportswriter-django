@@ -346,7 +346,9 @@ def parlays(request):
                     fbPost(generated_parlay, match, file_name)
                 except:
                     print("error posting to FB")
-        
+                
+                os.remove(file_name)
+
         return render(request, "predictions/parlays.html", context)
 
 def topnews(request):
@@ -415,6 +417,7 @@ def topnews(request):
         except:
             print("error posting to FB")
         
+        os.remove(file_name)
         return render(request, "predictions/topnews.html", context)
 
 def get_image_base64(image_bytes):
@@ -443,7 +446,9 @@ def predictions(request):
             res.remove('VS')
             res = res[:len(res)-3]
                    
+            
             articles = Predictions.objects.filter(id=gameId)
+            print(articles)
             if articles:
                 for article in articles:
                     print("title: " + article.title)
@@ -502,6 +507,8 @@ def predictions(request):
                     fbPost(generated_prediction, match, file_name)
                 except:
                     print("error posting to FB")
+
+                os.remove(file_name)
     return render(request, "predictions/predictions.html", context)
 
 def current_odds(request):
@@ -589,7 +596,8 @@ def props(request):
                     fbPost(generated_prop, match, file_name)
                 except:
                     print("error posting to FB")
-                    
+                
+                os.remove(file_name)
         return render(request, "predictions/props.html", context)
 
 
@@ -667,6 +675,7 @@ def recaps(request):
                     fbPost(generated_recap, match, file_name)
                 except:
                     print("error posting to FB")
+                
+                os.remove(file_name)
 
-        
         return render(request, "predictions/recaps.html", context)
