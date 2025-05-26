@@ -126,7 +126,7 @@ def sendTweet(text, match, file):
     
     tweetText = createTweet(text)
     tweetText = match + ": " + tweetText
-    tweetText = tweetText + "by https://www.gptsportswriter.com"
+    tweetText = tweetText + " Want more? Visit https://www.gptsportswriter.com"
     print(tweetText)
 
     post = tweepy_api.simple_upload(file)
