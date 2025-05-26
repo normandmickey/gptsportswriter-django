@@ -22,6 +22,7 @@ urlpatterns = [
     path("zoom-privacy/", views.zoomPrivacy, name="zoomPrivacy"),
     path("zoom-support/", views.zoomSupport, name="zoomTOS"),
     path("zoom-documentation/", views.zoomDocumentation, name="zoomPrivacy"),
+    path("money-management/", views.money_management, name="money_management"),
     path("predictions/", views.predictions, name="predictions"),
     path("recaps/", views.recaps, name="recaps"),
     path("parlays/", views.parlays, name="parlays"),

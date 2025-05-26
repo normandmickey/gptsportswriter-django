@@ -276,6 +276,10 @@ def zoomSupport(request):
 def zoomDocumentation(request):
     return render(request, "predictions/zoom-documentation.html")
 
+def money_management(request):
+    return render(request, "predictions/money_management.html")
+
+
 def parlays(request):
     context = {}
     user_input = ""
