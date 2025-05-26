@@ -225,7 +225,8 @@ def ajax_handler(request,sport):
         now = timezone.now()
         one_week_from_now = now + timezone.timedelta(hours=168)
         print(str(t) + ":" + str(one_week_from_now))
-        games.append(dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime) + ": " + dataMatch[i]['id'])
+        dataMatch[i]['id'] + "test"
+        games.append(dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime) + ":" + dataMatch[i]['id'])
         
     return JsonResponse({'games': games})
 
@@ -242,7 +243,7 @@ def ajax_handlerb(request,sport):
         utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
         esTime = utcTime.astimezone(ept)
         if dataMatch[i]['completed'] == True:
-            games.append(dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime) + ": " + dataMatch[i]['id'])
+            games.append(dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime) + ":" + dataMatch[i]['id'])
         
     return JsonResponse({'games': games})
 
@@ -289,7 +290,8 @@ def parlays(request):
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
             gameSplit = user_input.split(':')
-            gameId=gameSplit[1]
+            gameId=gameSplit[4]
+            gameId=gameId.strip()
             match=gameSplit[0]
             sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
@@ -347,7 +349,7 @@ def parlays(request):
                 except:
                     print("error posting to FB")
                 
-                os.remove(file_name)
+                #os.remove(file_name)
 
         return render(request, "predictions/parlays.html", context)
 
@@ -417,7 +419,7 @@ def topnews(request):
         except:
             print("error posting to FB")
         
-        os.remove(file_name)
+        #os.remove(file_name)
         return render(request, "predictions/topnews.html", context)
 
 def get_image_base64(image_bytes):
@@ -437,7 +439,8 @@ def predictions(request):
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
             gameSplit = user_input.split(':')
-            gameId=gameSplit[1]
+            gameId=gameSplit[4]
+            gameId=gameId.strip()
             match=gameSplit[0]
             sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
@@ -447,7 +450,9 @@ def predictions(request):
             res = res[:len(res)-3]
                    
             
+            print(gameId)
             articles = Predictions.objects.filter(id=gameId)
+
             print(articles)
             if articles:
                 for article in articles:
@@ -508,7 +513,7 @@ def predictions(request):
                 except:
                     print("error posting to FB")
 
-                os.remove(file_name)
+                #os.remove(file_name)
     return render(request, "predictions/predictions.html", context)
 
 def current_odds(request):
@@ -537,7 +542,8 @@ def props(request):
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
             gameSplit = user_input.split(':')
-            gameId=gameSplit[1]
+            gameId=gameSplit[4]
+            gameId=gameId.strip()
             match=gameSplit[0]
             sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
@@ -597,7 +603,7 @@ def props(request):
                 except:
                     print("error posting to FB")
                 
-                os.remove(file_name)
+                #os.remove(file_name)
         return render(request, "predictions/props.html", context)
 
 
@@ -615,7 +621,8 @@ def recaps(request):
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
             gameSplit = user_input.split(':')
-            gameId=gameSplit[1]
+            gameId=gameSplit[4]
+            gameId=gameId.strip()
             match=gameSplit[0]
             sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
@@ -676,6 +683,6 @@ def recaps(request):
                 except:
                     print("error posting to FB")
                 
-                os.remove(file_name)
+                #os.remove(file_name)
 
         return render(request, "predictions/recaps.html", context)
