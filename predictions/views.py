@@ -126,7 +126,7 @@ def sendTweet(text, match, file):
     
     tweetText = createTweet(text)
     tweetText = match + ": " + tweetText
-    tweetText = tweetText + " Affiliate Link BetUS - 125% Sign Up Bonus! - https://tinyurl.com/GPTSW2"
+    tweetText = tweetText + "by https://www.gptsportswriter.com"
     print(tweetText)
 
     post = tweepy_api.simple_upload(file)
