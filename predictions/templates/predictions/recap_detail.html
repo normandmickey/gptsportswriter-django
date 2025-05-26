@@ -11,6 +11,6 @@ GPTSportsWriter - Recap Detail
         <h1><center>{{ article.title }} </center></h1>
         <p><center><img src="data:;base64,{{article.get_image_bytes}}" alt="Generated Image" style="max-width:80vw; width:30em; height:30em;"></center></p>
         <p>{{ article.content | safe }}</p>
-        <p>Created: {{ article.created_at }}</p>
+        <p>Created: {{ article.created_at }} GMT</p>
     </body>
 {% endblock %}

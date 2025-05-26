@@ -174,21 +174,21 @@ def get_news(input_text, string_guarantee):
     print("top News string guarantee: " + str(string_guarantee))
     context=""
     #newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_dicts
-    newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True).as_dicts
+    newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=5, categories=["Sports"], premium=True).as_dicts
     for article in newsArticles:
         context += article.summary
         print(article.summary)
-    print(context)
+    #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
-    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
+    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty and accurate.  """
     # Make the API call
-    print(context)
+    #print(context)
     try:
         response = groq_client.chat.completions.create(
             model=GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "Write a summary of the following context include details from the articles. Limit your response to 200 words be funny and sarcastic. " + context + input_text},
+                {"role": "user", "content": "Write a summary of the following articles. Be funny and sarcastic. " + context + input_text},
             ],
             temperature=0.3, 
             max_tokens=2000
@@ -198,7 +198,7 @@ def get_news(input_text, string_guarantee):
             model=OPENAI_GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "Write a summary of the following context include details from the articles. limit your reponse to 200 words be funny and sarcastic. " + context + input_text},
+                {"role": "user", "content": "Write a summary of the following articles. Be funny and sarcastic. " + context + input_text},
             ],
             temperature=0.3, 
             max_tokens=1000

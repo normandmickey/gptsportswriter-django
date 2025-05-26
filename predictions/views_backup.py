@@ -1,7 +1,8 @@
-import re, os, praw, requests, pytz, time, json
-from django.shortcuts import render
+import re, os, praw, requests, pytz, time, json, uuid
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.utils.timezone import datetime
+from django.utils import timezone
 from .chat_completion import generate_prediction, generate_recap, generate_tweet, generate_parlay, generate_news, generate_videoText, generate_prop
 from .image_generation import generate_image, createImagePrompt
 from praw.models import InlineImage
@@ -11,8 +12,12 @@ from django.http import JsonResponse
 import facebook as fb
 import tweepy
 import openai
+import psycopg2
+import base64
+from .models import Predictions, Recaps, Parlays, Props
 
 load_dotenv(override=True)
+
 
 ODDSAPI_API_KEY=os.environ.get("ODDSAPI_API_KEY")
 consumer_key=os.environ.get('TWITTER_API_KEY')
@@ -21,6 +26,11 @@ bearer_token=os.environ.get('TWITTER_BEARER_TOKEN')
 access_token_secret=os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
 access_token=os.environ.get('TWITTER_ACCESS_TOKEN')
 FACEBOOK_ACCESS_TOKEN=os.environ.get('FACEBOOK_ACCESS_TOKEN')
+DB_NAME=os.environ.get('DB_NAME')
+DB_USER=os.environ.get('DB_USER')
+DB_PASSWORD=os.environ.get('DB_PASSWORD')
+DB_HOST=os.environ.get('DB_HOST')
+
 
 ept = pytz.timezone('US/Eastern')
 utc = pytz.utc
@@ -44,8 +54,60 @@ tweepy_auth = tweepy.OAuth1UserHandler(
     "{}".format(os.environ.get("TWITTER_ACCESS_TOKEN_SECRET")),
 )
 
+def recent_predictions(request):
+    now = timezone.now()
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=48)
+    #data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago)
+    data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('id', 'title', 'created_at', 'slug')
+    for item in data:
+        item['title'] = item['title'].replace("Prediction: ", "")
+    return render(request, 'predictions/recent_predictions.html', {'data': data})
+
+def recent_parlays(request):
+    now = timezone.now()
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=48)
+    #data = Parlays.objects.filter(created_at__gte=twenty_fours_hours_ago)
+    data = Parlays.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug')
+    for item in data:
+        item['title'] = item['title'].replace("Parlay: ", "")
+    return render(request, 'predictions/recent_parlays.html', {'data': data})
+
+def recent_props(request):
+    now = timezone.now()
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=48)
+    #data = Props.objects.filter(created_at__gte=twenty_fours_hours_ago)
+    data = Props.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug')
+    for item in data:
+        item['title'] = item['title'].replace("Prop Bets: ", "")
+    return render(request, 'predictions/recent_props.html', {'data': data})
+
+def recent_recaps(request):
+    now = timezone.now()
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=48)
+    #data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago)
+    data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug')
+    for item in data:
+        item['title'] = item['title'].replace("Recap: ", "")
+    return render(request, 'predictions/recent_recaps.html', {'data': data})
+
+def prediction_detail(request, slug):
+    article = get_object_or_404(Predictions, slug=slug)
+    return render(request, 'predictions/prediction_detail.html', {'article': article})
+
+def prop_detail(request, slug):
+    article = get_object_or_404(Props, slug=slug)
+    return render(request, 'predictions/prop_detail.html', {'article': article})
+
+def recap_detail(request, slug):
+    article = get_object_or_404(Recaps, slug=slug)
+    return render(request, 'predictions/recap_detail.html', {'article': article})
+
+def parlay_detail(request, slug):
+    article = get_object_or_404(Parlays, slug=slug)
+    return render(request, 'predictions/parlay_detail.html', {'article': article})
+
 # send Tweet
-def sendTweet(text, match):
+def sendTweet(text, match, file):
     tweepy_api = tweepy.API(tweepy_auth)
     #rate_limit_status = tweepy_api.rate_limit_status()
     #rate_limit_status = json.dumps(rate_limit_status)
@@ -64,10 +126,10 @@ def sendTweet(text, match):
     
     tweetText = createTweet(text)
     tweetText = match + ": " + tweetText
-    tweetText = tweetText + " Affiliate Link BetUS - 125% Sign Up Bonus! - https://tinyurl.com/GPTSW2"
+    tweetText = tweetText + " Want more? Visit https://www.gptsportswriter.com"
     print(tweetText)
 
-    post = tweepy_api.simple_upload("img.jpg")
+    post = tweepy_api.simple_upload(file)
     text = str(post)
     media_id = re.search("media_id=(.+?),", text).group(1)
     
@@ -102,14 +164,14 @@ def createTweet(text):
     #print(tweetText)
     return(tweetText)
 
-def fbPost(text, title):
+def fbPost(text, title, file):
     #gptsportswriterapi=fb.GraphAPI("EAAK2IMS7Bb8BO2pYq60uSiYwuJwvMf8ZCcr02yuGwZCFoZCVtzhattkaq9QRQoGAGpZBvaISiZBxutz7hZAvfgDD9VD7T5AEUicF1VztjGtR1WzTFR4cr60YHE7zQZBWbjWwapUASOctQTXY9PPnUeqlJjEhBTdADDYjS22VlM4eZCKiGULGB6lHcDZBZBz8EF")
     #gptsportswriterapi.put_object("me","feed",message=text,link="https://www.gptsportswriter.com")
     #
     postBody = "Prediction" + title + "\n" + "by https://www.gptsportswriter.com" + "\n" + text + "\n\n" + "BetUS - Get 125% Bonus On Your First 3 Deposits, click on the link below..." + "\n" + "https://record.revmasters.com/_8ejz3pKmFDuMKNOJN2Xw7mNd7ZgqdRLk/1/"
     #print(FACEBOOK_ACCESS_TOKEN)
     gptsportswriterapi=fb.GraphAPI(FACEBOOK_ACCESS_TOKEN)
-    gptsportswriterapi.put_photo(open('img.jpg','rb'), message=postBody)
+    gptsportswriterapi.put_photo(open(file,'rb'), message=postBody)
     #print(response_photo)
     #photoJson = json.loads(response_photo)
     #photo_id = photoJson[0]['id']
@@ -124,25 +186,28 @@ def fbPost(text, title):
 
 def getSports():
     sports = []
+    excluded_leagues = ['americanfootball_nfl_preseason','americanfootball_nfl','americanfootball_ncaaf']
     sport = requests.get(f"https://api.the-odds-api.com/v4/sports/?apiKey={ODDSAPI_API_KEY}")
     sport = sport.json()
     for i in range(len(sport)):
-        if sport[i]['has_outrights'] == False:
+        if sport[i]['has_outrights'] == False and sport[i]['key'] not in excluded_leagues:
             sports.append(sport[i]['key'])
             #print(sport[i]['key'])
     return(sports)
 
 def getLeagues():
+    excluded_leagues = ['americanfootball_nfl_preseason','americanfootball_nfl','americanfootball_ncaaf']
     leagues = []
     sport = requests.get(f"https://api.the-odds-api.com/v4/sports/?apiKey={ODDSAPI_API_KEY}")
     sport = sport.json()
     for i in range(len(sport)):
-        if sport[i]['has_outrights'] == False:
+        print(sport[i]['key'])
+        if sport[i]['has_outrights'] == False and sport[i]['key'] not in excluded_leagues:
             leagues.append(sport[i]['description'])
             #print(sport[i]['key'])
     leagues = [i for n, i in enumerate(leagues) if i not in leagues[:n]]
-    leagues.append("March Madness 2025")
-    leagues.append("Sortsbetting Money Management")
+    #leagues.append("March Madness 2025")
+    #leagues.append("Sportsbetting Money Management")
     return(leagues)
             
 def ajax_handler(request,sport):
@@ -157,7 +222,11 @@ def ajax_handler(request,sport):
             t = "2024-02-25 12:00:00-05:00"
         utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
         esTime = utcTime.astimezone(ept)
-        games.append(dataMatch[i]['id'] + ": " + dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime))
+        now = timezone.now()
+        one_week_from_now = now + timezone.timedelta(hours=168)
+        print(str(t) + ":" + str(one_week_from_now))
+        dataMatch[i]['id'] + "test"
+        games.append(dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime) + ":" + dataMatch[i]['id'])
         
     return JsonResponse({'games': games})
 
@@ -174,7 +243,7 @@ def ajax_handlerb(request,sport):
         utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
         esTime = utcTime.astimezone(ept)
         if dataMatch[i]['completed'] == True:
-            games.append(dataMatch[i]['id'] + ": " + dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime))
+            games.append(dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime) + ":" + dataMatch[i]['id'])
         
     return JsonResponse({'games': games})
 
@@ -207,6 +276,10 @@ def zoomSupport(request):
 def zoomDocumentation(request):
     return render(request, "predictions/zoom-documentation.html")
 
+def money_management(request):
+    return render(request, "predictions/money_management.html")
+
+
 def parlays(request):
     context = {}
     user_input = ""
@@ -221,79 +294,67 @@ def parlays(request):
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
             gameSplit = user_input.split(':')
-            gameId=gameSplit[0]
-            match=gameSplit[1]
+            gameId=gameSplit[4]
+            gameId=gameId.strip()
+            match=gameSplit[0]
             sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
-        
-        generated_parlay = generate_parlay(sport + " " + match, gameId, sportKey)
-        image_prompt = createImagePrompt(sport + " " + match)
-        #print(image_prompt)
-        image_url = generate_image(image_prompt)
-        #print(image_url)
-        time.sleep(2)
-        data = requests.get(image_url).content
-        f = open('img.jpg', 'wb')
-        f.write(data)
-        f.close
+            articles = Parlays.objects.filter(id=gameId)
+            if articles:
+                for article in articles:
+                    imageBytes = get_image_base64(article.gameimg)
+                    context = {
+                        "user_input": match,
+                        "generated_parlay": article.content.replace("\n", "<br/>"),
+                        "sports": sports,
+                        "image_url":  f"data:;base64,{imageBytes}"
+                    }
+            else:
+                generated_parlay = generate_parlay(sport + " " + match, gameId, sportKey)
+                image_prompt = createImagePrompt(sport + " " + match)
+                #print(image_prompt)
+                image_url = generate_image(image_prompt)
+                #print(image_url)
+                time.sleep(2)
+                data = requests.get(image_url).content
+                file_name = str(uuid.uuid4()) + ".jpg"
+                f = open(file_name, 'wb')
+                f.write(data)
+                f.close
             
-        context = {
-            "user_input": match,
-            "generated_parlay": generated_parlay.replace("\n", "<br/>"),
-            "image_url": image_url,
-            "sports": sports,
-        }
+                context = {
+                    "user_input": match[:-2],
+                    "generated_parlay": generated_parlay.replace("\n", "<br/>"),
+                    "image_url": image_url,
+                    "sports": sports,
+                }
 
-        title = "Parlay: " + match
-        image = InlineImage(path="img.jpg", caption=title)
-        media = {"image1": image}
-        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay + "\n\nVisit http://www.gptsportswriter.com for more predictions."
-        try:
-            #subreddit.submit(title, inline_media=media, selftext=selfText)
-            #redditURL = subreddit.submit(title, selftext=selfText)
-            #redditURL = "https://redd.it/" + str(redditURL)
-            #print(redditURL)
-            with open(r'reddit_parlays.txt', 'r') as file:
-                content = file.read()
-                if gameId in content:
-                    print("duplicate reddit post")
-                else:
+                title = "Parlay: " + match[:-2]
+                image = InlineImage(path=file_name, caption=title)
+                media = {"image1": image}
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay + "\n\nVisit http://www.gptsportswriter.com for more predictions."
+                drawing = open(file_name, 'rb').read()
+                parlay = Parlays.objects.create(id=gameId, content=generated_parlay.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey)
+                try:
                     subreddit.submit(title, inline_media=media, selftext=selfText) 
-                    with open("reddit_parlays.txt", "a") as file:
-                        file.write("\n" + gameId)
-        except:
-            print("error submitting reddit post")
+                except:
+                    print("error submitting reddit post")
         
         
-        try:
-            #sendTweet(generated_parlay)
-            with open(r'twitter_parlays.txt', 'r') as file:
-                content = file.read()
-                if gameId in content:
-                    print("duplicate twitter post")
-                else:
-                    sendTweet(generated_parlay, match)
-                    with open("twitter_parlays.txt", "a") as file:
-                        file.write("\n" + gameId)
-        except:
-            print("error sending tweet")
+                try:
+                    sendTweet(generated_parlay, match, file_name)
+                except:
+                    print("error sending tweet")
         
 
-        try:
-            #fbPost(generated_parlay, match)
-            with open(r'facebook_parlays.txt', 'r') as file:
-                content = file.read()
-                if gameId in content:
-                    print("duplicate facebook post")
-                else:
-                    fbPost(generated_parlay, match)
-                    with open("facebook_parlays.txt", "a") as file:
-                        file.write("\n" + gameId)
-            
-        except:
-            print("error posting to FB")
-        
+                try:
+                    fbPost(generated_parlay, match, file_name)
+                except:
+                    print("error posting to FB")
+                
+                #os.remove(file_name)
+
         return render(request, "predictions/parlays.html", context)
 
 def topnews(request):
@@ -325,7 +386,8 @@ def topnews(request):
         #print(image_url)
         time.sleep(2)
         data = requests.get(image_url).content
-        f = open('img.jpg', 'wb')
+        file_name = str(uuid.uuid4()) + ".jpg"
+        f = open(file_name, 'wb')
         f.write(data)
         f.close
             
@@ -337,7 +399,7 @@ def topnews(request):
         }
 
         title = "Top News: " + user_input
-        image = InlineImage(path="img.jpg", caption=title)
+        image = InlineImage(path=file_name, caption=title)
         media = {"image1": image}
         selfText = "{image1}" + generated_news
         
@@ -351,17 +413,21 @@ def topnews(request):
         
         
         try:
-            sendTweet(generated_news, "Top News " + sport + " " )
+            sendTweet(generated_news, "Top News " + sport + " ", file_name )
         except:
             print("error sending tweet")
         
 
         try:
-            fbPost(generated_news, user_input)
+            fbPost(generated_news, user_input, file_name)
         except:
             print("error posting to FB")
         
+        #os.remove(file_name)
         return render(request, "predictions/topnews.html", context)
+
+def get_image_base64(image_bytes):
+        return base64.b64encode(image_bytes).decode('utf-8')
 
 def predictions(request):
     context = {}
@@ -369,7 +435,7 @@ def predictions(request):
     sportKey = ""
     sport = ""
     sports = getSports()
-    
+
     if request.method == "GET":
         dataSports = getSports()
         return render(request, "predictions/predictions.html", {'sports': dataSports})
@@ -377,89 +443,94 @@ def predictions(request):
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
             gameSplit = user_input.split(':')
-            gameId=gameSplit[0]
-            match=gameSplit[1]
+            gameId=gameSplit[4]
+            gameId=gameId.strip()
+            match=gameSplit[0]
             sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
             res = re.split('\s+', match)
             res.remove('VS')
             res = res[:len(res)-3]
-            #print(res)
-                           
-        generated_prediction = generate_prediction(sport + " " + match, res, gameId, sportKey)
-        image_prompt = createImagePrompt(sport + " " + match)
-        #print(image_prompt)
-        image_url = generate_image(image_prompt)
-        print(image_url)
-        time.sleep(2)
-        data = requests.get(image_url).content
-        f = open('img.jpg', 'wb')
-        f.write(data)
-        f.close
+                   
             
-        context = {
-            "user_input": match,
-            "generated_prediction": generated_prediction.replace("\n", "<br/>"),
-            "image_url": image_url,
-            "sports": sports,
-        }
+            print(gameId)
+            articles = Predictions.objects.filter(id=gameId)
 
-        title = "Prediction: " + match
-        image = InlineImage(path="img.jpg", caption=title)
-        media = {"image1": image}
-        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction + "\n\nVisit http://www.gptsportswriter.com for more predictions."
-        #videoText = generate_videoText(generated_prediction)
-        #openAITTS(videoText)
-        #post to reddit
-        try:
-            #subreddit.submit(title, inline_media=media, selftext=selfText)
-            #redditURL = subreddit.submit(title, selftext=selfText)
-            #redditURL = "https://redd.it/" + str(redditURL)
-            #print(redditURL)
-            with open(r'reddit_predictions.txt', 'r') as file:
-                content = file.read()
-                if gameId in content:
-                    print("duplicate reddit post")
-                else:
-                    subreddit.submit(title, inline_media=media, selftext=selfText) 
-                    with open("reddit_predictions.txt", "a") as file:
-                        file.write("\n" + gameId)
-        except:
-            print("error submitting reddit post")
-        
-        #post to twitter
-        #sendTweet(generated_prediction, match)
-        
-        try:
-            print("sending tweet")
-            with open(r'twitter_predictions.txt', 'r') as file:
-                content = file.read()
-                if gameId in content:
-                    print("duplicate twitter post")
-                else:
-                    sendTweet(generated_prediction, match) 
-                    with open("twitter_predictions.txt", "a") as file:
-                        file.write("\n" + gameId)
-                      
-        except:
-            print("error sending tweet")
-        
+            print(articles)
+            if articles:
+                for article in articles:
+                    print("title: " + article.title)
+                    imageBytes = get_image_base64(article.gameimg)
+                    context = {
+                        "user_input": match,
+                        "generated_prediction": article.content.replace("\n", "<br/>"),
+                        "sports": sports,
+                        "image_url":  f"data:;base64,{imageBytes}"
+                    }
+            else:
+                generated_prediction = generate_prediction(sport + " " + match, res, gameId, sportKey)
+                image_prompt = createImagePrompt(sport + " " + match)
+                #print(image_prompt)
+                image_url = generate_image(image_prompt)
+                print(image_url)
+                time.sleep(2)
+                data = requests.get(image_url).content
+                file_name = str(uuid.uuid4()) + ".jpg"
+                f = open(file_name, 'wb')
+                f.write(data)
+                f.close
+            
+                context = {
+                    "user_input": match,
+                    "generated_prediction": generated_prediction.replace("\n", "<br/>"),
+                    "image_url": image_url,
+                    "sports": sports,
+                }
 
-        #post to facebook
-        try:
-            with open(r'facebook_predictions.txt', 'r') as file:
-                content = file.read()
-                if gameId in content:
-                   print("duplicate FB post")
-                else:
-                    fbPost(generated_prediction, match)  
-                    with open("facebook_predictions.txt", "a") as file:
-                        file.write("\n" + gameId)
-        except:
-            print("error posting to FB")
-        
-        return render(request, "predictions/predictions.html", context)
+                title = "Prediction: " + match[:-2]
+                image = InlineImage(path=file_name, caption=title)
+                media = {"image1": image}
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction + "\n\nVisit http://www.gptsportswriter.com for more predictions."
+                
+                #write to database
+                #write_to_database(gameId,generated_prediction,"img.jpg",dbTable)
+                drawing = open(file_name, 'rb').read()
+                prediction = Predictions.objects.create(id=gameId, content=generated_prediction.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey)
+                
+                #post to reddit
+                try:
+                    subreddit.submit(title, inline_media=media, selftext=selfText)                                
+                except:
+                    print("error submitting reddit post")       
+
+                #post to twitter
+                try:
+                    print("sending tweet")
+                    sendTweet(generated_prediction, match, file_name)  
+                except:
+                    print("error sending tweet")
+    
+                #post to facebook
+                try:
+                    fbPost(generated_prediction, match, file_name)
+                except:
+                    print("error posting to FB")
+
+                #os.remove(file_name)
+    return render(request, "predictions/predictions.html", context)
+
+def current_odds(request):
+    context = {}
+    user_input = ""
+    sportKey = ""
+    sport = ""
+    sports = getSports()
+
+    if request.method == "GET":
+        dataSports = getSports()
+        return render(request, "predictions/current_odds.html", {'sports': dataSports})
+    return render(request, "predictions/current_odds.html", {'sports': ['baseball_mlb','basketball_nba']})
 
 def props(request):
     context = {}
@@ -475,59 +546,68 @@ def props(request):
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
             gameSplit = user_input.split(':')
-            gameId=gameSplit[0]
-            match=gameSplit[1]
+            gameId=gameSplit[4]
+            gameId=gameId.strip()
+            match=gameSplit[0]
             sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
             res = re.split('\s+', match)
             res.remove('VS')
             res = res[:len(res)-3]
-            print(res)
-                           
-        generated_prop = generate_prop(sport + " " + match, res, gameId, sportKey)
-        image_prompt = createImagePrompt(sport + " " + match)
-        #print(image_prompt)
-        image_url = generate_image(image_prompt)
-        #print(image_url)
-        time.sleep(2)
-        data = requests.get(image_url).content
-        f = open('img.jpg', 'wb')
-        f.write(data)
-        f.close
+            articles = Props.objects.filter(id=gameId)
+            if articles:
+                for article in articles:
+                    imageBytes = get_image_base64(article.gameimg)
+                    context = {
+                        "user_input": match,
+                        "generated_prediction": article.content.replace("\n", "<br/>"),
+                        "sports": sports,
+                        "image_url":  f"data:;base64,{imageBytes}"
+                    }
+            else:                  
+                generated_prop = generate_prop(sport + " " + match, res, gameId, sportKey)
+                image_prompt = createImagePrompt(sport + " " + match)
+                #print(image_prompt)
+                image_url = generate_image(image_prompt)
+                #print(image_url)
+                time.sleep(2)
+                data = requests.get(image_url).content
+                file_name = str(uuid.uuid4()) + ".jpg"
+                f = open(file_name, 'wb')
+                f.write(data)
+                f.close
             
-        context = {
-            "user_input": match,
-            "generated_prediction": generated_prop.replace("\n", "<br/>"),
-            "image_url": image_url,
-            "sports": sports,
-        }
+                context = {
+                    "user_input": match,
+                    "generated_prediction": generated_prop.replace("\n", "<br/>"),
+                    "image_url": image_url,
+                    "sports": sports,
+                }
 
-        title = "Prop Bets: " + match
-        image = InlineImage(path="img.jpg", caption=title)
-        media = {"image1": image}
-        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop + "\n\nVisit http://www.gptsportswriter.com for more predictions."
-        #videoText = generate_videoText(generated_prediction)
-        #openAITTS(videoText)
-        try:
-            subreddit.submit(title, inline_media=media, selftext=selfText)
-            #redditURL = subreddit.submit(title, selftext=selfText)
-            #redditURL = "https://redd.it/" + str(redditURL)
-            #print(redditURL)
-        except:
-            print("error submitting reddit post")
+                title = "Prop Bets: " + match[:-2]
+                image = InlineImage(path=file_name, caption=title)
+                media = {"image1": image}
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop + "\n\nVisit http://www.gptsportswriter.com for more predictions."
+                drawing = open(file_name, 'rb').read()
+                prop = Props.objects.create(id=gameId, content=generated_prop.replace("\n", "<br/>") , gameimg=drawing, title=title, sport_key=sportKey)
+                try:
+                    subreddit.submit(title, inline_media=media, selftext=selfText)
+                except:
+                    print("error submitting reddit post")
         
-        try:
-            sendTweet(generated_prop, "Prop Bets " + match + " ")
-        except:
-            print("error sending tweet")
+                try:
+                    sendTweet(generated_prop, "Prop Bets " + match + " ", file_name)
+                except:
+                    print("error sending tweet")
         
 
-        try:
-            fbPost(generated_prop, match)
-        except:
-            print("error posting to FB")
-        
+                try:
+                    fbPost(generated_prop, match, file_name)
+                except:
+                    print("error posting to FB")
+                
+                #os.remove(file_name)
         return render(request, "predictions/props.html", context)
 
 
@@ -545,55 +625,68 @@ def recaps(request):
         if "game" in request.POST:
             user_input += request.POST.get("game") + "\n"
             gameSplit = user_input.split(':')
-            gameId=gameSplit[0]
-            match=gameSplit[1]
+            gameId=gameSplit[4]
+            gameId=gameId.strip()
+            match=gameSplit[0]
             sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
             res = re.split('\s+', match)
             res.remove('VS')
             res = res[:len(res)-3]
+
+            articles = Recaps.objects.filter(id=gameId)
+            if articles:
+                for article in articles:
+                    imageBytes = get_image_base64(article.gameimg)
+                    context = {
+                        "user_input": match,
+                        "generated_recap": article.content.replace("\n", "<br/>"),
+                        "sports": sports,
+                        "image_url":  f"data:;base64,{imageBytes}"
+                    }
+            else:        
+                generated_recap = generate_recap(sport + " " + match, res, gameId, sportKey)
+                image_prompt = createImagePrompt(sport + " " + match)
+                #print(image_prompt)
+                image_url = generate_image(image_prompt)
+                #print(image_url)
+                time.sleep(2)
+                data = requests.get(image_url).content
+                file_name = str(uuid.uuid4()) + ".jpg"
+                f = open(file_name, 'wb')
+                f.write(data)
+                f.close
             
-        
-        generated_recap = generate_recap(sport + " " + match, res, gameId, sportKey)
-        image_prompt = createImagePrompt(sport + " " + match)
-        #print(image_prompt)
-        image_url = generate_image(image_prompt)
-        #print(image_url)
-        time.sleep(2)
-        data = requests.get(image_url).content
-        f = open('img.jpg', 'wb')
-        f.write(data)
-        f.close
-            
-        context = {
-            "user_input": match,
-            "generated_recap": generated_recap.replace("\n", "<br/>"),
-            "image_url": image_url,
-            "sports": sports,
-        }
+                context = {
+                    "user_input": match,
+                    "generated_recap": generated_recap.replace("\n", "<br/>"),
+                    "image_url": image_url,
+                    "sports": sports,
+                }
 
-        title = "Recap: " + match
-        image = InlineImage(path="img.jpg", caption=title)
-        media = {"image1": image}
-        selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_recap + "\n\nVisit http://www.gptsportswriter.com for more predictions."
-        try:
-            subreddit.submit(title, inline_media=media, selftext=selfText)
-            #redditURL = subreddit.submit(title, selftext=selfText)
-            #redditURL = "https://redd.it/" + str(redditURL)
-        except:
-            print("error submitting reddit post")
+                title = "Recap: " + match[:-2]
+                image = InlineImage(path=file_name, caption=title)
+                media = {"image1": image}
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_recap + "\n\nVisit http://www.gptsportswriter.com for more predictions."
+                drawing = open(file_name, 'rb').read()
+                recap = Recaps.objects.create(id=gameId, content=generated_recap.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey)
+                
+                try:
+                    subreddit.submit(title, inline_media=media, selftext=selfText)
+                except:
+                    print("error submitting reddit post")
 
-        
-        try:
-            sendTweet(generated_recap, "Recap " + match + " ")
-        except:
-            print("error sending tweet")
-        
+                try:
+                    sendTweet(generated_recap, "Recap " + match + " ", file_name)
+                except:
+                    print("error sending tweet")
+    
+                try:
+                    fbPost(generated_recap, match, file_name)
+                except:
+                    print("error posting to FB")
+                
+                #os.remove(file_name)
 
-        try:
-            fbPost(generated_recap, match)
-        except:
-            print("error posting to FB")
-        
         return render(request, "predictions/recaps.html", context)

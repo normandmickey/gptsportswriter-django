@@ -223,8 +223,8 @@ def ajax_handler(request,sport):
         utcTime = dtdt(int(t[0:4]), int(t[5:7]), int(t[8:10]), int(t[11:13]), int(t[14:16]), int(t[17:19]), tzinfo=utc)
         esTime = utcTime.astimezone(ept)
         now = timezone.now()
-        one_week_from_now = now + timezone.timedelta(hours=168)
-        print(str(t) + ":" + str(one_week_from_now))
+        #one_week_from_now = now + timezone.timedelta(hours=168)
+        #print(str(t) + ":" + str(one_week_from_now))
         dataMatch[i]['id'] + "test"
         games.append(dataMatch[i]['away_team'] + " VS " + dataMatch[i]['home_team'] + " " + str(esTime) + ":" + dataMatch[i]['id'])
         
@@ -379,32 +379,32 @@ def topnews(request):
         
         #print("sport: " + sport)
         generated_news = generate_news(sport, res)
-        print("News: " + generated_news)
-        image_prompt = createImagePrompt(sport)
+        #print("News: " + generated_news)
+        #image_prompt = createImagePrompt(sport)
         #print(image_prompt)
-        image_url = generate_image(image_prompt)
+        #image_url = generate_image(image_prompt)
         #print(image_url)
-        time.sleep(2)
-        data = requests.get(image_url).content
-        file_name = str(uuid.uuid4()) + ".jpg"
-        f = open(file_name, 'wb')
-        f.write(data)
-        f.close
+        #time.sleep(2)
+        #data = requests.get(image_url).content
+        #file_name = str(uuid.uuid4()) + ".jpg"
+        #f = open(file_name, 'wb')
+        #f.write(data)
+        #f.close
             
         context = {
             "user_input": user_input,
             "generated_news": generated_news.replace("\n", "<br/>"),
-            "image_url": image_url,
+            "image_url": "",
             "sports": sports,
         }
 
         title = "Top News: " + user_input
-        image = InlineImage(path=file_name, caption=title)
-        media = {"image1": image}
-        selfText = "{image1}" + generated_news
+        #image = InlineImage(path=file_name, caption=title)
+        #media = {"image1": image}
+        selfText = generated_news
         
         try:
-            subreddit.submit(title, inline_media=media, selftext=selfText)
+            subreddit.submit(title, selftext=selfText)
             #redditURL = subreddit.submit(title, selftext=selfText)
             #redditURL = "https://redd.it/" + str(redditURL)
             #print(redditURL)
@@ -413,13 +413,13 @@ def topnews(request):
         
         
         try:
-            sendTweet(generated_news, "Top News " + sport + " ", file_name )
+            sendTweet(generated_news, "Top News " + sport )
         except:
             print("error sending tweet")
         
 
         try:
-            fbPost(generated_news, user_input, file_name)
+            fbPost(generated_news, user_input)
         except:
             print("error posting to FB")
         
