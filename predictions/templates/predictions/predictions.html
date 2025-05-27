@@ -44,7 +44,7 @@ GPTSportsWriter - Predictions
         </p>
 
         {% if image_url %}
-            <img src="{{ image_url }}" alt="Generated Image" style="max-width:80vw; width:30em; height:30em;">
+            <img src="{{ image_url }}" alt="Generated Image" style="max-width:80vw; max-height:80vh; object-fit: contain;">
         </p>
     {% endif %}
     {% if generated_prediction %}
