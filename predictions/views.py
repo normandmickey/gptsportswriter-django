@@ -276,8 +276,8 @@ def zoomSupport(request):
 def zoomDocumentation(request):
     return render(request, "predictions/zoom-documentation.html")
 
-def money_management(request):
-    return render(request, "predictions/money_management.html")
+def sports_betting_money_management(request):
+    return render(request, "predictions/sports_betting_money_management.html")
 
 
 def parlays(request):
