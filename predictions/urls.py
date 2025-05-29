@@ -23,6 +23,7 @@ urlpatterns = [
     path("zoom-support/", views.zoomSupport, name="zoomTOS"),
     path("zoom-documentation/", views.zoomDocumentation, name="zoomPrivacy"),
     path("sports-betting-money-management/", views.sports_betting_money_management, name="sports_betting_money_management"),
+    path("disclaimer/", views.disclaimer, name="disclaimer"),
     path("predictions/", views.predictions, name="predictions"),
     path("recaps/", views.recaps, name="recaps"),
     path("parlays/", views.parlays, name="parlays"),

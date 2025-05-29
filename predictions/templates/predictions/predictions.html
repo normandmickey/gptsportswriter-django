@@ -48,7 +48,8 @@ GPTSportsWriter - Predictions
         </p>
     {% endif %}
     {% if generated_prediction %}
-        <p>{{ generated_prediction | safe }}</p>
+        <p>{{ generated_prediction | safe }} {{ created_at }}</p>
+        <p>Created at: {{ created_at }} GMT</p>
     {% endif %}
     </div>
 </div>

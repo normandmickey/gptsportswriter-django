@@ -279,6 +279,8 @@ def zoomDocumentation(request):
 def sports_betting_money_management(request):
     return render(request, "predictions/sports_betting_money_management.html")
 
+def disclaimer(request):
+    return render(request, "predictions/disclaimer.html")
 
 def parlays(request):
     context = {}
@@ -466,7 +468,8 @@ def predictions(request):
                         "user_input": match,
                         "generated_prediction": article.content.replace("\n", "<br/>"),
                         "sports": sports,
-                        "image_url":  f"data:;base64,{imageBytes}"
+                        "image_url":  f"data:;base64,{imageBytes}",
+                        "created_at": article.created_at
                     }
             else:
                 generated_prediction = generate_prediction(sport + " " + match, res, gameId, sportKey)
@@ -486,6 +489,7 @@ def predictions(request):
                     "generated_prediction": generated_prediction.replace("\n", "<br/>"),
                     "image_url": image_url,
                     "sports": sports,
+                    "created_at": "",
                 }
 
                 title = "Prediction: " + match[:-2]
@@ -647,6 +651,7 @@ def recaps(request):
                     }
             else:        
                 generated_recap = generate_recap(sport + " " + match, res, gameId, sportKey)
+                print(sport)
                 image_prompt = createImagePrompt(sport + " " + match)
                 #print(image_prompt)
                 image_url = generate_image(image_prompt)
