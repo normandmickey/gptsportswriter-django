@@ -134,13 +134,13 @@ footer a:hover {
 </head>
 <body>
  <header>
- <nav class="navbar navbar-expand-sm navbar-light" style="background-color: #333; color: #fff;">
+ <nav class="navbar navbar-expand-sm navbar-light" style="background-color: #4c77ee; color: #fff;">
  <div class="container-fluid">
  <a class="navbar-brand" href="#" style="color: #fff;">GPTSportsWriter.com</a>
- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+ <button class="navbar-toggler"  type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
  <span class="navbar-toggler-icon"></span>
  </button>
- <div class="collapse navbar-collapse" id="collapsibleNavbar">
+ <div class="collapse navbar-collapse"  id="collapsibleNavbar">
  <ul class="navbar-nav">
  <li class="nav-item">
  <a class="nav-link" href="{% url 'home' %}" style="color: #fff;">Home</a>
@@ -155,10 +155,13 @@ footer a:hover {
  <a class="nav-link" href="{% url 'parlays' %}" style="color: #fff;">Create Parlays</a>
  </li>
  <li class="nav-item">
- <a class="nav-link" href="{% url 'topnews' %}" style="color: #fff;">Top News</a>
+ <a class="nav-link" href="{% url 'props' %}" style="color: #fff;">Create Props</a>
  </li>
  <li class="nav-item">
- <a class="nav-link" href="{% url 'props' %}" style="color: #fff;">Create Props</a>
+ <a class="nav-link" href="{% url 'topnews' %}" style="color: #fff;">Top News</a>
+ </li>
+  <li class="nav-item">
+ <a class="nav-link" href="{% url 'sports_betting_money_management' %}" style="color: #fff;">Money Management</a>
  </li>
  </ul>
  </div>
@@ -166,6 +169,7 @@ footer a:hover {
  </nav>
  <p></p>
  <!-- script type="text/javascript" src="https://js.revmasters.com/javascript.php?prefix=8ejz3pKmFDuMKNOJN2Xw7mNd7ZgqdRLk&amp;media=1099&amp;campaign=1"></script>-->
+<script type="text/javascript" src="https://js.revmasters.com/javascript.php?prefix=8ejz3pKmFDvUOsjNOfgKeWNd7ZgqdRLk&amp;media=103&amp;campaign=1"></script>
  </header>
  <main>
  <div class="body-content">
@@ -175,9 +179,10 @@ footer a:hover {
  <hr/>
  <footer>
 <!--<script type="text/javascript" src="https://js.revmasters.com/javascript.php?prefix=8ejz3pKmFDtD3TEmsPWI0WNd7ZgqdRLk&amp;media=1100&amp;campaign=1"></script>-->
+<script type="text/javascript" src="https://js.revmasters.com/javascript.php?prefix=8ejz3pKmFDvUOsjNOfgKeWNd7ZgqdRLk&amp;media=103&amp;campaign=1"></script>
  <p><a href="https://www.reddit.com/r/GPTSportsWriter/" style="color: #337ab7;">Reddit</a> <a href="https://www.facebook.com/gptsportswriter" style="color: #337ab7;">FB</a> <a href="https://x.com/gptsportswriter" style="color: #337ab7;">X</a> <a href="https://discord.gg/gBzTrbyybX" style="color: #337ab7;">Discord</a> <a href="https://t.me/GPTSportsWriter_bot" style="color: #337ab7;">Telegram Bot</a></p>
- <p>&copy; GPTSportsWriter.com - 2024</p>
- </footer>
+ <p>&copy; GPTSportsWriter.com - 2025</p>
+ <h3><a href=" {% url 'disclaimer'  %}">Disclaimer: We Try Not to Suck (But No Promises)</a></h3>
  </main>
 </body>
 </html>

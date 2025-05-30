@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.utils.timezone import datetime
 from django.utils import timezone
-from .chat_completion import generate_prediction, generate_recap, generate_tweet, generate_parlay, generate_news, generate_videoText, generate_prop
+from .chat_completion import generate_prediction, generate_recap, generate_tweet, generate_parlay, generate_news, generate_videoText, generate_prop, generate_odds
 from .image_generation import generate_image, createImagePrompt
 from praw.models import InlineImage
 from dotenv import load_dotenv
@@ -523,6 +523,54 @@ def predictions(request):
 
                 #os.remove(file_name)
     return render(request, "predictions/predictions.html", context)
+
+def odds(request):
+    context = {}
+    user_input = ""
+    sportKey = ""
+    sport = ""
+    sports = getSports()
+
+    if request.method == "GET":
+        dataSports = getSports()
+        return render(request, "predictions/predictions.html", {'sports': dataSports})
+    else:
+        if "game" in request.POST:
+            user_input += request.POST.get("game") + "\n"
+            gameSplit = user_input.split(':')
+            gameId=gameSplit[4]
+            gameId=gameId.strip()
+            match=gameSplit[0]
+            sportKey += request.POST.get("sport")
+            sport += request.POST.get("sport") + "\n"
+            sport = sport.replace('_', " ")
+            res = re.split('\s+', match)
+            res.remove('VS')
+            res = res[:len(res)-3]
+                   
+            
+            generated_odds = generate_odds(sport + " " + match, res, gameId, sportKey)
+            
+            context = {
+                "user_input": match,
+                "generated_prediction": generated_odds.replace("\n", "<br/>"),
+                "image_url": "",
+                "sports": sports,
+                "created_at": "",
+            }
+
+            title = "Odds: " + match[:-2]
+            #image = InlineImage(path=file_name, caption=title)
+            #media = {"image1": image}
+            #selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction + "\n\nVisit http://www.gptsportswriter.com for more predictions."
+                
+            #write to database
+            #write_to_database(gameId,generated_prediction,"img.jpg",dbTable)
+            #drawing = open(file_name, 'rb').read()
+            #prediction = Predictions.objects.create(id=gameId, content=generated_prediction.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey)
+                
+            
+    return render(request, "predictions/odds.html", context)
 
 def current_odds(request):
     context = {}
