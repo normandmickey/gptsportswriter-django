@@ -247,6 +247,15 @@ def ajax_handlerb(request,sport):
         
     return JsonResponse({'games': games})
 
+def create_link(page, title):
+    baseURL = f"https://www.gptsportswriter.com/{page}-detail/"
+    link = title.lower()
+    link = link.replace(":","")
+    link = link.replace(" ", "-")
+    link = link[:-1]
+    link = baseURL + link + "/"
+    return link
+
 
 # Create your views here.
 def home(request):
@@ -333,9 +342,10 @@ def parlays(request):
                 }
 
                 title = "Parlay: " + match[:-2]
+                link = create_link("parlay", title)
                 image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
-                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay + "\n\nVisit http://www.gptsportswriter.com for more predictions."
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay + "\n\nVisit " + link + " for more parlays."
                 drawing = open(file_name, 'rb').read()
                 parlay = Parlays.objects.create(id=gameId, content=generated_parlay.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey)
                 try:
@@ -495,7 +505,10 @@ def predictions(request):
                 title = "Prediction: " + match[:-2]
                 image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
-                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction + "\n\nVisit http://www.gptsportswriter.com for more predictions."
+                link = create_link("prediction", title)
+                
+                #print(link)
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction + "\n\nVisit " + link + " for more predictions."
                 
                 #write to database
                 #write_to_database(gameId,generated_prediction,"img.jpg",dbTable)
@@ -638,9 +651,10 @@ def props(request):
                 }
 
                 title = "Prop Bets: " + match[:-2]
+                link = create_link("prop", title)
                 image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
-                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop + "\n\nVisit http://www.gptsportswriter.com for more predictions."
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop + "\n\nVisit " + link + " for more props."
                 drawing = open(file_name, 'rb').read()
                 prop = Props.objects.create(id=gameId, content=generated_prop.replace("\n", "<br/>") , gameimg=drawing, title=title, sport_key=sportKey)
                 try:
@@ -719,9 +733,10 @@ def recaps(request):
                 }
 
                 title = "Recap: " + match[:-2]
+                link = create_link("recap", title)
                 image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
-                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_recap + "\n\nVisit http://www.gptsportswriter.com for more predictions."
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_recap + "\n\nVisit " + link + " for more recaps."
                 drawing = open(file_name, 'rb').read()
                 recap = Recaps.objects.create(id=gameId, content=generated_recap.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey)
                 
