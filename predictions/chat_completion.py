@@ -3,7 +3,9 @@ from asknews_sdk import AskNewsSDK
 from groq import Groq
 from datetime import datetime, timedelta
 from openai import OpenAI
+from duckduckgo_search import DDGS
 openAI_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+ddgs = DDGS()
 
 GPT_MODEL= "llama-3.3-70b-versatile"
 GPT_MODEL2= "meta-llama/llama-4-maverick-17b-128e-instruct"
@@ -24,6 +26,16 @@ groq_client = Groq(
     api_key=os.environ.get("GROQ_API_KEY")
 )
 
+def search_internet(query):
+    try:
+        results = ddgs.text(query, max_results=5)
+        # Filter out irrelevant results
+        filtered_results = [result for result in results if 'body' in result]
+        return filtered_results
+    except Exception as e:
+        print(f"Error searching internet: {e}")
+        return []
+    
 def generate_odds(input_text, guaranteedWords, gameId, sportKey):
     # Call the OpenAI API to generate the story
     #sport = "baseball_mlb"
@@ -49,7 +61,17 @@ def generate_prediction(input_text, guaranteedWords, gameId, sportKey):
 def get_odds(input_text, oddsJson):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
-    
+    context = ""
+    try: 
+        #newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_dicts
+        #newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True).as_dicts
+        #print(str(newsArticles))
+        #context = str(newsArticles)
+        search_results = search_internet(input_text)
+        context = "\n".join([result['body'] for result in search_results])
+        print(context)
+    except:
+        context = ""
      
   
     # Construct the system prompt. Feel free to experiment with different prompts.
@@ -61,7 +83,7 @@ def get_odds(input_text, oddsJson):
             messages=[
                 {"role": "system", "content": system_prompt},
                 #{"role": "user", "content": "Write a humorous, sarcastic prediction for the following matchup.  Include only relevant stats and odds for the game in question note any injiries or significant players. You must pick a best bet based on the context provided take into account that underdogs win about 41 percent of the time in baseball and hockey, 35 percent in football and 25 percent in baskeball. Do not make up any details." + context + str(oddsJson) + " " + input_text},
-                {"role": "user", "content": "Write a report summarizing the following odds. " + str(oddsJson) + " " + input_text},
+                {"role": "user", "content": "Write a brief report summarizing the following odds and articles and make a prediction.  Include links to references. Format your response in HTML, links should open in new window. " + context + " " + str(oddsJson) + " " + input_text},
             ],
             temperature=0, 
             max_tokens=1000
@@ -71,7 +93,7 @@ def get_odds(input_text, oddsJson):
             model=OPENAI_GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "write a report summarizing the following odds. " + str(oddsJson) + " " + input_text},  
+                {"role": "user", "content": "write a brief report summarizing the following odds and articles and make a prediction. Include links to references. Format your response in HTML, links should open in new window. " + context + " " + str(oddsJson) + " " + input_text},  
             ],
             temperature=0.1, 
             max_tokens=1000
@@ -364,5 +386,5 @@ def format_response(response):
     # Remove any unwanted text or formatting
     prediction = prediction.strip()
     # Return the formatted story
-    print(prediction)
+    #print(prediction)
     return prediction

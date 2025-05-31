@@ -1,6 +1,6 @@
 {% extends "predictions/layout.html" %}
 {% block title %}
-GPTSportsWriter - Predictions
+GPTSportsWriter - Current Odds
 {% endblock %}
 {% block content %}
 <script>
@@ -13,7 +13,7 @@ GPTSportsWriter - Predictions
 
 <p><center>AI Sports Predictions - Accurate, humorous and informative.</center></p>
 <p><center><a href="{% url 'recent_predictions' %}">Recent Predictions</center></a>
-<div pagename="predictions" style="padding:1em; font-size:14pt;">
+<div pagename="odds" style="padding:1em; font-size:14pt;">
     <form onsubmit="openLoader()" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <select name="sport" style="width:15em;" id="sport">
@@ -49,7 +49,6 @@ GPTSportsWriter - Predictions
     {% endif %}
     {% if generated_prediction %}
         <p>{{ generated_prediction | safe }} {{ created_at }}</p>
-        <p>Created at: {{ created_at }} GMT</p>
     {% endif %}
     </div>
 </div>
