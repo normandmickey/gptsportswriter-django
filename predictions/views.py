@@ -13,7 +13,7 @@ import facebook as fb
 import tweepy
 import openai
 import psycopg2
-import base64
+import base64, unicodedata
 from .models import Predictions, Recaps, Parlays, Props
 
 load_dotenv(override=True)
@@ -249,12 +249,16 @@ def ajax_handlerb(request,sport):
 
 def create_link(page, title):
     baseURL = f"https://www.gptsportswriter.com/{page}-detail/"
-    link = title.lower()
-    link = link.replace(":","")
-    link = link.replace(" ", "-")
-    link = link[:-1]
-    link = baseURL + link + "/"
-    return link
+    normalized = unicodedata.normalize('NFD', title)
+    nlink = u"".join([c for c in normalized if not unicodedata.combining(c)])
+    nlink = nlink.lower()
+    nlink = nlink.replace(":","")
+    nlink = nlink.replace(" ", "-")
+    nlink = nlink.replace("(", "")
+    nlink = nlink.replace(")", "")
+    nlink = nlink[:-1]
+    nlink = baseURL + nlink + "/"
+    return nlink
 
 
 # Create your views here.
