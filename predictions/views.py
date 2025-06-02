@@ -61,10 +61,10 @@ def recent_predictions(request):
     now = timezone.now()
     twenty_fours_hours_ago = now - timezone.timedelta(hours=48)
     #data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago)
-    data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('id', 'title', 'created_at', 'slug', 'tweet_text', 'sport_key')
+    data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('id', 'title', 'created_at', 'slug', 'sport_key')
     for item in data:
         item['title'] = item['title'].replace("Prediction: ", "")
-        item['tweet_text'] = item['tweet_text'][:-49].partition(":")[2]
+        #item['tweet_text'] = item['tweet_text'][:-49].partition(":")[2]
     return render(request, 'predictions/recent_predictions.html', {'data': data})
 
 def recent_parlays(request):
