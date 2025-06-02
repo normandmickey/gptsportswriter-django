@@ -32,6 +32,7 @@ class Predictions(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(unique=True, blank=False, max_length=255)
     sport_key=models.TextField(default="baseball_mlb")
+    tweet_text=models.TextField(blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -54,6 +55,7 @@ class Recaps(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(unique=True, blank=False, max_length=255)
     sport_key=models.TextField(default="baseball_mlb")
+    tweet_text=models.TextField(blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -76,6 +78,7 @@ class Parlays(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(unique=True, blank=False, max_length=255)
     sport_key=models.TextField(default="baseball_mlb")
+    tweet_text=models.TextField(blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -98,6 +101,7 @@ class Props(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(unique=True, blank=False, max_length=255)
     sport_key=models.TextField(default="baseball_mlb")
+    tweet_text=models.TextField(blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:

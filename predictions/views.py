@@ -3,8 +3,8 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.utils.timezone import datetime
 from django.utils import timezone
-from .chat_completion import generate_prediction, generate_recap, generate_tweet, generate_parlay, generate_news, generate_videoText, generate_prop, generate_odds
-from .image_generation import generate_image, createImagePrompt
+from .chat_completion import generate_prediction, generate_recap, generate_tweet, generate_parlay, generate_news, generate_videoText, generate_prop, generate_odds, generate_slide_content
+from .image_generation import generate_image, createImagePrompt, generate_image2
 from praw.models import InlineImage
 from dotenv import load_dotenv
 from datetime import datetime as dtdt
@@ -15,6 +15,9 @@ import openai
 import psycopg2
 import base64, unicodedata
 from .models import Predictions, Recaps, Parlays, Props
+from pptx import Presentation
+from pptx.util import Inches
+
 
 load_dotenv(override=True)
 
@@ -56,11 +59,12 @@ tweepy_auth = tweepy.OAuth1UserHandler(
 
 def recent_predictions(request):
     now = timezone.now()
-    twenty_fours_hours_ago = now - timezone.timedelta(hours=48)
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=96)
     #data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago)
-    data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('id', 'title', 'created_at', 'slug')
+    data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('id', 'title', 'created_at', 'slug', 'tweet_text', 'sport_key')
     for item in data:
         item['title'] = item['title'].replace("Prediction: ", "")
+        item['tweet_text'] = item['tweet_text'][:-49].partition(":")[2]
     return render(request, 'predictions/recent_predictions.html', {'data': data})
 
 def recent_parlays(request):
@@ -140,8 +144,12 @@ def sendTweet(text, match, file):
     #tweet_endpoint_limit = rate_limit_status['resources']['statuses']['/statuses/update']['remaining']
     #print(tweet_endpoint_limit)
     #if tweet_endpoint_limit > 0:
-    response = client.create_tweet(text=tweetText, media_ids=[media_id])
-    print(response.data['id'])
+    try:
+        response = client.create_tweet(text=tweetText, media_ids=[media_id])
+    except:
+        print(tweetText)
+    #print(response.data['id'])
+    return tweetText
     #else:
         
         #print("Rate limit exceeded. Please wait before tweeting again.")
@@ -157,12 +165,53 @@ def openAITTS(text):
         )
     response.stream_to_file(speech_file_path)
 
+
+
+#def generate_image(prompt):
+#    response = openai.images.generate(prompt=prompt[:1000], n=1, size="512x512")
+#    image_url = response.data[0].url
+#    print(image_url)
+#    image_data = requests.get(image_url).content
+#    return BytesIO(image_data)
+
+
+
+def parse_and_create_ppt(text, topic):
+    prs = Presentation()
+    slides_data = text.strip().split("\n\n")
+
+    for i, slide in enumerate(slides_data):
+        lines = slide.strip().split("\n")
+        title = lines[0].split(": ", 1)[1]
+        bullets = [line.split(": ", 1)[1] if ": " in line else line for line in lines[1:]]
+        content_text = '\n'.join(bullets)
+
+        slide_layout = prs.slide_layouts[1]
+        slide_obj = prs.slides.add_slide(slide_layout)
+        slide_obj.shapes.title.text = title
+        slide_obj.placeholders[1].text = content_text
+
+        try:
+            img = generate_image2(f"{title}, {bullets[0]}")
+            left = Inches(5.5)
+            top = Inches(1.5)
+            height = Inches(3.5)
+            slide_obj.shapes.add_picture(img, left, top, height=height)
+        except Exception as e:
+            print(f"Image skipped: {e}")
+
+    output_path = f"{topic[:40].replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pptx"
+    prs.save(output_path)
+    return output_path
+
+
+
 def createTweet(text):
     tweetText = generate_tweet(text)
     tweetText = tweetText.replace('"', '')
     tweetText = tweetText
     #print(tweetText)
-    return(tweetText)
+    return tweetText
 
 def fbPost(text, title, file):
     #gptsportswriterapi=fb.GraphAPI("EAAK2IMS7Bb8BO2pYq60uSiYwuJwvMf8ZCcr02yuGwZCFoZCVtzhattkaq9QRQoGAGpZBvaISiZBxutz7hZAvfgDD9VD7T5AEUicF1VztjGtR1WzTFR4cr60YHE7zQZBWbjWwapUASOctQTXY9PPnUeqlJjEhBTdADDYjS22VlM4eZCKiGULGB6lHcDZBZBz8EF")
@@ -467,8 +516,7 @@ def predictions(request):
             sport = sport.replace('_', " ")
             res = re.split('\s+', match)
             res.remove('VS')
-            res = res[:len(res)-3]
-                   
+            res = res[:len(res)-3]                   
             
             print(gameId)
             articles = Predictions.objects.filter(id=gameId)
@@ -490,7 +538,7 @@ def predictions(request):
                 image_prompt = createImagePrompt(sport + " " + match)
                 #print(image_prompt)
                 image_url = generate_image(image_prompt)
-                print(image_url)
+                #print(image_url)
                 time.sleep(2)
                 data = requests.get(image_url).content
                 file_name = str(uuid.uuid4()) + ".jpg"
@@ -510,15 +558,18 @@ def predictions(request):
                 image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
                 link = create_link("prediction", title)
+                tweetText = ""
                 
                 #print(link)
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction + "\n\nVisit " + link + " for more predictions."
                 
                 #write to database
                 #write_to_database(gameId,generated_prediction,"img.jpg",dbTable)
-                drawing = open(file_name, 'rb').read()
-                prediction = Predictions.objects.create(id=gameId, content=generated_prediction.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey)
+                #drawing = open(file_name, 'rb').read()
+                #prediction = Predictions.objects.create(id=gameId, content=generated_prediction.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey)
                 
+                #content = generate_slide_content(generated_prediction)
+                #ppt_path = parse_and_create_ppt(content, generated_prediction)
                 #post to reddit
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText)                                
@@ -527,10 +578,10 @@ def predictions(request):
 
                 #post to twitter
                 try:
-                    print("sending tweet")
-                    sendTweet(generated_prediction, match, file_name)  
+                    tweetText = sendTweet(generated_prediction, match, file_name)
                 except:
                     print("error sending tweet")
+                    
     
                 #post to facebook
                 try:
@@ -538,6 +589,9 @@ def predictions(request):
                 except:
                     print("error posting to FB")
 
+                drawing = open(file_name, 'rb').read()
+                print("tweetText:" + tweetText)
+                prediction = Predictions.objects.create(id=gameId, content=generated_prediction.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey, tweet_text=tweetText)
                 #os.remove(file_name)
     return render(request, "predictions/predictions.html", context)
 

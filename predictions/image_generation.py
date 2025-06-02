@@ -1,4 +1,5 @@
-import os
+import os, requests
+from io import BytesIO
 from openai import OpenAI
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
@@ -36,4 +37,29 @@ def generate_image(text_prompt):
     except:
         image_url = ""
     return image_url
+
+def generate_image2(text_prompt):
+    image_url = ""
+    try:
+        response = client.images.generate(
+            model="dall-e-3",
+            prompt=text_prompt,
+            size="512x512",
+            quality="standard",
+            n=1,
+        )
+        image_url = response.data[0].url
+        image_data = requests.get(image_url).content
+    except:
+        image_data = ""
+    return image_data
+
+#def generate_image(prompt):
+#    response = openai.images.generate(prompt=prompt[:1000], n=1, size="512x512")
+#    image_url = response.data[0].url
+#    print(image_url)
+#    image_data = requests.get(image_url).content
+#    return BytesIO(image_data)
+
+
 

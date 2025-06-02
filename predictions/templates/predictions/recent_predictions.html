@@ -6,10 +6,10 @@ GPTSportsWriter - Recent Predictions
 <body>
     <p><center><h1>Recent Predictions</h1></center></p>
     <p><center><a href="{% url 'predictions' %}">Create Predictions</a></center></p>
-<ul>
+<ul> 
         {% for item in data %}
-        <li><a href="{{ request.META.HTTP_NAME }}/prediction-detail/{{ item.slug }}">{{ item.title | safe }}</a></li>
+        <li>{{ item.sport_key }} : <a href="{{ request.META.HTTP_NAME }}/prediction-detail/{{ item.slug }}">{{  item.title }} - {{ item.tweet_text | safe }}</a></li>
         {% endfor %}
-    </ul>
+</ul>
 </body>
 {% endblock %}

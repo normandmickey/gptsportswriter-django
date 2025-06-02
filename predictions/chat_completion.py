@@ -113,7 +113,6 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
         newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True).as_dicts
         context = ""
         for article in newsArticles:
-            #print(article.summary)
             context += article.summary
     except:
         context = ""
@@ -388,3 +387,21 @@ def format_response(response):
     # Return the formatted story
     #print(prediction)
     return prediction
+
+def generate_slide_content(topic):
+    prompt = f"""
+Create a PowerPoint presentation on the topic: "{topic}".
+Structure output exactly like this:
+
+Slide 1 Title: <title>
+Slide 1 Content: <bullet1>\n<bullet2>\n<bullet3>
+
+Slide 2 Title: ...
+..."""
+    response = openAI_client.chat.completions.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.7
+    )
+    #return response['choices'][0]['message']['content']
+    return response.choices[0].message.content
