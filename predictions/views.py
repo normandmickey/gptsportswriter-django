@@ -59,7 +59,7 @@ tweepy_auth = tweepy.OAuth1UserHandler(
 
 def recent_predictions(request):
     now = timezone.now()
-    twenty_fours_hours_ago = now - timezone.timedelta(hours=96)
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=48)
     #data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago)
     data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('id', 'title', 'created_at', 'slug', 'tweet_text', 'sport_key')
     for item in data:
