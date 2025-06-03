@@ -61,10 +61,10 @@ def recent_predictions(request):
     now = timezone.now()
     twenty_fours_hours_ago = now - timezone.timedelta(hours=48)
     #data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago)
-    data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('id', 'title', 'created_at', 'slug', 'sport_key')
+    data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('id', 'title', 'created_at', 'slug', 'sport_key', 'tweet_text')
     for item in data:
         item['title'] = item['title'].replace("Prediction: ", "")
-        #item['tweet_text'] = item['tweet_text'][:-49].partition(":")[2]
+        item['tweet_text'] = item['tweet_text'][:-49].partition(":")[2]
     return render(request, 'predictions/recent_predictions.html', {'data': data})
 
 def recent_parlays(request):
@@ -524,14 +524,16 @@ def predictions(request):
             print(articles)
             if articles:
                 for article in articles:
-                    print("title: " + article.title)
+                    #print("title: " + article.title)
+                    latest_odds = generate_odds(sport + " " + match, res, gameId, sportKey)
                     imageBytes = get_image_base64(article.gameimg)
                     context = {
                         "user_input": match,
                         "generated_prediction": article.content.replace("\n", "<br/>"),
                         "sports": sports,
                         "image_url":  f"data:;base64,{imageBytes}",
-                        "created_at": article.created_at
+                        "created_at": article.created_at,
+                        "latest_odds": latest_odds
                     }
             else:
                 generated_prediction = generate_prediction(sport + " " + match, res, gameId, sportKey)

@@ -40,10 +40,17 @@ def generate_odds(input_text, guaranteedWords, gameId, sportKey):
     # Call the OpenAI API to generate the story
     #sport = "baseball_mlb"
     #print(sportKey)
+    scoreJson = ""
     odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=h2h,spreads,totals&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
     oddsJson = odds.json()
+    try: 
+        score = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/scores/?apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
+        scoreJson = score.json()
+    except:
+        scoreJson = ""
+    #print(scoreJson)
     #print(oddsJson)
-    response = get_odds(input_text, oddsJson)
+    response = get_odds(input_text, oddsJson, scoreJson)
     # Format and return the response
     return format_response(response)
 
@@ -58,7 +65,7 @@ def generate_prediction(input_text, guaranteedWords, gameId, sportKey):
     # Format and return the response
     return format_response(response)
 
-def get_odds(input_text, oddsJson):
+def get_odds(input_text, oddsJson, scoreJson):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
     context = ""
@@ -69,7 +76,8 @@ def get_odds(input_text, oddsJson):
         #context = str(newsArticles)
         search_results = search_internet(input_text)
         context = "\n".join([result['body'] for result in search_results])
-        print(context)
+        #print(context)
+        context = ""
     except:
         context = ""
      
@@ -83,20 +91,20 @@ def get_odds(input_text, oddsJson):
             messages=[
                 {"role": "system", "content": system_prompt},
                 #{"role": "user", "content": "Write a humorous, sarcastic prediction for the following matchup.  Include only relevant stats and odds for the game in question note any injiries or significant players. You must pick a best bet based on the context provided take into account that underdogs win about 41 percent of the time in baseball and hockey, 35 percent in football and 25 percent in baskeball. Do not make up any details." + context + str(oddsJson) + " " + input_text},
-                {"role": "user", "content": "Write a brief report summarizing the following odds and articles and make a prediction.  Include links to references. Format your response in HTML, links should open in new window. " + context + " " + str(oddsJson) + " " + input_text},
+                {"role": "user", "content": "Write a brief report summarizing the following odds and articles and make a prediction.  Include links to references. Format your response in HTML, links should open in new window. " + context + " " + str(oddsJson) + " Current Score: " + str(scoreJson) + " " + input_text},
             ],
             temperature=0, 
-            max_tokens=1000
+            max_tokens=500,
         )
     except:
         response = openAI_client.chat.completions.create(
             model=OPENAI_GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "write a brief report summarizing the following odds and articles and make a prediction. Include links to references. Format your response in HTML, links should open in new window. " + context + " " + str(oddsJson) + " " + input_text},  
+                {"role": "user", "content": "write a brief report summarizing the following odds and articles and make a prediction. Include links to references. Format your response in HTML, links should open in new window. " + context + " " + str(oddsJson) + " Current Score: " + str(scoreJson) + " " + input_text},  
             ],
-            temperature=0.1, 
-            max_tokens=1000
+            temperature=0, 
+            max_tokens=500,
         )
         #print("gpt4o")
 
@@ -239,14 +247,14 @@ def generate_news(input_text, string_guarantee):
 def get_news(input_text, string_guarantee):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
-    print("top News input: " + str(input_text))
-    print("top News string guarantee: " + str(string_guarantee))
+    #print("top News input: " + str(input_text))
+    #print("top News string guarantee: " + str(string_guarantee))
     context=""
     #newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_dicts
     newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=5, categories=["Sports"], premium=True).as_dicts
     for article in newsArticles:
         context += article.summary
-        print(article.summary)
+        #print(article.summary)
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty and accurate.  """

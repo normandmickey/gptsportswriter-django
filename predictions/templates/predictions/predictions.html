@@ -39,8 +39,9 @@ GPTSportsWriter - Predictions
     </div>
        
       <div id="data-box">
+       
         <p>
-            <strong>Prediction: {{ user_input }}</strong>
+            <strong>Prediction:</strong> {{ user_input | safe}}
         </p>
 
         {% if image_url %}
@@ -50,6 +51,10 @@ GPTSportsWriter - Predictions
     {% if generated_prediction %}
         <p>{{ generated_prediction | safe }} {{ created_at }}</p>
         <p>Created at: {{ created_at }} GMT</p>
+         <p>
+            Update: {{ latest_odds | safe}}
+        </p>
+
     {% endif %}
     </div>
 </div>
