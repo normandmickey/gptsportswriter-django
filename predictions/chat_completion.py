@@ -96,7 +96,7 @@ def get_odds(input_text, oddsJson, scoreJson):
             messages=[
                 {"role": "system", "content": system_prompt},
                 #{"role": "user", "content": "Write a humorous, sarcastic prediction for the following matchup.  Include only relevant stats and odds for the game in question note any injiries or significant players. You must pick a best bet based on the context provided take into account that underdogs win about 41 percent of the time in baseball and hockey, 35 percent in football and 25 percent in baskeball. Do not make up any details." + context + str(oddsJson) + " " + input_text},
-                {"role": "user", "content": "Write a brief report summarizing the following odds and articles and make a prediction. Format your response in HTML. " + context + " " + str(oddsJson) + " Current Score: " + str(scoreJson) + " " + input_text},
+                {"role": "user", "content": "Write a brief report summarizing the following odds and articles and make a prediction. " + context + " " + str(oddsJson) + " Current Score: " + str(scoreJson) + " " + input_text},
             ],
             temperature=0, 
             max_tokens=500,
@@ -106,7 +106,7 @@ def get_odds(input_text, oddsJson, scoreJson):
             model=OPENAI_GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "write a brief report summarizing the following odds and articles and make a prediction. Format your response in HTML. " + context + " " + str(oddsJson) + " Current Score: " + str(scoreJson) + " " + input_text},  
+                {"role": "user", "content": "write a brief report summarizing the following odds and articles and make a prediction. " + context + " " + str(oddsJson) + " Current Score: " + str(scoreJson) + " " + input_text},  
             ],
             temperature=0, 
             max_tokens=500,
