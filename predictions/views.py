@@ -96,7 +96,14 @@ def recent_recaps(request):
 
 def prediction_detail(request, slug):
     article = get_object_or_404(Predictions, slug=slug)
-    return render(request, 'predictions/prediction_detail.html', {'article': article})
+    res = ""
+    latest_odds = generate_odds(article.sport_key + " " + article.title, res, article.id, article.sport_key)
+    print(latest_odds)
+    context = {
+        'article': article,
+        'update': latest_odds,
+    }
+    return render(request, 'predictions/prediction_detail.html', context)
 
 def prop_detail(request, slug):
     article = get_object_or_404(Props, slug=slug)
