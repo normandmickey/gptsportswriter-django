@@ -98,10 +98,10 @@ def prediction_detail(request, slug):
     article = get_object_or_404(Predictions, slug=slug)
     res = ""
     latest_odds = generate_odds(article.sport_key + " " + article.title, res, article.id, article.sport_key)
-    print(latest_odds)
+    #print(latest_odds)
     context = {
         'article': article,
-        'update': latest_odds,
+        'update': latest_odds.replace("\n", "<br/>"),
     }
     return render(request, 'predictions/prediction_detail.html', context)
 
