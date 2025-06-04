@@ -540,7 +540,7 @@ def predictions(request):
                         "sports": sports,
                         "image_url":  f"data:;base64,{imageBytes}",
                         "created_at": article.created_at,
-                        "latest_odds": latest_odds
+                        "latest_odds": latest_odds.replace("\n", "<br/>")
                     }
             else:
                 generated_prediction = generate_prediction(sport + " " + match, res, gameId, sportKey)
@@ -580,27 +580,29 @@ def predictions(request):
                 #content = generate_slide_content(generated_prediction)
                 #ppt_path = parse_and_create_ppt(content, generated_prediction)
                 #post to reddit
-                try:
-                    subreddit.submit(title, inline_media=media, selftext=selfText)                                
-                except:
-                    print("error submitting reddit post")       
-
                 #post to twitter
                 try:
                     tweetText = sendTweet(generated_prediction, match, file_name)
                 except:
                     print("error sending tweet")
-                    
-    
+
+                drawing = open(file_name, 'rb').read()
+                print("tweetText:" + tweetText)
+                prediction = Predictions.objects.create(id=gameId, content=generated_prediction.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey, tweet_text=tweetText)
+                
+                try:
+                    subreddit.submit(title, inline_media=media, selftext=selfText)                                
+                except:
+                    print("error submitting reddit post")       
                 #post to facebook
                 try:
                     fbPost(generated_prediction, match, file_name)
                 except:
                     print("error posting to FB")
 
-                drawing = open(file_name, 'rb').read()
-                print("tweetText:" + tweetText)
-                prediction = Predictions.objects.create(id=gameId, content=generated_prediction.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey, tweet_text=tweetText)
+                #drawing = open(file_name, 'rb').read()
+                #print("tweetText:" + tweetText)
+                #prediction = Predictions.objects.create(id=gameId, content=generated_prediction.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey, tweet_text=tweetText)
                 #os.remove(file_name)
     return render(request, "predictions/predictions.html", context)
 
