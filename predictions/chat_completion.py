@@ -74,17 +74,17 @@ def get_odds(input_text, oddsJson, scoreJson):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
     context = ""
-    try: 
+    #try: 
         #newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_dicts
         #newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True).as_dicts
         #print(str(newsArticles))
         #context = str(newsArticles)
-        search_results = search_internet(input_text)
-        context = "\n".join([result['body'] for result in search_results])
+        #search_results = search_internet(input_text)
+        #context = "\n".join([result['body'] for result in search_results])
         #print(context)
-        context = ""
-    except:
-        context = ""
+    #    context = ""
+    #except:
+     #   context = ""
      
   
     # Construct the system prompt. Feel free to experiment with different prompts.
@@ -96,7 +96,7 @@ def get_odds(input_text, oddsJson, scoreJson):
             messages=[
                 {"role": "system", "content": system_prompt},
                 #{"role": "user", "content": "Write a humorous, sarcastic prediction for the following matchup.  Include only relevant stats and odds for the game in question note any injiries or significant players. You must pick a best bet based on the context provided take into account that underdogs win about 41 percent of the time in baseball and hockey, 35 percent in football and 25 percent in baskeball. Do not make up any details." + context + str(oddsJson) + " " + input_text},
-                {"role": "user", "content": "Write a brief report summarizing the following odds and articles and make a prediction. " + context + " " + str(oddsJson) + " Current Score: " + str(scoreJson) + " " + input_text},
+                {"role": "user", "content": "Write a brief report summarizing the following odds, report the score and last update date and time if available. Do not make up any facts just use those presented to you.   " + context + " " + str(oddsJson) + " Current Score: " + str(scoreJson) + " " + input_text},
             ],
             temperature=0, 
             max_tokens=500,
@@ -106,7 +106,7 @@ def get_odds(input_text, oddsJson, scoreJson):
             model=OPENAI_GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "write a brief report summarizing the following odds and articles and make a prediction. " + context + " " + str(oddsJson) + " Current Score: " + str(scoreJson) + " " + input_text},  
+                {"role": "user", "content": "write a brief report summarizing the following odds, report the score and last update date and time if available.  Do not make up any facts just use those presented to you.  " + context + " " + str(oddsJson) + " Current Score: " + str(scoreJson) + " " + input_text},  
             ],
             temperature=0, 
             max_tokens=500,
