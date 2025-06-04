@@ -8,7 +8,7 @@ openAI_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 ddgs = DDGS()
 
 GPT_MODEL= "llama-3.3-70b-versatile"
-GPT_MODEL2= "meta-llama/llama-4-maverick-17b-128e-instruct"
+GPT_MODEL2= "llama-3.1-8b-instant"
 TWEET_MODEL="llama-3.3-70b-versatile"
 OPENAI_GPT_MODEL = "gpt-4o"
 #OPENAI_GPT_MODEL = "o3-mini"
