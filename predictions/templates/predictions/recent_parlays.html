@@ -8,7 +8,7 @@ GPTSportsWriter - Recent Parlays
 <p><center><a href="{% url 'parlays' %}">Create Parlays</a></center></p>
 <ul>
         {% for item in data %}
-         <li><a href="{{ request.META.HTTP_NAME }}/parlay-detail/{{ item.slug }}">{{ item.title | safe }}</a></li>
+         <li><strong>{{ item.sport_key }}:</strong> <a href="{{ request.META.HTTP_NAME }}/parlay-detail/{{ item.slug }}">{{  item.title }}</a>{{ item.tweet_text }}</li>
         {% endfor %}
     </ul>
 </body>

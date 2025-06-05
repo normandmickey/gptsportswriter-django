@@ -5,6 +5,7 @@ GPTSportsWriter - Parlay Detail
 {% block content %}
 <head>
         <title>{{ article.title }}</title>
+        <meta name="description" content="{{ article.tweet_text }}">
     </head>
     <body>
     <p><center><a href="{% url 'parlays' %}">Create Predictions</center></a> 

@@ -8,7 +8,7 @@ GPTSportsWriter - Recent Props
 <p><center><a href="{% url 'props' %}">Create Props</a></center></p>
 <ul>
         {% for item in data %}
-         <li><a href="{{ request.META.HTTP_NAME }}/prop-detail/{{ item.slug }}">{{ item.title | safe }}</a></li>
+         <li><strong>{{ item.sport_key }}:</strong> <a href="{{ request.META.HTTP_NAME }}/prop-detail/{{ item.slug }}">{{  item.title }}</a>{{ item.tweet_text }}</li>
         {% endfor %}
     </ul>
 </body>

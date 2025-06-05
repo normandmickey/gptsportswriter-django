@@ -71,27 +71,30 @@ def recent_parlays(request):
     now = timezone.now()
     twenty_fours_hours_ago = now - timezone.timedelta(hours=48)
     #data = Parlays.objects.filter(created_at__gte=twenty_fours_hours_ago)
-    data = Parlays.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug')
+    data = Parlays.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug', 'sport_key', 'tweet_text')
     for item in data:
         item['title'] = item['title'].replace("Parlay: ", "")
+        item['tweet_text'] = item['tweet_text'][:-49].partition(":")[2]
     return render(request, 'predictions/recent_parlays.html', {'data': data})
 
 def recent_props(request):
     now = timezone.now()
     twenty_fours_hours_ago = now - timezone.timedelta(hours=48)
     #data = Props.objects.filter(created_at__gte=twenty_fours_hours_ago)
-    data = Props.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug')
+    data = Props.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug', 'sport_key', 'tweet_text')
     for item in data:
         item['title'] = item['title'].replace("Prop Bets: ", "")
+        item['tweet_text'] = item['tweet_text'][:-49].partition(":")[2]
     return render(request, 'predictions/recent_props.html', {'data': data})
 
 def recent_recaps(request):
     now = timezone.now()
     twenty_fours_hours_ago = now - timezone.timedelta(hours=48)
     #data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago)
-    data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug')
+    data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug', 'sport_key', 'tweet_text')
     for item in data:
         item['title'] = item['title'].replace("Recap: ", "")
+        item['tweet_text'] = item['tweet_text'][:-49].partition(":")[2]
     return render(request, 'predictions/recent_recaps.html', {'data': data})
 
 def prediction_detail(request, slug):
@@ -406,8 +409,7 @@ def parlays(request):
                 image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay + "\n\nVisit " + link + " for more parlays."
-                drawing = open(file_name, 'rb').read()
-                parlay = Parlays.objects.create(id=gameId, content=generated_parlay.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey)
+                
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText) 
                 except:
@@ -415,11 +417,12 @@ def parlays(request):
         
         
                 try:
-                    sendTweet(generated_parlay, match, file_name)
+                    tweetText = sendTweet(generated_parlay, match, file_name)
                 except:
                     print("error sending tweet")
         
-
+                drawing = open(file_name, 'rb').read()
+                parlay = Parlays.objects.create(id=gameId, content=generated_parlay.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey, tweet_text=tweetText)
                 try:
                     fbPost(generated_parlay, match, file_name)
                 except:
@@ -590,15 +593,19 @@ def predictions(request):
                 print("tweetText:" + tweetText)
                 prediction = Predictions.objects.create(id=gameId, content=generated_prediction.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey, tweet_text=tweetText)
                 
-                try:
-                    subreddit.submit(title, inline_media=media, selftext=selfText)                                
-                except:
-                    print("error submitting reddit post")       
-                #post to facebook
-                try:
-                    fbPost(generated_prediction, match, file_name)
-                except:
-                    print("error posting to FB")
+                articles = Predictions.objects.filter(id=gameId)
+                if articles:
+                    try:
+                        subreddit.submit(title, inline_media=media, selftext=selfText)                                
+                    except:
+                        print("error submitting reddit post")       
+                    #post to facebook
+                    try:
+                        fbPost(generated_prediction, match, file_name)
+                    except:
+                        print("error posting to FB")
+                else: 
+                    pass
 
                 #drawing = open(file_name, 'rb').read()
                 #print("tweetText:" + tweetText)
@@ -724,17 +731,19 @@ def props(request):
                 image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop + "\n\nVisit " + link + " for more props."
-                drawing = open(file_name, 'rb').read()
-                prop = Props.objects.create(id=gameId, content=generated_prop.replace("\n", "<br/>") , gameimg=drawing, title=title, sport_key=sportKey)
+                
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText)
                 except:
                     print("error submitting reddit post")
         
                 try:
-                    sendTweet(generated_prop, "Prop Bets " + match + " ", file_name)
+                    tweetText = sendTweet(generated_prop, "Prop Bets " + match + " ", file_name)
                 except:
                     print("error sending tweet")
+                
+                drawing = open(file_name, 'rb').read()
+                prop = Props.objects.create(id=gameId, content=generated_prop.replace("\n", "<br/>") , gameimg=drawing, title=title, sport_key=sportKey, tweet_text=tweetText)
         
 
                 try:
@@ -806,8 +815,6 @@ def recaps(request):
                 image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_recap + "\n\nVisit " + link + " for more recaps."
-                drawing = open(file_name, 'rb').read()
-                recap = Recaps.objects.create(id=gameId, content=generated_recap.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey)
                 
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText)
@@ -815,9 +822,12 @@ def recaps(request):
                     print("error submitting reddit post")
 
                 try:
-                    sendTweet(generated_recap, "Recap " + match + " ", file_name)
+                    tweetText = sendTweet(generated_recap, "Recap " + match + " ", file_name)
                 except:
                     print("error sending tweet")
+                
+                drawing = open(file_name, 'rb').read()
+                recap = Recaps.objects.create(id=gameId, content=generated_recap.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey, tweet_text=tweetText)
     
                 try:
                     fbPost(generated_recap, match, file_name)
