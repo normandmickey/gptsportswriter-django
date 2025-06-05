@@ -13,6 +13,6 @@ GPTSportsWriter - Prediction Detail
     <p><center><img src="data:;base64,{{article.get_image_bytes}}" alt="Generated Image" style="max-width:80vw; max-height:80vh; object-fit: contain;"></center></p>
     <p>{{ article.content | safe }}</p>
     <p>Created: {{ article.created_at }} GMT</p>
-    <p>Update: {{ update | safe }} </p>
+    <!--<p>Update: {{ update | safe }} </p> -->
     </body>
 {% endblock %}
