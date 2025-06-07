@@ -4,8 +4,13 @@ from groq import Groq
 from datetime import datetime, timedelta
 from openai import OpenAI
 from duckduckgo_search import DDGS
+from balldontlie import BalldontlieAPI
+
 openAI_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 ddgs = DDGS()
+
+bdl_api = BalldontlieAPI(api_key=os.environ.get("BDL_API_KEY"))
+#print(bdl_api.mlb.teams.list())
 
 GPT_MODEL= "llama-3.3-70b-versatile"
 GPT_MODEL2= "llama-3.1-8b-instant"
@@ -159,7 +164,24 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
         #print("gpt4o")
 
     # Return the API response
+    #generate_audio(response.choices[0].message.content)
     return response
+
+def generate_audio(text):
+    speech_file_path = "speech2.mp3" 
+    model = "playai-tts"
+    voice = "Fritz-PlayAI"
+    text = text
+    response_format = "mp3"
+
+    response = groq_client.audio.speech.create(
+    model=model,
+    voice=voice,
+    input=text,
+    response_format=response_format
+    )
+
+    response.write_to_file(speech_file_path)
 
 def generate_prop(input_text, guaranteedWords, gameId, sportKey):
     # Call the OpenAI API to generate the story

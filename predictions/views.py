@@ -315,6 +315,9 @@ def create_link(page, title):
     nlink = nlink.replace(" ", "-")
     nlink = nlink.replace("(", "")
     nlink = nlink.replace(")", "")
+    nlink = nlink.replace("&", "")
+    nlink = nlink.replace(".", "")
+    nlink = nlink.replace("'", "")
     nlink = nlink[:-1]
     nlink = baseURL + nlink + "/"
     return nlink
