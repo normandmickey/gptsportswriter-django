@@ -5,12 +5,15 @@ from datetime import datetime, timedelta
 from openai import OpenAI
 from duckduckgo_search import DDGS
 from balldontlie import BalldontlieAPI
+#from google import genai
 
 openAI_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 ddgs = DDGS()
 
 bdl_api = BalldontlieAPI(api_key=os.environ.get("BDL_API_KEY"))
 #print(bdl_api.mlb.teams.list())
+
+#gi_client = genai.Client(api_key=os.environ.get("GI_API_KEY"))
 
 GPT_MODEL= "llama-3.3-70b-versatile"
 GPT_MODEL2= "llama-3.1-8b-instant"
