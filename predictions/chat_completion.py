@@ -16,7 +16,7 @@ bdl_api = BalldontlieAPI(api_key=os.environ.get("BDL_API_KEY"))
 
 #gi_client = genai.Client(api_key=os.environ.get("GI_API_KEY"))
 
-GPT_MODEL= "llama-3.3-70b-versatile"
+GPT_MODEL= "meta-llama/llama-4-scout-17b-16e-instruct"
 GPT_MODEL2= "llama-3.1-8b-instant"
 RESULT_MODEL= "meta-llama/llama-4-scout-17b-16e-instruct"
 TWEET_MODEL="llama-3.3-70b-versatile"
@@ -148,8 +148,8 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
             model=GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                #{"role": "user", "content": "Write a humorous, sarcastic prediction for the following matchup.  Include only relevant stats and odds for the game in question note any injiries or significant players. You must pick a best bet based on the context provided take into account that underdogs win about 41 percent of the time in baseball and hockey, 35 percent in football and 25 percent in baskeball. Do not make up any details." + context + str(oddsJson) + " " + input_text},
-                {"role": "user", "content": "Write a humorous, prediction for the following matchup.  Include only relevant stats and odds for the game in question note any injuries or significant players. You must pick a best bet based on the context provided, odds and statistics. Do not make up any details." + context + str(oddsJson) + " " + input_text},
+                #{"role": "user", "content": "Provide a humorous and sarcastic prediction for the upcoming matchup, including relevant statistics and odds. Highlight any notable injuries or key player information. Based on the provided context, make a informed best bet, taking into account the historical underdog win rates across different sports: 41% in baseball and hockey and Soccer, 35% in NFA football and MMA, 32% in NBA basketball, 26% in NCAA Basketball, 22% in NCAA Football and 30% in Tennis. Ensure that all information is accurate and not fabricated." + context + str(oddsJson) + " " + input_text},
+                {"role": "user", "content": "Provide a witty and tongue-in-cheek analysis of the upcoming matchup, complete with relevant statistics and odds. Highlight any significant injuries or key player updates that might impact the game's outcome. Based on the context, make a data-driven best bet, considering the historical trends and win rates of various teams and players across different sports. For reference, the overall underdog win rates are: 41% in baseball, hockey, and soccer; 35% in NFL football and MMA; 32% in NBA basketball; 26% in NCAA basketball; 22% in NCAA football; and 30% in tennis. Ensure that all information is accurate, up-to-date, and not made up on the spot." + context + str(oddsJson) + " " + input_text},
             ],
             temperature=0.3, 
             max_tokens=1000

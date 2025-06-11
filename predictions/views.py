@@ -71,7 +71,7 @@ def prediction_results(request):
     now = timezone.now()
     twenty_fours_hours_ago = now - timezone.timedelta(hours=36)
     yesterday = str(twenty_fours_hours_ago)[:10]
-    print(yesterday)
+    #print(yesterday)
     #data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago)
     data = Predictions.objects.filter(title__contains=yesterday).order_by('-created_at').values('id', 'title', 'created_at', 'slug', 'sport_key', 'tweet_text', 'content', 'results')
     for item in data:
@@ -154,7 +154,7 @@ def sendTweet(text, match, file):
     tweetText = createTweet(text)
     tweetText = match + ": " + tweetText
     tweetText = tweetText + " Want more? Visit https://www.gptsportswriter.com"
-    print(tweetText)
+    #print(tweetText)
 
     post = tweepy_api.simple_upload(file)
     text = str(post)
