@@ -33,6 +33,8 @@ class Predictions(models.Model):
     slug = models.SlugField(unique=True, blank=False, max_length=255)
     sport_key=models.TextField(default="baseball_mlb")
     tweet_text=models.TextField(blank=True)
+    won=models.BooleanField(null=True)
+    results=models.TextField(null=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -56,6 +58,8 @@ class Recaps(models.Model):
     slug = models.SlugField(unique=True, blank=False, max_length=255)
     sport_key=models.TextField(default="baseball_mlb")
     tweet_text=models.TextField(blank=True)
+    won=models.BooleanField(null=True)
+    results=models.TextField(null=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -79,6 +83,8 @@ class Parlays(models.Model):
     slug = models.SlugField(unique=True, blank=False, max_length=255)
     sport_key=models.TextField(default="baseball_mlb")
     tweet_text=models.TextField(blank=True)
+    won=models.BooleanField(null=True)
+    results=models.TextField(null=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -102,6 +108,8 @@ class Props(models.Model):
     slug = models.SlugField(unique=True, blank=False, max_length=255)
     sport_key=models.TextField(default="baseball_mlb")
     tweet_text=models.TextField(blank=True)
+    won=models.BooleanField(null=True)
+    results=models.TextField(null=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:

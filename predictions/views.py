@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.utils.timezone import datetime
 from django.utils import timezone
-from .chat_completion import generate_prediction, generate_recap, generate_tweet, generate_parlay, generate_news, generate_videoText, generate_prop, generate_odds, generate_slide_content
+from .chat_completion import generate_prediction, generate_recap, generate_tweet, generate_parlay, generate_news, generate_videoText, generate_prop, generate_odds, generate_slide_content, get_results
 from .image_generation import generate_image, createImagePrompt, generate_image2
 from praw.models import InlineImage
 from dotenv import load_dotenv
@@ -66,6 +66,19 @@ def recent_predictions(request):
         item['title'] = item['title'].replace("Prediction: ", "")
         item['tweet_text'] = item['tweet_text'][:-49].partition(":")[2]
     return render(request, 'predictions/recent_predictions.html', {'data': data})
+
+def prediction_results(request):
+    now = timezone.now()
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
+    yesterday = str(twenty_fours_hours_ago)[:10]
+    print(yesterday)
+    #data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago)
+    data = Predictions.objects.filter(title__contains=yesterday).order_by('-created_at').values('id', 'title', 'created_at', 'slug', 'sport_key', 'tweet_text', 'content', 'results')
+    for item in data:
+        item['title'] = item['title'].replace("Prediction: ", "")
+        if item['results'] is None:
+            item['results'] = get_results(item['content'], item['title'], item['id'], item['sport_key'])
+    return render(request, 'predictions/prediction_results.html', {'data': data})
 
 def recent_parlays(request):
     now = timezone.now()
@@ -555,11 +568,14 @@ def predictions(request):
                 image_url = generate_image(image_prompt)
                 #print(image_url)
                 time.sleep(2)
-                data = requests.get(image_url).content
-                file_name = str(uuid.uuid4()) + ".jpg"
-                f = open(file_name, 'wb')
-                f.write(data)
-                f.close
+                try:
+                    data = requests.get(image_url).content
+                    file_name = str(uuid.uuid4()) + ".jpg"
+                    f = open(file_name, 'wb')
+                    f.write(data)
+                    f.close
+                except:
+                    print("error creating image")
             
                 context = {
                     "user_input": match,

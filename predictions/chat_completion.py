@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from openai import OpenAI
 from duckduckgo_search import DDGS
 from balldontlie import BalldontlieAPI
+from .models import Predictions
 #from google import genai
 
 openAI_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
@@ -17,6 +18,7 @@ bdl_api = BalldontlieAPI(api_key=os.environ.get("BDL_API_KEY"))
 
 GPT_MODEL= "llama-3.3-70b-versatile"
 GPT_MODEL2= "llama-3.1-8b-instant"
+RESULT_MODEL= "meta-llama/llama-4-scout-17b-16e-instruct"
 TWEET_MODEL="llama-3.3-70b-versatile"
 OPENAI_GPT_MODEL = "gpt-4o"
 #OPENAI_GPT_MODEL = "o3-mini"
@@ -138,9 +140,7 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
     except:
         context = ""
     
-     
-  
-    # Construct the system prompt. Feel free to experiment with different prompts.
+     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and sarcastic but very accurate and confident in your predictions.  """
     # Make the API call
     try:
@@ -169,6 +169,39 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
     # Return the API response
     #generate_audio(response.choices[0].message.content)
     return response
+
+def get_results(prediction, title, gameId, sportKey):
+    try:
+        newsArticles = ask.news.search_news(title, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True).as_dicts
+        context = ""
+        for article in newsArticles:
+            context += article.summary
+    except:
+        context = ""
+    
+    try: 
+        score = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/scores/?apiKey={ODDSAPI_API_KEY}&eventIds={gameId}&daysFrom=3")
+        scoreJson = score.json()
+    except:
+        scoreJson = ""
+    
+    response = groq_client.chat.completions.create(
+        model=RESULT_MODEL,
+        messages=[
+            {"role": "system", "content": "you are a data analyst"},
+            {"role": "user", "content": "Determine if the prediction made in the following context was accurate or not based on the context. Return only the prediction, outcome and score and whether the bet would have won or lost (win/lose) if it was accurate" + "Prediction: " + prediction + "Context: " + context + "Score: " + str(scoreJson)},
+        ],
+        temperature=0, 
+        max_tokens=1000
+    )
+
+    result = response.choices[0].message.content
+    my_object = Predictions.objects.get(id=gameId)
+    my_object.results = result
+    my_object.save()
+    
+    print(result)
+    return(result)
 
 def generate_audio(text):
     speech_file_path = "speech2.mp3" 

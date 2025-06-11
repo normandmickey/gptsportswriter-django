@@ -5,6 +5,7 @@ urlpatterns = [
     path("", views.home, name="home"),
     path('current-odds/', views.current_odds, name='current_odds'),
     path('recent-predictions/', views.recent_predictions, name='recent_predictions'),
+    path('prediction-results/', views.prediction_results, name='prediction_results'),
     path('current-odds/', views.current_odds, name='current_odds'),
     path('odds/', views.odds, name='odds'),
     path('recent-parlays/', views.recent_parlays, name='recent_parlays'),

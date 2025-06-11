@@ -1,0 +1,15 @@
+{% extends "predictions/layout.html" %}
+{% block title %}
+GPTSportsWriter - Recent Predictions
+{% endblock %}
+{% block content %}
+<body>
+    <p><center><h1>Recent Predictions</h1></center></p>
+    <p><center><a href="{% url 'predictions' %}">Create Predictions</a></center></p>
+<ul> 
+        {% for item in data %}
+        <li><strong>{{ item.sport_key }}:</strong> <a href="{{ request.META.HTTP_NAME }}/prediction-detail/{{ item.slug }}">{{  item.title }}</a>{{ item.results }}</li>
+        {% endfor %}
+</ul>
+</body>
+{% endblock %}
