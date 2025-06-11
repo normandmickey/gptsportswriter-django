@@ -69,7 +69,7 @@ def recent_predictions(request):
 
 def prediction_results(request):
     now = timezone.now()
-    twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=36)
     yesterday = str(twenty_fours_hours_ago)[:10]
     print(yesterday)
     #data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago)
