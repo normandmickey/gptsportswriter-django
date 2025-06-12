@@ -18,7 +18,7 @@ bdl_api = BalldontlieAPI(api_key=os.environ.get("BDL_API_KEY"))
 
 GPT_MODEL= "meta-llama/llama-4-scout-17b-16e-instruct"
 GPT_MODEL2= "llama-3.1-8b-instant"
-RESULT_MODEL= "meta-llama/llama-4-scout-17b-16e-instruct"
+RESULT_MODEL= "llama-3.3-70b-versatile"
 TWEET_MODEL="llama-3.3-70b-versatile"
 OPENAI_GPT_MODEL = "gpt-4o"
 #OPENAI_GPT_MODEL = "o3-mini"
@@ -196,9 +196,25 @@ def get_results(prediction, title, gameId, sportKey):
     )
 
     result = response.choices[0].message.content
-    my_object = Predictions.objects.get(id=gameId)
-    my_object.results = result
-    my_object.save()
+    #update boolean field
+    response = groq_client.chat.completions.create(
+        model=RESULT_MODEL,
+        messages=[
+            {"role": "system", "content": "you are a data analyst"},
+            {"role": "user", "content": "analyze the following text and return just a Boolean response;  True if win, False if lose and None if undetermined. Text: " + result},
+        ],
+        temperature=0, 
+        max_tokens=1000
+    )
+    bool = response.choices[0].message.content
+
+    try:
+        my_object = Predictions.objects.get(id=gameId)
+        my_object.results = result
+        my_object.won = bool
+        my_object.save()
+    except:
+        print(bool)
     
     print(result)
     return(result)

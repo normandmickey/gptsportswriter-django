@@ -4,12 +4,37 @@ GPTSportsWriter - Recent Predictions
 {% endblock %}
 {% block content %}
 <body>
-    <p><center><h1>Recent Predictions</h1></center></p>
-    <p><center><a href="{% url 'predictions' %}">Create Predictions</a></center></p>
-<ul> 
+      <p><center><h1>Yesterdays Results</h1></center></p>
+  <table align="center">
+    <tr>
+      <th>Statistic</th>
+      <th>Value</th>
+    </tr>
+    <tr>
+      <td>Total Bets</td>
+      <td>{{ summary.total_bets }}</td>
+    </tr>
+    <tr>
+      <td>Won</td>
+      <td>{{ summary.won }}</td>
+    </tr>
+    <tr>
+      <td>Lost</td>
+      <td>{{ summary.lost }}</td>
+    </tr>
+    <tr>
+      <td>Unknown</td>
+      <td>{{ summary.unknown }}</td>
+    </tr>
+    <tr>
+      <td>Win Rate</td>
+      <td>{{ summary.win_rate }}</td>
+    </tr>
+  </table>
+<ol> 
         {% for item in data %}
         <li><strong>{{ item.sport_key }}:</strong> <a href="{{ request.META.HTTP_NAME }}/prediction-detail/{{ item.slug }}">{{  item.title }}</a>{{ item.results }}</li>
         {% endfor %}
-</ul>
+</ol>
 </body>
 {% endblock %}

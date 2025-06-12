@@ -67,18 +67,50 @@ def recent_predictions(request):
         item['tweet_text'] = item['tweet_text'][:-49].partition(":")[2]
     return render(request, 'predictions/recent_predictions.html', {'data': data})
 
+'''
 def prediction_results(request):
     now = timezone.now()
-    twenty_fours_hours_ago = now - timezone.timedelta(hours=36)
-    yesterday = str(twenty_fours_hours_ago)[:10]
+    #twenty_fours_hours_ago = now - timezone.timedelta(hours=36)
+    #yesterday = str(twenty_fours_hours_ago)[:10]
+    yesterday = "2025-06-11"
     #print(yesterday)
     #data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago)
     data = Predictions.objects.filter(title__contains=yesterday).order_by('-created_at').values('id', 'title', 'created_at', 'slug', 'sport_key', 'tweet_text', 'content', 'results')
     for item in data:
         item['title'] = item['title'].replace("Prediction: ", "")
         if item['results'] is None:
-            item['results'] = get_results(item['content'], item['title'], item['id'], item['sport_key'])
+         item['results'] = get_results(item['content'], item['title'], item['id'], item['sport_key'])
+    totalBets = Predictions.objects.filter(won__isnull=False).count()
+    won = Predictions.objects.filter(title__contains=yesterday, won=True).count()
+    lost = Predictions.objects.filter(title__contains=yesterday, won=False).count()
+    unknown = Predictions.objects.filter(title__contains=yesterday, won=None).count()
     return render(request, 'predictions/prediction_results.html', {'data': data})
+'''
+
+def prediction_results(request):
+    now = timezone.now()
+    yesterday = "2025-06-11"
+    data = Predictions.objects.filter(title__contains=yesterday).order_by('-created_at').values('id', 'title', 'created_at', 'slug', 'sport_key', 'tweet_text', 'content', 'results', 'won')
+    
+    summary = {
+        'total_bets': Predictions.objects.filter(title__contains=yesterday).count(),
+        'won': Predictions.objects.filter(title__contains=yesterday, won=True).count(),
+        'lost': Predictions.objects.filter(title__contains=yesterday, won=False).count(),
+        'unknown': Predictions.objects.filter(title__contains=yesterday, won=None).count(),
+        'win_rate': 0,
+        'loss_rate': 0
+    }
+    
+    if summary['total_bets'] > 0:
+        summary['win_rate'] = (summary['won'] / summary['total_bets']) * 100
+        summary['loss_rate'] = (summary['lost'] / summary['total_bets']) * 100
+    
+    for item in data:
+        item['title'] = item['title'].replace("Prediction: ", "")
+        if item['results'] is None:
+            item['results'] = get_results(item['content'], item['title'], item['id'], item['sport_key'])
+    
+    return render(request, 'predictions/prediction_results.html', {'data': data, 'summary': summary})
 
 def recent_parlays(request):
     now = timezone.now()
