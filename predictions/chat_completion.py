@@ -133,10 +133,11 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
     context = ""
     try: 
         #newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_dicts
-        newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True).as_dicts
+        newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], string_guarantee_op='OR', string_guarantee=guaranteedWords, premium=True).as_dicts
         context = ""
         for article in newsArticles:
             context += article.summary
+        #print(context)
     except:
         context = ""
     
@@ -149,7 +150,7 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
             messages=[
                 {"role": "system", "content": system_prompt},
                 #{"role": "user", "content": "Provide a humorous and sarcastic prediction for the upcoming matchup, including relevant statistics and odds. Highlight any notable injuries or key player information. Based on the provided context, make a informed best bet, taking into account the historical underdog win rates across different sports: 41% in baseball and hockey and Soccer, 35% in NFA football and MMA, 32% in NBA basketball, 26% in NCAA Basketball, 22% in NCAA Football and 30% in Tennis. Ensure that all information is accurate and not fabricated." + context + str(oddsJson) + " " + input_text},
-                {"role": "user", "content": "Provide a witty and tongue-in-cheek analysis of the upcoming matchup, complete with relevant statistics and odds. Highlight any significant injuries or key player updates that might impact the game's outcome. Based on the context, make a data-driven best bet, considering the historical trends and win rates of various teams and players across different sports. For reference, the overall underdog win rates are: 41% in baseball, hockey, and soccer; 35% in NFL football and MMA; 32% in NBA basketball; 26% in NCAA basketball; 22% in NCAA football; and 30% in tennis. Ensure that all information is accurate, up-to-date, and not made up on the spot." + context + str(oddsJson) + " " + input_text},
+                {"role": "user", "content": "Provide a witty and tongue-in-cheek analysis of the upcoming matchup, complete with relevant statistics and odds. Highlight any significant injuries or key player updates that might impact the game's outcome. Based on the context, make a data-driven best bet, considering the historical trends and win rates of various teams and players across different sports. For reference, the overall underdog win rates are: 41% in baseball, hockey, and soccer; 35% in NFL football and MMA; 32% in NBA basketball; 26% in NCAA basketball; 22% in NCAA football; and 30% in tennis. Ensure that all information is accurate, up-to-date, and not made up on the spot.  If there is no information about the match requests make a prediction based only on the odds provided. " + context + str(oddsJson) + " " + input_text},
             ],
             temperature=0.3, 
             max_tokens=1000
@@ -159,7 +160,7 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
             model=OPENAI_GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "Write a humorous prediction for the following matchup.  Give your best bet based on the context provided.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + str(oddsJson) + " " + input_text},
+                {"role": "user", "content": "Provide a witty and tongue-in-cheek analysis of the upcoming matchup, complete with relevant statistics and odds. Highlight any significant injuries or key player updates that might impact the game's outcome. Based on the context, make a data-driven best bet, considering the historical trends and win rates of various teams and players across different sports. For reference, the overall underdog win rates are: 41% in baseball, hockey, and soccer; 35% in NFL football and MMA; 32% in NBA basketball; 26% in NCAA basketball; 22% in NCAA football; and 30% in tennis. Ensure that all information is accurate, up-to-date, and not made up on the spot.  If there is no information about the match requests make a prediction based only on the odds provided. " + context + str(oddsJson) + " " + input_text},
             ],
             temperature=0.3, 
             max_tokens=1000

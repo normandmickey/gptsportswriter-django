@@ -89,7 +89,8 @@ def prediction_results(request):
 
 def prediction_results(request):
     now = timezone.now()
-    yesterday = "2025-06-11"
+    twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
+    yesterday = str(twenty_fours_hours_ago)[:10]
     data = Predictions.objects.filter(title__contains=yesterday).order_by('-created_at').values('id', 'title', 'created_at', 'slug', 'sport_key', 'tweet_text', 'content', 'results', 'won')
     
     summary = {
@@ -574,7 +575,8 @@ def predictions(request):
             sport = sport.replace('_', " ")
             res = re.split('\s+', match)
             res.remove('VS')
-            res = res[:len(res)-3]                   
+            res = res[:len(res)-3]
+            print(res)                   
             
             print(gameId)
             articles = Predictions.objects.filter(id=gameId)
