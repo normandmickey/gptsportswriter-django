@@ -2,8 +2,9 @@ from django.urls import path
 from predictions import views
 from django.contrib.sitemaps import GenericSitemap 
 from django.contrib.sitemaps.views import sitemap
-from .models import Predictions
+from .models import Predictions, Recaps, Parlays, Props
 from django.urls import path, include
+from itertools import chain
 
 # new dict below...
 info_dict = {

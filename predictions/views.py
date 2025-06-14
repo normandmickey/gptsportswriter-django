@@ -89,8 +89,8 @@ def prediction_results(request):
 
 def prediction_results(request):
     now = timezone.now()
-    twenty_fours_hours_ago = now - timezone.timedelta(hours=24)
-    yesterday = str(twenty_fours_hours_ago)[:10]
+    thirty_hours_ago = now - timezone.timedelta(hours=30)
+    yesterday = str(thirty_hours_ago)[:10]
     data = Predictions.objects.filter(title__contains=yesterday).order_by('-created_at').values('id', 'title', 'created_at', 'slug', 'sport_key', 'tweet_text', 'content', 'results', 'won')
     
     summary = {

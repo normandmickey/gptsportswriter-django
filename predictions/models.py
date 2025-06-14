@@ -43,7 +43,7 @@ class Predictions(models.Model):
         super().save(*args, **kwargs)
     
     def get_absolute_url(self):
-        return reverse("article_detail", kwargs={"slug": self.slug})
+        return reverse("prediction_detail", kwargs={"slug": self.slug})
     
     def get_image_bytes(self):
         return base64.b64encode(self.gameimg).decode('utf-8')
@@ -68,7 +68,7 @@ class Recaps(models.Model):
         super().save(*args, **kwargs)
     
     def get_absolute_url(self):
-        return reverse("article_detail", kwargs={"slug": self.slug})
+        return reverse("recap_detail", kwargs={"slug": self.slug})
     
     def get_image_bytes(self):
         return base64.b64encode(self.gameimg).decode('utf-8')
@@ -93,7 +93,7 @@ class Parlays(models.Model):
         super().save(*args, **kwargs)
     
     def get_absolute_url(self):
-        return reverse("article_detail", kwargs={"slug": self.slug})
+        return reverse("parlay_detail", kwargs={"slug": self.slug})
     
     def get_image_bytes(self):
         return base64.b64encode(self.gameimg).decode('utf-8')
@@ -118,7 +118,7 @@ class Props(models.Model):
         super().save(*args, **kwargs)
     
     def get_absolute_url(self):
-        return reverse("article_detail", kwargs={"slug": self.slug})
+        return reverse("prop_detail", kwargs={"slug": self.slug})
     
     def get_image_bytes(self):
         return base64.b64encode(self.gameimg).decode('utf-8')
