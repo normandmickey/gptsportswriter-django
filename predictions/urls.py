@@ -1,5 +1,16 @@
 from django.urls import path
 from predictions import views
+from django.contrib.sitemaps import GenericSitemap 
+from django.contrib.sitemaps.views import sitemap
+from .models import Predictions
+from django.urls import path, include
+
+# new dict below...
+info_dict = {
+    #"queryset": Predictions.objects.all().values('title', 'content', 'created_at', 'slug', 'sport_key', 'tweet_text'),
+    "queryset": Predictions.objects.all().defer('gameimg'),
+    "date_field": "created_at",
+}
 
 urlpatterns = [
     path("", views.home, name="home"),
@@ -12,6 +23,7 @@ urlpatterns = [
     path('recent-recaps/', views.recent_recaps, name='recent_recaps'),
     path('recent-props/', views.recent_props, name='recent_props'),
     path('prediction-detail/<slug:slug>/', views.prediction_detail, name='prediction_detail'),
+    path('article-detail/<slug:slug>/', views.article_detail, name='article_detail'),
     path('recap-detail/<slug:slug>/', views.recap_detail, name='recap_detail'),
     path('prop-detail/<slug:slug>/', views.prop_detail, name='prop_detail'),
     path('parlay-detail/<slug:slug>/', views.parlay_detail, name='parlay_detail'),
@@ -32,5 +44,11 @@ urlpatterns = [
     path("topnews/", views.topnews, name="topnews"),
     path("props/", views.props, name="props"),
     path('ajax_handler/<str:sport>',views.ajax_handler,name="ajax_handler"),
-    path('ajax_handlerb/<str:sport>',views.ajax_handlerb,name="ajax_handlerb")
+    path('ajax_handlerb/<str:sport>',views.ajax_handlerb,name="ajax_handlerb"),
+    # new path below...
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": {"Predictions": GenericSitemap(info_dict)}},
+    ),
 ]
