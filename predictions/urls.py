@@ -5,6 +5,7 @@ from django.contrib.sitemaps.views import sitemap
 from .models import Predictions, Recaps, Parlays, Props
 from django.urls import path, include
 from itertools import chain
+from django.views.generic.base import TemplateView
 
 # new dict below...
 info_dict = {
@@ -15,6 +16,8 @@ info_dict = {
 
 urlpatterns = [
     path("", views.home, name="home"),
+    path('5c350797837c4c318ea3cf9671c3b3fb.a0ddd80c141a.txt', TemplateView.as_view(template_name='5c350797837c4c318ea3cf9671c3b3fb.a0ddd80c141a.txt',
+                                      content_type='text/plain')),
     path('current-odds/', views.current_odds, name='current_odds'),
     path('recent-predictions/', views.recent_predictions, name='recent_predictions'),
     path('prediction-results/', views.prediction_results, name='prediction_results'),
