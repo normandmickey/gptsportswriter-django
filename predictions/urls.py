@@ -16,7 +16,7 @@ info_dict = {
 
 urlpatterns = [
     path("", views.home, name="home"),
-    path('5c350797837c4c318ea3cf9671c3b3fb.a0ddd80c141a.txt', TemplateView.as_view(template_name='5c350797837c4c318ea3cf9671c3b3fb.a0ddd80c141a.txt',
+    path('5c350797837c4c318ea3cf9671c3b3fb.txt', TemplateView.as_view(template_name='5c350797837c4c318ea3cf9671c3b3fb.txt',
                                       content_type='text/plain')),
     path('current-odds/', views.current_odds, name='current_odds'),
     path('recent-predictions/', views.recent_predictions, name='recent_predictions'),
