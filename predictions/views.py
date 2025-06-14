@@ -17,6 +17,7 @@ import base64, unicodedata
 from .models import Predictions, Recaps, Parlays, Props
 from pptx import Presentation
 from pptx.util import Inches
+from index_now import submit_url_to_index_now, IndexNowAuthentication
 
 
 load_dotenv(override=True)
@@ -33,6 +34,12 @@ DB_NAME=os.environ.get('DB_NAME')
 DB_USER=os.environ.get('DB_USER')
 DB_PASSWORD=os.environ.get('DB_PASSWORD')
 DB_HOST=os.environ.get('DB_HOST')
+
+INauthentication = IndexNowAuthentication(
+    host="https://www.gptsportswriter.com",
+    api_key="5c350797837c4c318ea3cf9671c3b3fb",
+    api_key_location="https://www.gptsportswriter.com/5c350797837c4c318ea3cf9671c3b3f.txt",
+)
 
 
 ept = pytz.timezone('US/Eastern')
@@ -675,6 +682,7 @@ def predictions(request):
                 #print("tweetText:" + tweetText)
                 #prediction = Predictions.objects.create(id=gameId, content=generated_prediction.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey, tweet_text=tweetText)
                 #os.remove(file_name)
+    submit_url_to_index_now(INauthentication, link)
     return render(request, "predictions/predictions.html", context)
 
 def odds(request):
