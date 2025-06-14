@@ -682,7 +682,11 @@ def predictions(request):
                 #print("tweetText:" + tweetText)
                 #prediction = Predictions.objects.create(id=gameId, content=generated_prediction.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey, tweet_text=tweetText)
                 #os.remove(file_name)
-    submit_url_to_index_now(INauthentication, link)
+                try:
+                    submit_url_to_index_now(INauthentication, link)
+                except:
+                    print("faile to submit url")
+    
     return render(request, "predictions/predictions.html", context)
 
 def odds(request):
