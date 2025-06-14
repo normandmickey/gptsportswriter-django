@@ -8,7 +8,7 @@ from django.urls import path, include
 # new dict below...
 info_dict = {
     #"queryset": Predictions.objects.all().values('title', 'content', 'created_at', 'slug', 'sport_key', 'tweet_text'),
-    "queryset": Predictions.objects.all().defer('gameimg'),
+    "queryset": Predictions.objects.all().defer('gameimg').order_by('created_at'),
     "date_field": "created_at",
 }
 
