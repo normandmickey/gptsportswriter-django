@@ -268,7 +268,8 @@ def get_prop(input_text, guaranteedWords, oddsJson):
             {"role": "user", "content": "Write a humorous prediction for the following matchup.   Include only relevant stats and odds for the game in question. Do not make up any details.  Mentions any player prop bets found in the context." + context + str(oddsJson) + " " + input_text},
         ],
         temperature=0.3, 
-        max_tokens=1000
+        max_tokens=1500,
+        reasoning_format='hidden'
     )
 
     # Return the API response
@@ -304,7 +305,8 @@ def get_parlay(input_text, oddsJson):
                 {"role": "user", "content": "Find the best same game parlay bet for the following match.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + str(oddsJson) + " " + input_text},
             ],
             temperature=0.3, 
-            max_tokens=1000
+            max_tokens=3000,
+            reasoning_format='hidden'
         )
     except:
         response = openAI_client.chat.completions.create(
@@ -353,7 +355,8 @@ def get_news(input_text, string_guarantee):
                 {"role": "user", "content": "Write a summary of the following articles. Be funny and sarcastic. " + context + input_text},
             ],
             temperature=0.3, 
-            max_tokens=2000
+            max_tokens=3000,
+            reasoning_format='hidden'
         )
     except:
         response = openAI_client.chat.completions.create(
@@ -423,7 +426,8 @@ def get_recap(input_text, string_guarantee, scoresJson):
                 {"role": "user", "content": "Write a humorous recap for the following matchup.  Include only relevant stats and odds for the game in question do not make up any details." + context + str(scoresJson) + " " + input_text},
             ],
             temperature=0.3, 
-            max_tokens=1000
+            max_tokens=3000,
+            reasoning_format='hidden'
         )
     except:
         response = openAI_client.chat.completions.create(
