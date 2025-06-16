@@ -607,7 +607,7 @@ def predictions(request):
                     imageBytes = get_image_base64(article.gameimg)
                     context = {
                         "user_input": match,
-                        "generated_prediction": article.content.replace("\n", "<br/>"),
+                        "generated_prediction": article.content,
                         "sports": sports,
                         "image_url":  f"data:;base64,{imageBytes}",
                         "created_at": article.created_at,
@@ -631,7 +631,7 @@ def predictions(request):
             
                 context = {
                     "user_input": match,
-                    "generated_prediction": generated_prediction.replace("\n", "<br/>"),
+                    "generated_prediction": generated_prediction,
                     "image_url": image_url,
                     "sports": sports,
                     "created_at": "",
