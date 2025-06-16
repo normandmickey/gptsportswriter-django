@@ -16,8 +16,10 @@ bdl_api = BalldontlieAPI(api_key=os.environ.get("BDL_API_KEY"))
 
 #gi_client = genai.Client(api_key=os.environ.get("GI_API_KEY"))
 
-GPT_MODEL= "meta-llama/llama-4-scout-17b-16e-instruct"
+#GPT_MODEL= "meta-llama/llama-4-scout-17b-16e-instruct"
 GPT_MODEL2= "llama-3.1-8b-instant"
+#GPT_MODEL="deepseek-r1-distill-llama-70b"
+GPT_MODEL="qwen/qwen3-32b"
 RESULT_MODEL= "llama-3.3-70b-versatile"
 TWEET_MODEL="llama-3.3-70b-versatile"
 OPENAI_GPT_MODEL = "gpt-4o"
@@ -57,6 +59,7 @@ def generate_odds(input_text, guaranteedWords, gameId, sportKey):
         oddsJson = odds.json()
     except:
         oddsJson = ""
+    print(oddsJson)
 
     try: 
         score = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/scores/?apiKey={ODDSAPI_API_KEY}&eventIds={gameId}&daysFrom=3")
@@ -154,7 +157,8 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
                 {"role": "user", "content": "Provide a witty and tongue-in-cheek analysis of the upcoming matchup, complete with relevant statistics and odds. Highlight any significant injuries or key player updates that might impact the game's outcome. Based on the context, make a data-driven best bet, considering the historical trends and win rates of various teams and players across different sports. For reference, the overall underdog win rates are: 41% in baseball, hockey, and soccer; 35% in NFL football and MMA; 32% in NBA basketball; 26% in NCAA basketball; 22% in NCAA football; and 30% in tennis. Ensure that all information is accurate, up-to-date, and not made up on the spot.  If there is no information about the match requests make a prediction based only on the odds provided. Calculate the Odds Expected Value, your best be should be one with the highest expected value. " + context + str(oddsJson) + " " + input_text},
             ],
             temperature=0.3, 
-            max_tokens=1000
+            max_tokens=3000,
+            reasoning_format='hidden'
         )
     except:
         response = openAI_client.chat.completions.create(
@@ -470,6 +474,7 @@ def get_tweet(input_text):
 
 def format_response(response):
     # Extract the generated story from the response
+    print(response)
     prediction = response.choices[0].message.content
     # Remove any unwanted text or formatting
     prediction = prediction.strip()
