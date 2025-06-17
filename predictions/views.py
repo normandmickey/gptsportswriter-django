@@ -185,7 +185,7 @@ def parlay_detail(request, slug):
     return render(request, 'predictions/parlay_detail.html', {'article': article})
 
 # send Tweet
-def sendTweet(text, match, file):
+def sendTweet(text, match, file, link):
     tweepy_api = tweepy.API(tweepy_auth)
     #rate_limit_status = tweepy_api.rate_limit_status()
     #rate_limit_status = json.dumps(rate_limit_status)
@@ -204,7 +204,7 @@ def sendTweet(text, match, file):
     
     tweetText = createTweet(text)
     tweetText = match + ": " + tweetText
-    tweetText = tweetText + " Want more? Visit https://www.gptsportswriter.com"
+    tweetText = tweetText + " Want more? Visit " + link
     #print(tweetText)
 
     post = tweepy_api.simple_upload(file)
@@ -484,7 +484,7 @@ def parlays(request):
         
         
                 try:
-                    tweetText = sendTweet(generated_parlay, match, file_name)
+                    tweetText = sendTweet(generated_parlay, match, file_name, link)
                 except:
                     print("error sending tweet")
         
@@ -554,10 +554,10 @@ def topnews(request):
             print("error submitting reddit post")
         
         
-        try:
-            sendTweet(generated_news, "Top News " + sport )
-        except:
-            print("error sending tweet")
+        #try:
+        #    sendTweet(generated_news, "Top News " + sport )
+        #except:
+        #    print("error sending tweet")
         
 
         try:
@@ -656,7 +656,7 @@ def predictions(request):
                 #post to reddit
                 #post to twitter
                 try:
-                    tweetText = sendTweet(generated_prediction, match, file_name)
+                    tweetText = sendTweet(generated_prediction, match, file_name, link)
                 except:
                     print("error sending tweet")
 
@@ -814,7 +814,7 @@ def props(request):
                     print("error submitting reddit post")
         
                 try:
-                    tweetText = sendTweet(generated_prop, "Prop Bets " + match + " ", file_name)
+                    tweetText = sendTweet(generated_prop, "Prop Bets " + match + " ", file_name, link)
                 except:
                     print("error sending tweet")
                 
@@ -898,7 +898,7 @@ def recaps(request):
                     print("error submitting reddit post")
 
                 try:
-                    tweetText = sendTweet(generated_recap, "Recap " + match + " ", file_name)
+                    tweetText = sendTweet(generated_recap, "Recap " + match + " ", file_name, link)
                 except:
                     print("error sending tweet")
                 
