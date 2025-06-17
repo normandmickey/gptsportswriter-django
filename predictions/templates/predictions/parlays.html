@@ -1,4 +1,5 @@
 {% extends "predictions/layout.html" %}
+{% load markdown_extras %}
 {% block title %}
 GPTSportsWriter - Parlays
 {% endblock %}
@@ -48,7 +49,7 @@ GPTSportsWriter - Parlays
         </p>
     {% endif %}
     {% if generated_parlay %}
-        <p>{{ generated_parlay | safe }}</p>
+        <p>{{ generated_parlay | markdown | safe }}</p>
     {% endif %}
     </div>
 </div>

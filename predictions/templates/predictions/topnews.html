@@ -1,4 +1,5 @@
 {% extends "predictions/layout.html" %}
+{% load markdown_extras %}
 {% block title %}
 GPTSportsWriter - Top News
 {% endblock %}
@@ -38,7 +39,7 @@ GPTSportsWriter - Top News
         </p>
     {% endif %}
     {% if generated_news %}
-        <p>{{ generated_news | safe }}</p>
+        <p>{{ generated_news | markdown | safe }}</p>
     {% endif %}
 </div>
 {% endblock %}

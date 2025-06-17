@@ -1,4 +1,5 @@
 {% extends "predictions/layout.html" %}
+{% load markdown_extras %}
 {% block title %}
 GPTSportsWriter - Prop Detail
 {% endblock %}
@@ -11,7 +12,7 @@ GPTSportsWriter - Prop Detail
     <p><center><a href="{% url 'props' %}">Create Predictions</center></a> 
     <p><h1><center>{{ article.title }} </center></h1></p> 
     <p><center><img src="data:;base64,{{article.get_image_bytes}}" alt="Generated Image" style="max-width:80vw; max-height:80vh; object-fit: contain;"></center></p>
-    <p>{{ article.content | safe }}</p>
+    <p>{{ article.content | markdown | safe }}</p>
     <p>Created: {{ article.created_at }} GMT</p>
     </body>
 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends "predictions/layout.html" %}
+{% load markdown_extras %}
 {% block title %}
 GPTSportsWriter - Recaps
 {% endblock %}
@@ -45,7 +46,7 @@ GPTSportsWriter - Recaps
         </p>
     {% endif %}
     {% if generated_recap %}
-        <p>{{ generated_recap | safe }}</p>
+        <p>{{ generated_recap | markdown | safe }}</p>
     {% endif %}
 </div>
 {% endblock %}

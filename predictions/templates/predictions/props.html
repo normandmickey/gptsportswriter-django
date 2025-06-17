@@ -1,4 +1,5 @@
 {% extends "predictions/layout.html" %}
+{% load markdown_extras %}
 {% block title %}
 GPTSportsWriter - Props
 {% endblock %}
@@ -48,7 +49,7 @@ GPTSportsWriter - Props
         </p>
     {% endif %}
     {% if generated_prediction %}
-        <p>{{ generated_prediction | safe }}</p>
+        <p>{{ generated_prediction | markdown | safe }}</p>
     {% endif %}
     </div>
 </div>
