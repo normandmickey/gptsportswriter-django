@@ -275,12 +275,12 @@ def get_prop(input_text, guaranteedWords, oddsJson):
     # Return the API response
     return response
 
-def generate_parlay(input_text, gameId, sportKey):
+def generate_parlay(input_text, guaranteedWords, gameId, sportKey):
     # Call the OpenAI API to generate the story
     #print(sportKey)
     odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=h2h,spreads,totals&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
     oddsJson = odds.json()
-    response = get_parlay(input_text, oddsJson)
+    response = get_parlay(input_text, guaranteedWords, oddsJson)
     # Format and return the response
     return format_response(response)
 
@@ -293,6 +293,7 @@ def get_parlay(input_text, guaranteedWords, oddsJson):
     context = ""
     for article in newsArticles:
         context += article.summary
+    print(context)
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """

@@ -441,6 +441,10 @@ def parlays(request):
             sportKey += request.POST.get("sport")
             sport += request.POST.get("sport") + "\n"
             sport = sport.replace('_', " ")
+            res = re.split('\s+', match)
+            res.remove('VS')
+            print(res)
+
             articles = Parlays.objects.filter(id=gameId)
             if articles:
                 for article in articles:
@@ -452,7 +456,7 @@ def parlays(request):
                         "image_url":  f"data:;base64,{imageBytes}"
                     }
             else:
-                generated_parlay = generate_parlay(sport + " " + match, gameId, sportKey)
+                generated_parlay = generate_parlay(sport + " " + match, res, gameId, sportKey)
                 image_prompt = createImagePrompt(sport + " " + match)
                 #print(image_prompt)
                 image_url = generate_image(image_prompt)
@@ -593,9 +597,8 @@ def predictions(request):
             sport = sport.replace('_', " ")
             res = re.split('\s+', match)
             res.remove('VS')
-            res = res[:len(res)-3]
-            print(res)                   
-            
+            print(res)
+
             print(gameId)
             articles = Predictions.objects.filter(id=gameId)
 
@@ -771,7 +774,7 @@ def props(request):
             sport = sport.replace('_', " ")
             res = re.split('\s+', match)
             res.remove('VS')
-            res = res[:len(res)-3]
+            
             articles = Props.objects.filter(id=gameId)
             if articles:
                 for article in articles:
