@@ -16,7 +16,7 @@ info_dict = {
 
 urlpatterns = [
     path("", views.home, name="home"),
-    path('5c350797837c4c318ea3cf9671c3b3fb.txt', TemplateView.as_view(template_name='5c350797837c4c318ea3cf9671c3b3fb.txt',
+    path('c41a1070cbfa4d5ea66773fc0519716c.txt', TemplateView.as_view(template_name='c41a1070cbfa4d5ea66773fc0519716c.txt',
                                       content_type='text/plain')),
     path('robots.txt', TemplateView.as_view(template_name='robots.txt',
                                       content_type='text/plain')),
