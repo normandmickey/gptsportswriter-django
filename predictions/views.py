@@ -37,8 +37,8 @@ DB_HOST=os.environ.get('DB_HOST')
 
 INauthentication = IndexNowAuthentication(
     host="https://www.gptsportswriter.com",
-    api_key="5c350797837c4c318ea3cf9671c3b3fb",
-    api_key_location="https://www.gptsportswriter.com/5c350797837c4c318ea3cf9671c3b3f.txt",
+    api_key="c41a1070cbfa4d5ea66773fc0519716c",
+    api_key_location="https://www.gptsportswriter.com/c41a1070cbfa4d5ea66773fc0519716c.txt",
 )
 
 
