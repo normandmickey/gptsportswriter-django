@@ -94,7 +94,7 @@ def generate_image3(title, filename):
     # 5. Save the image
     img.save(filename)
 
-    print("Image 'image_with_text.png' created successfully.")
+    #print("Image 'image_with_text.png' created successfully.")
 
 def addWatermark(title, filename):
     # 1. Create a new image
@@ -115,12 +115,12 @@ def addWatermark(title, filename):
 
     # 4. Add text
     text_to_add = "www.GPTSportsWriter.com"
-    text_color = (255, 255, 255) # Yellow color
-    d.text((10, 20), text_to_add, font=fnt, fill='white', stroke_width=2, stroke_fill='black')
-    d.text((10, 80), title, font=fnt2, fill='white', stroke_width=2, stroke_fill='black')
+    text_color = (0, 255, 0) # Yellow color
+    d.text((10, 20), text_to_add, font=fnt, fill=text_color, stroke_width=2, stroke_fill='black')
+    d.text((10, 80), title, font=fnt2, fill=text_color, stroke_width=2, stroke_fill='black')
     
     # 5. Save the image
     img.save(filename)
 
-    print("Image 'image_with_text.png' created successfully.")
+    #print("Image 'image_with_text.png' created successfully.")
 

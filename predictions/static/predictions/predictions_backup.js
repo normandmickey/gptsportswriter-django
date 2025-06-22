@@ -1,4 +1,3 @@
-//test
 window.onload = function(){    
 
    let selector = document.querySelector("#sport");

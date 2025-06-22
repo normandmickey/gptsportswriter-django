@@ -145,4 +145,9 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://www.gptsportswriter.com',
+    'https://848a-38-39-228-95.ngrok-free.app/'
+]
+
 

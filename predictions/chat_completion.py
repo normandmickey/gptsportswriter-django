@@ -142,7 +142,7 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
         for article in newsArticles:
             context += article.summary
             image_url = article.image_url
-            print(image_url)
+            #print(image_url)
     except:
         context = ""
     
@@ -223,7 +223,7 @@ def get_results(prediction, title, gameId, sportKey):
     except:
         print(bool)
     
-    print(result)
+    #print(result)
     return(result)
 
 def generate_audio(text):
@@ -294,7 +294,7 @@ def get_parlay(input_text, guaranteedWords, oddsJson):
     context = ""
     for article in newsArticles:
         context += article.summary
-    print(context)
+    #print(context)
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
