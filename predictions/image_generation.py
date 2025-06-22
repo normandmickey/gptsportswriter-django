@@ -1,6 +1,8 @@
 import os, requests
 from io import BytesIO
 from openai import OpenAI
+from PIL import Image, ImageDraw, ImageFont
+
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 
@@ -67,5 +69,56 @@ def generate_image2(text_prompt):
 #    image_data = requests.get(image_url).content
 #    return BytesIO(image_data)
 
+def generate_image3(title, filename):
+    # 1. Create a new image
+    img = Image.new('RGB', (1024, 1024), color=(73, 109, 137)) # Blue background
 
+    # 2. Create a drawing object
+    d = ImageDraw.Draw(img)
+
+    # 3. Load a font (replace 'arial.ttf' with a font available on your system)
+    try:
+        fnt = ImageFont.truetype('arial.ttf', 50)
+        fnt2 = ImageFont.truetype('arial.ttf', 30)
+    except IOError:
+        print("Arial font not found. Using default font.")
+        fnt = ImageFont.load_default() # Fallback to default font
+
+    # 4. Add text
+    text_to_add = "www.GPTSportsWriter.com"
+    text_color = (255, 255, 0) # Yellow color
+    d.text((50, 80), text_to_add, font=fnt, fill=text_color)
+    d.text((50, 160), title, font=fnt2, fill=text_color)
+    
+    # 5. Save the image
+    img.save(filename)
+
+    print("Image 'image_with_text.png' created successfully.")
+
+def addWatermark(title, filename):
+    # 1. Create a new image
+    title = title.split(":", 1)[1]
+    img = Image.open(filename)
+
+    # 2. Create a drawing object
+    d = ImageDraw.Draw(img)
+
+    # 3. Load a font (replace 'arial.ttf' with a font available on your system)
+    try:
+        fnt = ImageFont.truetype('arial.ttf', 50)
+        fnt2 = ImageFont.truetype('arial.ttf', 30)
+    except IOError:
+        print("Arial font not found. Using default font.")
+        fnt = ImageFont.load_default() # Fallback to default font
+
+    # 4. Add text
+    text_to_add = "www.GPTSportsWriter.com"
+    text_color = (255, 255, 255) # Yellow color
+    d.text((10, 20), text_to_add, font=fnt, fill='white', stroke_width=2, stroke_fill='black')
+    d.text((10, 80), title, font=fnt2, fill='white', stroke_width=2, stroke_fill='black')
+    
+    # 5. Save the image
+    img.save(filename)
+
+    print("Image 'image_with_text.png' created successfully.")
 

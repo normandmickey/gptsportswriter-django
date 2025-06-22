@@ -141,7 +141,8 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
         context = ""
         for article in newsArticles:
             context += article.summary
-        #print(context)
+            image_url = article.image_url
+            print(image_url)
     except:
         context = ""
     

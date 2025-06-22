@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.utils.timezone import datetime
 from django.utils import timezone
 from .chat_completion import generate_prediction, generate_recap, generate_tweet, generate_parlay, generate_news, generate_videoText, generate_prop, generate_odds, generate_slide_content, get_results
-from .image_generation import generate_image, createImagePrompt, generate_image2
+from .image_generation import generate_image, createImagePrompt, generate_image2, generate_image3, addWatermark
 from praw.models import InlineImage
 from dotenv import load_dotenv
 from datetime import datetime as dtdt
@@ -445,6 +445,7 @@ def parlays(request):
             res.remove('VS')
             print(res)
 
+            title = "Parlay: " + match[:-2]
             articles = Parlays.objects.filter(id=gameId)
             if articles:
                 for article in articles:
@@ -457,16 +458,28 @@ def parlays(request):
                     }
             else:
                 generated_parlay = generate_parlay(sport + " " + match, res, gameId, sportKey)
-                image_prompt = createImagePrompt(sport + " " + match)
+                try:
+                    image_prompt = createImagePrompt(sport + " " + match)
+                except:
+                    image_prompt = ""
                 #print(image_prompt)
-                image_url = generate_image(image_prompt)
+                try:
+                    image_url = generate_image(image_prompt)
+                except:
+                    image_url = ""
                 #print(image_url)
                 time.sleep(2)
-                data = requests.get(image_url).content
-                file_name = str(uuid.uuid4()) + ".jpg"
-                f = open(file_name, 'wb')
-                f.write(data)
-                f.close
+                try:
+                    data = requests.get(image_url).content
+                    file_name = str(uuid.uuid4()) + ".jpg"
+                    f = open(file_name, 'wb')
+                    f.write(data)
+                    f.close
+                    addWatermark(title, file_name)
+                except:
+                    file_name = str(uuid.uuid4()) + ".jpg"
+                    generate_image3(title, file_name)
+                    print("error creating image")
             
                 context = {
                     "user_input": match[:-2],
@@ -475,7 +488,7 @@ def parlays(request):
                     "sports": sports,
                 }
 
-                title = "Parlay: " + match[:-2]
+                
                 link = create_link("parlay", title)
                 image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
@@ -602,6 +615,8 @@ def predictions(request):
             print(gameId)
             articles = Predictions.objects.filter(id=gameId)
 
+            title = "Prediction: " + match[:-2]
+
             print(articles)
             if articles:
                 for article in articles:
@@ -618,18 +633,30 @@ def predictions(request):
                     }
             else:
                 generated_prediction = generate_prediction(sport + " " + match, res, gameId, sportKey)
-                image_prompt = createImagePrompt(sport + " " + match)
+                try:
+                    image_prompt = createImagePrompt(sport + " " + match)
+                except:
+                    image_prompt = ""
                 #print(image_prompt)
-                image_url = generate_image(image_prompt)
+                try:
+                    image_url = generate_image(image_prompt)
+                except:
+                    image_url = ""
                 #print(image_url)
                 time.sleep(2)
                 try:
+                    #file_name2 = str(uuid.uuid4()) + ".jpg"
+                    #generate_image3(title, file_name2)
+
                     data = requests.get(image_url).content
                     file_name = str(uuid.uuid4()) + ".jpg"
                     f = open(file_name, 'wb')
                     f.write(data)
                     f.close
+                    addWatermark(title, file_name)
                 except:
+                    file_name = str(uuid.uuid4()) + ".jpg"
+                    generate_image3(title, file_name)
                     print("error creating image")
             
                 context = {
@@ -640,7 +667,8 @@ def predictions(request):
                     "created_at": "",
                 }
 
-                title = "Prediction: " + match[:-2]
+                
+                
                 image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
                 link = create_link("prediction", title)
@@ -775,6 +803,7 @@ def props(request):
             res = re.split('\s+', match)
             res.remove('VS')
             
+            title = "Prop Bets: " + match[:-2]
             articles = Props.objects.filter(id=gameId)
             if articles:
                 for article in articles:
@@ -787,17 +816,29 @@ def props(request):
                     }
             else:                  
                 generated_prop = generate_prop(sport + " " + match, res, gameId, sportKey)
-                image_prompt = createImagePrompt(sport + " " + match)
+                try:
+                    image_prompt = createImagePrompt(sport + " " + match)
+                except:
+                    image_prompt = ""
                 #print(image_prompt)
-                image_url = generate_image(image_prompt)
+                try:
+                    image_url = generate_image(image_prompt)
+                except:
+                    image_url = ""
                 #print(image_url)
                 time.sleep(2)
-                data = requests.get(image_url).content
-                file_name = str(uuid.uuid4()) + ".jpg"
-                f = open(file_name, 'wb')
-                f.write(data)
-                f.close
-            
+                try:
+                    data = requests.get(image_url).content
+                    file_name = str(uuid.uuid4()) + ".jpg"
+                    f = open(file_name, 'wb')
+                    f.write(data)
+                    f.close
+                    addWatermark(title, file_name)
+                except:
+                    file_name = str(uuid.uuid4()) + ".jpg"
+                    generate_image3(title, file_name)
+                    print("error creating image")
+                    
                 context = {
                     "user_input": match,
                     "generated_prediction": generated_prop.replace("\n", "<br/>"),
@@ -805,7 +846,7 @@ def props(request):
                     "sports": sports,
                 }
 
-                title = "Prop Bets: " + match[:-2]
+                
                 link = create_link("prop", title)
                 image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
@@ -881,6 +922,7 @@ def recaps(request):
                 f = open(file_name, 'wb')
                 f.write(data)
                 f.close
+                addWatermark(title, file_name)
             
                 context = {
                     "user_input": match,

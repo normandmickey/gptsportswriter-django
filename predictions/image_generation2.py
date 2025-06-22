@@ -33,7 +33,7 @@ def generate_image(text_prompt):
     image_url = response.data[0].url
     return image_url
 
-print(generate_image(createImagePrompt("create a background image for a sports betting tip site called GPTSportsWriter.com.  Include references to all major sports.")))
+print(generate_image(createImagePrompt("Create an image that shows references to sports betting")))
 #print(createImagePrompt)
 
 
