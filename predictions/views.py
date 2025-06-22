@@ -898,6 +898,7 @@ def recaps(request):
             res = re.split('\s+', match)
             res.remove('VS')
             res = res[:len(res)-3]
+            title = "Recap: " + match[:-2]
 
             articles = Recaps.objects.filter(id=gameId)
             if articles:
@@ -931,7 +932,7 @@ def recaps(request):
                     "sports": sports,
                 }
 
-                title = "Recap: " + match[:-2]
+                
                 link = create_link("recap", title)
                 image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
