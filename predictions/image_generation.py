@@ -83,6 +83,7 @@ def generate_image3(title, filename):
     except IOError:
         print("Arial font not found. Using default font.")
         fnt = ImageFont.load_default() # Fallback to default font
+        fnt2 = ImageFont.load_default()
 
     # 4. Add text
     text_to_add = "www.GPTSportsWriter.com"
@@ -110,7 +111,8 @@ def addWatermark(title, filename):
     except IOError:
         print("Arial font not found. Using default font.")
         fnt = ImageFont.load_default() # Fallback to default font
-
+        fnt2 = ImageFont.load_default()
+        
     # 4. Add text
     text_to_add = "www.GPTSportsWriter.com"
     text_color = (255, 255, 255) # Yellow color
