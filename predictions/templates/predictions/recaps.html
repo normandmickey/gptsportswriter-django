@@ -8,6 +8,7 @@ GPTSportsWriter - Recaps
 
     function openLoader() {
         document.getElementById("loadingModal").style.display = "block";
+        document.getElementById("submitBtn").disabled = true;
       }
     
     </script>
@@ -29,12 +30,12 @@ GPTSportsWriter - Recaps
             {% endfor %}
         </select>
         <br/>
-        <input type="submit" value="submit" style="width:8em; height:3em;">
+        <button id="submitBtn" type="submit" value="submit" style="width:8em; height:3em;" enabled>Submit</button>
     </form>
     <div id="loadingModal" style="display: none;">
         <button class="btn btn-primary" type="button" disabled>
           <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-          Analyzing Match
+          Match analysis in progress: patience required (aka don't throw device out the window)
         </button>
     </div>
     <p>
