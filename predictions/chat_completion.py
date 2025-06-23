@@ -245,10 +245,19 @@ def generate_audio(text):
 def generate_prop(input_text, guaranteedWords, gameId, sportKey):
     # Call the OpenAI API to generate the story
     #sport = "baseball_mlb"
-    #print(sportKey)
-    odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=h2h,spreads,totals&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
+    print(sportKey)
+    if "soccer" in sportKey:
+        #odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=h2h,spreads,totals&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
+        #odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/events/{gameId}?apiKey={ODDSAPI_API_KEY}&regions=us&markets=batter_home_runs,batter_first_home_run,batter_hits,batter_total_base,batter_rbis,batter_runs_scored,batter_hits_runs_rbis,batter_singles,batter_doubles,batter_triples,batter_walks,batter_strikeouts,batter_stolen_bases,pitcher_strikeouts,pitcher_record_a_win,pitcher_hits_allowed,pitcher_walks,pitcher_earned_runs,pitcher_outs&oddsFormat=american")
+        odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/events/{gameId}/odds?apiKey={ODDSAPI_API_KEY}&regions=us&markets=player_goal_scorer_anytime,player_first_goal_scorer,player_last_goal_scorer,player_to_receive_card,player_to_receive_red_card,player_shots_on_target,player_shots,player_assists&oddsFormat=american")
+    elif "baseball_mlb" in sportKey:
+        odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/events/{gameId}/odds?apiKey={ODDSAPI_API_KEY}&regions=us&markets=batter_home_runs,batter_first_home_run,batter_hits,batter_total_base,batter_rbis,batter_runs_scored,batter_hits_runs_rbis,batter_singles,batter_doubles,batter_triples,batter_walks,batter_strikeouts,batter_stolen_bases,pitcher_strikeouts,pitcher_record_a_win,pitcher_hits_allowed,pitcher_walks,pitcher_earned_runs,pitcher_outs&oddsFormat=american")
+    elif "basketball" in sportKey:
+        odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/events/{gameId}/odds?apiKey={ODDSAPI_API_KEY}&regions=us&markets=player_points,player_points_q1,player_rebounds,player_rebounds_q1,player_assists,player_assists_q1,player_threes,player_blocks,player_steals,player_blocks_steals,player_turnovers,player_points_rebounds_assists,player_points_rebounds,player_points_assists,player_rebounds_assists,player_field_goals,player_frees_made,player_frees_attempts,player_first_basket,player_first_team_basket,player_double_double,player_triple_double,player_method_of_first_basket&oddsFormat=american")
+    else:
+        odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=h2h,spreads,totals&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
     oddsJson = odds.json()
-    #print(oddsJson)
+    print(oddsJson)
     response = get_prop(input_text, guaranteedWords, oddsJson)
     # Format and return the response
     return format_response(response)
