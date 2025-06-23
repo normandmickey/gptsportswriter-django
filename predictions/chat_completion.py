@@ -297,7 +297,7 @@ def get_parlay(input_text, guaranteedWords, oddsJson):
     #print(context)
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
-    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  """
+    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions. When making a parlay the bets must be from the same bookmaker and you cannot have both teams winning.  """
     # Make the API call
     try:
         response = groq_client.chat.completions.create(
