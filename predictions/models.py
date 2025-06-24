@@ -35,6 +35,7 @@ class Predictions(models.Model):
     tweet_text=models.TextField(blank=True)
     won=models.BooleanField(null=True)
     results=models.TextField(null=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -60,6 +61,7 @@ class Recaps(models.Model):
     tweet_text=models.TextField(blank=True)
     won=models.BooleanField(null=True)
     results=models.TextField(null=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -85,6 +87,7 @@ class Parlays(models.Model):
     tweet_text=models.TextField(blank=True)
     won=models.BooleanField(null=True)
     results=models.TextField(null=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -110,6 +113,7 @@ class Props(models.Model):
     tweet_text=models.TextField(blank=True)
     won=models.BooleanField(null=True)
     results=models.TextField(null=True)
+    updated_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
