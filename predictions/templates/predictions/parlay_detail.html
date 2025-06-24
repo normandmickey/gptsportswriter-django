@@ -3,10 +3,6 @@
 {% block title %}{{ article.title }} {% endblock %}
 {% block description %} {{ article.tweet_text }} {% endblock %}
 {% block content %}
-<head>
-        <title>{{ article.title }}</title>
-        <meta name="description" content="{{ article.tweet_text }}">
-    </head>
     <body>
     <p><center><a href="{% url 'parlays' %}">Create Predictions</center></a> 
     <p><h1><center>{{ article.title }} </center></h1></p> 
