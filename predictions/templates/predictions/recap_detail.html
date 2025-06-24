@@ -1,8 +1,7 @@
 {% extends "predictions/layout.html" %}
 {% load markdown_extras %}
-{% block title %}
-GPTSportsWriter - Recap Detail
-{% endblock %}
+{% block title %}{{ article.title }} {% endblock %}
+{% block description %} {{ article.tweet_text }} {% endblock %}
 {% block content %}
 <head>
         <title>{{ article.title }}</title>
