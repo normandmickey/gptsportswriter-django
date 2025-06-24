@@ -22,6 +22,7 @@ GPT_MODEL2= "llama-3.1-8b-instant"
 GPT_MODEL="qwen/qwen3-32b"
 RESULT_MODEL= "llama-3.3-70b-versatile"
 TWEET_MODEL="llama-3.3-70b-versatile"
+TWEET_MODEL2="meta-llama/llama-4-scout-17b-16e-instruct"
 OPENAI_GPT_MODEL = "gpt-4o"
 #OPENAI_GPT_MODEL = "o3-mini"
 ASKNEWS_CLIENT_ID = os.environ.get('ASKNEWS_CLIENT_ID')
@@ -465,6 +466,7 @@ def generate_tweet(input_text):
     #print(input_text)
     # Call the OpenAI API to generate the story
     response = get_tweet(input_text)
+    print(response)
     # Format and return the response
     return format_response(response)
 
@@ -477,6 +479,7 @@ def get_tweet(input_text):
     system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate and write like a sports betting bro.  """
     # Make the API call
     #response = groq_client.chat.completions.create(
+    '''
     response = openAI_client.chat.completions.create(
         #model=TWEET_MODEL,
         model=OPENAI_GPT_MODEL,
@@ -487,6 +490,16 @@ def get_tweet(input_text):
         temperature=0.3, 
         max_tokens=200
     )
+    '''
+    response = groq_client.chat.completions.create(
+            model=TWEET_MODEL2,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": "Write a funny, sarcastic tweet summarizing the following text. Use funny but approprate hashtags, emojis and tags. Limit your resonse to 150 characters" + " " + input_text},
+            ],
+            temperature=0.3, 
+            max_tokens=500
+        )
 
     # Return the API response
     #print(response)
