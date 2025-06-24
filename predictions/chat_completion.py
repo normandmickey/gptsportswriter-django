@@ -250,19 +250,25 @@ def generate_prop(input_text, guaranteedWords, gameId, sportKey):
         #odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=h2h,spreads,totals&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
         #odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/events/{gameId}?apiKey={ODDSAPI_API_KEY}&regions=us&markets=batter_home_runs,batter_first_home_run,batter_hits,batter_total_base,batter_rbis,batter_runs_scored,batter_hits_runs_rbis,batter_singles,batter_doubles,batter_triples,batter_walks,batter_strikeouts,batter_stolen_bases,pitcher_strikeouts,pitcher_record_a_win,pitcher_hits_allowed,pitcher_walks,pitcher_earned_runs,pitcher_outs&oddsFormat=american")
         odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/events/{gameId}/odds?apiKey={ODDSAPI_API_KEY}&regions=us&markets=player_goal_scorer_anytime,player_first_goal_scorer,player_last_goal_scorer,player_to_receive_card,player_to_receive_red_card,player_shots_on_target,player_shots,player_assists&oddsFormat=american")
-    elif "baseball_mlb" in sportKey:
-        odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/events/{gameId}/odds?apiKey={ODDSAPI_API_KEY}&regions=us&markets=batter_home_runs,batter_first_home_run,batter_hits,batter_total_base,batter_rbis,batter_runs_scored,batter_hits_runs_rbis,batter_singles,batter_doubles,batter_triples,batter_walks,batter_strikeouts,batter_stolen_bases,pitcher_strikeouts,pitcher_record_a_win,pitcher_hits_allowed,pitcher_walks,pitcher_earned_runs,pitcher_outs&oddsFormat=american")
+        odds2 = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=h2h,spreads,totals&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
+    elif "baseball" in sportKey:
+        odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/events/{gameId}/odds?apiKey={ODDSAPI_API_KEY}&regions=us&markets=batter_home_runs,batter_first_home_run,batter_hits,batter_total_bases,batter_rbis,batter_runs_scored,batter_hits_runs_rbis,batter_singles,batter_doubles,batter_triples,batter_walks,batter_strikeouts,batter_stolen_bases,pitcher_strikeouts,pitcher_record_a_win,pitcher_hits_allowed,pitcher_walks,pitcher_earned_runs,pitcher_outs&oddsFormat=american")
+        odds2 = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=h2h,spreads,totals&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
     elif "basketball" in sportKey:
         odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/events/{gameId}/odds?apiKey={ODDSAPI_API_KEY}&regions=us&markets=player_points,player_points_q1,player_rebounds,player_rebounds_q1,player_assists,player_assists_q1,player_threes,player_blocks,player_steals,player_blocks_steals,player_turnovers,player_points_rebounds_assists,player_points_rebounds,player_points_assists,player_rebounds_assists,player_field_goals,player_frees_made,player_frees_attempts,player_first_basket,player_first_team_basket,player_double_double,player_triple_double,player_method_of_first_basket&oddsFormat=american")
+        odds2 = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=h2h,spreads,totals&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
     else:
-        odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=h2h,spreads,totals&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
+        odds = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=h2h,spreads&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
+        odds2 = requests.get(f"https://api.the-odds-api.com/v4/sports/{sportKey}/odds/?regions=us&markets=totals&apiKey={ODDSAPI_API_KEY}&eventIds={gameId}")
     oddsJson = odds.json()
-    print(oddsJson)
-    response = get_prop(input_text, guaranteedWords, oddsJson)
+    odds2Json = odds2.json()
+    response = get_prop(input_text, guaranteedWords, oddsJson, odds2Json)
     # Format and return the response
     return format_response(response)
 
-def get_prop(input_text, guaranteedWords, oddsJson):
+def get_prop(input_text, guaranteedWords, oddsJson, odds2Json):
+    #print(oddsJson)
+    #print(odds2Json)
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
     #context = ask.news.search_news("player prop bets for " + input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_string
@@ -275,10 +281,10 @@ def get_prop(input_text, guaranteedWords, oddsJson):
         model=GPT_MODEL,
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": "Write a humorous prediction for the following matchup.   Include only relevant stats and odds for the game in question. Do not make up any details.  Mentions any player prop bets found in the context." + context + str(oddsJson) + " " + input_text},
+            {"role": "user", "content": "Write a humorous prediction for the following matchup.   Include only relevant stats and odds for the game in question. Do not make up any details.  Mention any player prop bets found in the context.  The odds are in JSON format." + context + str(oddsJson) + str(odds2Json) + " " + input_text},
         ],
         temperature=0.3, 
-        max_tokens=4000,
+        max_tokens=6000,
         reasoning_format='hidden'
     )
 
