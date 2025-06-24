@@ -14,6 +14,24 @@ info_dict = {
     "date_field": "updated_at",
 }
 
+# new dict below...
+info_dict2 = {
+    "queryset": Parlays.objects.all().defer('gameimg').order_by('created_at'),
+    "date_field": "updated_at",
+}
+
+# new dict below...
+info_dict3 = {
+    "queryset": Props.objects.all().defer('gameimg').order_by('created_at'),
+    "date_field": "updated_at",
+}
+
+# new dict below...
+info_dict4 = {
+    "queryset": Recaps.objects.all().defer('gameimg').order_by('created_at'),
+    "date_field": "updated_at",
+}
+
 urlpatterns = [
     path("", views.home, name="home"),
     path('c41a1070cbfa4d5ea66773fc0519716c.txt', TemplateView.as_view(template_name='c41a1070cbfa4d5ea66773fc0519716c.txt',
@@ -55,6 +73,6 @@ urlpatterns = [
     path(
         "sitemap.xml",
         sitemap,
-        {"sitemaps": {"Predictions": GenericSitemap(info_dict)}},
+        {"sitemaps": {"Predictions": GenericSitemap(info_dict),"Parlays": GenericSitemap(info_dict2),"Props": GenericSitemap(info_dict3),"Recaps": GenericSitemap(info_dict4)}},
     ),
 ]
