@@ -115,7 +115,7 @@ def addWatermark(title, filename):
 
     # 4. Add text
     text_to_add = "www.GPTSportsWriter.com"
-    text_color = (0, 255, 0) # Yellow color
+    text_color = (255, 255, 255) # White Color
     d.text((10, 884), text_to_add, font=fnt, fill=text_color, stroke_width=2, stroke_fill='black')
     d.text((10, 944), title, font=fnt2, fill=text_color, stroke_width=2, stroke_fill='black')
     

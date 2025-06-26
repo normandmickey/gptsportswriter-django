@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     'django.contrib.sitemaps',
     'gptsportswriter',
+    'djstripe',
 ]
 
 SITE_ID = 1
@@ -150,4 +151,9 @@ CSRF_TRUSTED_ORIGINS = [
     'https://848a-38-39-228-95.ngrok-free.app/'
 ]
 
+STRIPE_LIVE_PUBLIC_KEY = os.environ.get("STRIPE_LIFE_PUBLIC_KEY")
+STRIPE_LIVE_SECRET_KEY = os.environ.get("STRIPE_LIVE_SECRET_KEY")
+STRIPE_LIVE_MODE = True  # Change to True in production
+DJSTRIPE_WEBHOOK_SECRET = "whsec_xxx"
+DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
 
