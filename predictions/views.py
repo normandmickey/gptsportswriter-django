@@ -18,6 +18,7 @@ from .models import Predictions, Recaps, Parlays, Props
 from pptx import Presentation
 from pptx.util import Inches
 from index_now import submit_url_to_index_now, IndexNowAuthentication
+from django.contrib.auth.decorators import login_required
 
 
 load_dotenv(override=True)

@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'gptsportswriter',
     'djstripe',
+    'accounts',
 ]
 
 SITE_ID = 1
@@ -156,4 +157,13 @@ STRIPE_LIVE_SECRET_KEY = os.environ.get("STRIPE_LIVE_SECRET_KEY")
 STRIPE_LIVE_MODE = True  # Change to True in production
 DJSTRIPE_WEBHOOK_SECRET = "whsec_xxx"
 DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
+
+LOGIN_REDIRECT_URL = "/" 
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get("GM_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("GM_HOST_PASSWORD")
 
