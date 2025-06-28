@@ -1,47 +1,52 @@
 from PIL import Image, ImageDraw, ImageFont
-from pilmoji import Pilmoji
 
-def wrap_text(text, font, max_width):
-    lines = []
-    words = text.split(' ')
-    current_line = []
-    for word in words:
-        test_line = ' '.join(current_line + [word])
-        text_width = font.getlength(test_line)
-        if text_width <= max_width:
-            current_line.append(word)
-        else:
-            lines.append(' '.join(current_line))
-            current_line = [word]
-    if current_line:
-        lines.append(' '.join(current_line))
-    return lines
+def generate_image3(title, filename):
+    """
+    Generate an image with a blue background and text.
 
-# Create a blank image
-image = Image.new("RGB", (1024, 1024), color=(255, 255, 255))
-draw = ImageDraw.Draw(image)
+    Args:
+    title (str): The title to display on the image, e.g., "Prediction: South Africa VS Zimbabwe2025-06-28".
+    filename (str): The filename to save the image as.
 
-# Load the font
-try:
-    font = ImageFont.truetype("arial.ttf", 20)  # Replace with your font path
-except IOError:
-    font = ImageFont.load_default()  # Fallback if the specified font is not found
+    Returns:
+    None
+    """
 
-# Text and settings
-long_text = "Chicago White Sox VS Toronto Blue Jays 2025-06-22 Blue Jays favored like they're the Avengers, but Houser's pitching like Thanos. White Sox at +215? Might be the snap they need! ⚾️💥 #UnderdogMagic #BetTheSox @BlueJays @whitesox Want more? Visit https://www.gptsportswriter.com/prediction-detail/prediction-chicago-white-sox-vs-toronto-blue-jays-2025-06-22/"
-max_width = 800  # Maximum width for the text block
-x_position = 20
-y_position = 20
-line_spacing = 10  # Pixels between lines
-fill_color = (0, 0, 0)  # Black color
+    # Parse the title
+    match = title.split(":")[1]
+    away_team = match.split("VS")[0]
+    home_team = match.split('VS')[1][:-10]
+    match_date = match.split('VS')[1][-10:]
 
-# Wrap the text and draw each line
-wrapped_lines = wrap_text(long_text, font, max_width)
-for line in wrapped_lines:
-    #draw.text((x_position, y_position), line, font=font, fill=fill_color)
-    with Pilmoji(image) as pilmoji:
-        pilmoji.text((x_position, y_position), long_text.strip(), (0, 0, 0), font)
-        y_position += font.size + line_spacing  # Use font size for line height
 
-# Save the result
-image.save("wrapped_text_image.png")
+    # Create a new image
+    img_width, img_height = 1024, 1024
+    img = Image.new('RGB', (img_width, img_height), color=(73, 109, 137))  # Blue background
+
+    # Create a drawing object
+    d = ImageDraw.Draw(img)
+
+    # Load a font (replace 'arial.ttf' with a font available on your system)
+    try:
+        fnt = ImageFont.truetype('arial.ttf', 80)
+        fnt2 = ImageFont.truetype('arial.ttf', 50)
+    except IOError:
+        print("Arial font not found. Using default font.")
+        fnt = ImageFont.load_default(size=80)  # Fallback to default font
+        fnt2 = ImageFont.load_default(size=50)
+
+    # Add text
+    text_to_add = "www.GPTSportsWriter.com"
+    text_color = (255, 255, 0)  # Yellow color
+    print(img_width)
+    d.text((20, 80), text_to_add, font=fnt, fill=text_color)
+    d.text(((img_width - (len(away_team) * 27.5)) / 2, 190), away_team, font=fnt2, fill=text_color)
+    d.text(((img_width - 55) / 2, 250), "VS", font=fnt2, fill=text_color)
+    d.text(((img_width - (len(home_team) * 27.5)) / 2, 310), home_team, font=fnt2, fill=text_color)
+    d.text(((img_width - (len(match_date) * 27.5)) / 2, 430), match_date, font=fnt2, fill=text_color)
+    
+
+    # Save the image
+    img.save(filename)
+
+generate_image3("Prediction: Washington Nationals VS Los Angeles Angels 2025-06-28", "test.png")

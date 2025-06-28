@@ -70,26 +70,35 @@ def generate_image2(text_prompt):
 #    return BytesIO(image_data)
 
 def generate_image3(title, filename):
+    print(title)
+    match = title.split(":")[1]
+    away_team = match.split("VS")[0]
+    home_team = match.split('VS')[1][:-11]
+    match_date = match.split('VS')[1][-11:]
     # 1. Create a new image
-    img = Image.new('RGB', (1024, 1024), color=(73, 109, 137)) # Blue background
+    img_width, img_height = 1024, 1024
+    img = Image.new('RGB', (img_width, img_height), color=(73, 109, 137))  # Blue background
 
     # 2. Create a drawing object
     d = ImageDraw.Draw(img)
 
     # 3. Load a font (replace 'arial.ttf' with a font available on your system)
     try:
-        fnt = ImageFont.truetype('arial.ttf', 50)
-        fnt2 = ImageFont.truetype('arial.ttf', 30)
+        fnt = ImageFont.truetype('arial.ttf', 80)
+        fnt2 = ImageFont.truetype('arial.ttf', 50)
     except IOError:
         print("Arial font not found. Using default font.")
-        fnt = ImageFont.load_default(size=50) # Fallback to default font
-        fnt2 = ImageFont.load_default(size=30)
+        fnt = ImageFont.load_default(size=80) # Fallback to default font
+        fnt2 = ImageFont.load_default(size=50)
 
     # 4. Add text
     text_to_add = "www.GPTSportsWriter.com"
     text_color = (255, 255, 0) # Yellow color
-    d.text((50, 80), text_to_add, font=fnt, fill=text_color)
-    d.text((50, 160), title, font=fnt2, fill=text_color)
+    d.text((20, 80), text_to_add, font=fnt, fill=text_color)
+    d.text(((img_width - (len(away_team) * 27.5)) / 2, 190), away_team, font=fnt2, fill=text_color)
+    d.text(((img_width - 55) / 2, 250), "VS", font=fnt2, fill=text_color)
+    d.text(((img_width - (len(home_team) * 27.5)) / 2, 310), home_team, font=fnt2, fill=text_color)
+    d.text(((img_width - (len(match_date) * 27.5)) / 2, 430), match_date, font=fnt2, fill=text_color)
     
     # 5. Save the image
     img.save(filename)
@@ -115,7 +124,7 @@ def addWatermark(title, filename):
 
     # 4. Add text
     text_to_add = "www.GPTSportsWriter.com"
-    text_color = (255, 255, 255) # White Color
+    text_color = (0, 255, 0) # Florescent Green Color
     d.text((10, 884), text_to_add, font=fnt, fill=text_color, stroke_width=2, stroke_fill='black')
     d.text((10, 944), title, font=fnt2, fill=text_color, stroke_width=2, stroke_fill='black')
     
