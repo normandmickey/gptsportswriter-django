@@ -76,4 +76,5 @@ urlpatterns = [
         {"sitemaps": {"Predictions": GenericSitemap(info_dict),"Parlays": GenericSitemap(info_dict2),"Props": GenericSitemap(info_dict3),"Recaps": GenericSitemap(info_dict4)}},
     ),
     path("stripe/", include("djstripe.urls", namespace="djstripe")), #add this
+    path("pricing-page/", views.pricing_page, name="pricing_page"),
 ]

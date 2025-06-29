@@ -15,10 +15,12 @@ import openai
 import psycopg2
 import base64, unicodedata
 from .models import Predictions, Recaps, Parlays, Props
+from djstripe.models import Product
 from pptx import Presentation
 from pptx.util import Inches
 from index_now import submit_url_to_index_now, IndexNowAuthentication
 from django.contrib.auth.decorators import login_required
+from djstripe.settings import djstripe_settings
 
 
 load_dotenv(override=True)
@@ -64,6 +66,12 @@ tweepy_auth = tweepy.OAuth1UserHandler(
     "{}".format(os.environ.get("TWITTER_ACCESS_TOKEN")),
     "{}".format(os.environ.get("TWITTER_ACCESS_TOKEN_SECRET")),
 )
+
+def pricing_page(request):
+    return render(request, 'predictions/pricing_page.html', {
+        'stripe_public_key': djstripe_settings.STRIPE_PUBLIC_KEY,
+        'stripe_pricing_table_id': 'prctbl_1RewTRK3QKggHLe5nf5a2Xdv',
+    })
 
 def recent_predictions(request):
     now = timezone.now()
@@ -153,11 +161,21 @@ def recent_recaps(request):
 
 def prediction_detail(request, slug):
     article = get_object_or_404(Predictions, slug=slug)
+    sportKey = article.sport_key
+    if sportKey == "baseball_mlb":
+        sport = "MLB"
+    elif sportKey == "basketball_wnba":
+        sport = "WNBA"
+    elif sportKey == "soccer_fifa_club_world_cup":
+        sport = "Fifa+Club+World+Cup"
+    else:
+        sport = "MLB"
     res = ""
     #latest_odds = generate_odds(article.sport_key + " " + article.title, res, article.id, article.sport_key)
     #print(latest_odds)
     context = {
         'article': article,
+        'sport': sport,
         #'update': latest_odds.replace("\n", "<br/>"),
     }
     return render(request, 'predictions/prediction_detail.html', context)
