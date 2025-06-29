@@ -67,6 +67,17 @@ tweepy_auth = tweepy.OAuth1UserHandler(
     "{}".format(os.environ.get("TWITTER_ACCESS_TOKEN_SECRET")),
 )
 
+def getBannerSport(sportKey):
+    if sportKey == "baseball_mlb":
+        sport = "MLB"
+    elif sportKey == "basketball_wnba":
+        sport = "WNBA"
+    elif sportKey == "soccer_fifa_club_world_cup":
+        sport = "Fifa+Club+World+Cup"
+    else:
+        sport = "MLB"
+    return sport
+
 def pricing_page(request):
     return render(request, 'predictions/pricing_page.html', {
         'stripe_public_key': djstripe_settings.STRIPE_PUBLIC_KEY,
@@ -162,14 +173,7 @@ def recent_recaps(request):
 def prediction_detail(request, slug):
     article = get_object_or_404(Predictions, slug=slug)
     sportKey = article.sport_key
-    if sportKey == "baseball_mlb":
-        sport = "MLB"
-    elif sportKey == "basketball_wnba":
-        sport = "WNBA"
-    elif sportKey == "soccer_fifa_club_world_cup":
-        sport = "Fifa+Club+World+Cup"
-    else:
-        sport = "MLB"
+    sport = getBannerSport(sportKey)
     res = ""
     #latest_odds = generate_odds(article.sport_key + " " + article.title, res, article.id, article.sport_key)
     #print(latest_odds)
@@ -193,15 +197,33 @@ def article_detail(request, slug):
 
 def prop_detail(request, slug):
     article = get_object_or_404(Props, slug=slug)
-    return render(request, 'predictions/prop_detail.html', {'article': article})
+    sport = getBannerSport(article.sport_key)
+    context = {
+        'article': article,
+        'sport': sport,
+        #'update': latest_odds.replace("\n", "<br/>"),
+    }
+    return render(request, 'predictions/prop_detail.html', context)
 
 def recap_detail(request, slug):
     article = get_object_or_404(Recaps, slug=slug)
-    return render(request, 'predictions/recap_detail.html', {'article': article})
+    sport = getBannerSport(article.sport_key)
+    context = {
+        'article': article,
+        'sport': sport,
+        #'update': latest_odds.replace("\n", "<br/>"),
+    }
+    return render(request, 'predictions/recap_detail.html', context)
 
 def parlay_detail(request, slug):
     article = get_object_or_404(Parlays, slug=slug)
-    return render(request, 'predictions/parlay_detail.html', {'article': article})
+    sport = getBannerSport(article.sport_key)
+    context = {
+        'article': article,
+        'sport': sport,
+        #'update': latest_odds.replace("\n", "<br/>"),
+    }
+    return render(request, 'predictions/parlay_detail.html', context)
 
 # send Tweet
 def sendTweet(text, match, file, link):
@@ -466,6 +488,7 @@ def parlays(request):
 
             title = "Parlay: " + match[:-2]
             articles = Parlays.objects.filter(id=gameId)
+            banner_sport = getBannerSport(sportKey)
             if articles:
                 for article in articles:
                     imageBytes = get_image_base64(article.gameimg)
@@ -473,6 +496,7 @@ def parlays(request):
                         "user_input": match,
                         "generated_parlay": article.content.replace("\n", "<br/>"),
                         "sports": sports,
+                        "banner_sport": banner_sport,
                         "image_url":  f"data:;base64,{imageBytes}"
                     }
             else:
@@ -504,6 +528,7 @@ def parlays(request):
                     "user_input": match[:-2],
                     "generated_parlay": generated_parlay.replace("\n", "<br/>"),
                     "image_url": image_url,
+                    "banner_sport": banner_sport,
                     "sports": sports,
                 }
 
@@ -635,6 +660,7 @@ def predictions(request):
             articles = Predictions.objects.filter(id=gameId)
 
             title = "Prediction: " + match[:-2]
+            bannerSport = getBannerSport(sportKey)
 
             print(articles)
             if articles:
@@ -648,6 +674,7 @@ def predictions(request):
                         "sports": sports,
                         "image_url":  f"data:;base64,{imageBytes}",
                         "created_at": article.created_at,
+                        "banner_sport": bannerSport,
                         "latest_odds": latest_odds.replace("\n", "<br/>")
                     }
             else:
@@ -683,6 +710,7 @@ def predictions(request):
                     "generated_prediction": generated_prediction,
                     "image_url": image_url,
                     "sports": sports,
+                    "banner_sport": bannerSport,
                     "created_at": "",
                 }
 
@@ -824,6 +852,7 @@ def props(request):
             
             title = "Prop Bets: " + match[:-2]
             articles = Props.objects.filter(id=gameId)
+            banner_sport = getBannerSport(sportKey)
             if articles:
                 for article in articles:
                     imageBytes = get_image_base64(article.gameimg)
@@ -831,6 +860,7 @@ def props(request):
                         "user_input": match,
                         "generated_prediction": article.content.replace("\n", "<br/>"),
                         "sports": sports,
+                        "baner_sport": banner_sport,
                         "image_url":  f"data:;base64,{imageBytes}"
                     }
             else:                  
@@ -862,6 +892,7 @@ def props(request):
                     "user_input": match,
                     "generated_prediction": generated_prop.replace("\n", "<br/>"),
                     "image_url": image_url,
+                    "banner_sport": banner_sport,
                     "sports": sports,
                 }
 
@@ -920,6 +951,7 @@ def recaps(request):
             title = "Recap: " + match[:-2]
 
             articles = Recaps.objects.filter(id=gameId)
+            banner_sport = getBannerSport(sportKey)
             if articles:
                 for article in articles:
                     imageBytes = get_image_base64(article.gameimg)
@@ -927,27 +959,37 @@ def recaps(request):
                         "user_input": match,
                         "generated_recap": article.content.replace("\n", "<br/>"),
                         "sports": sports,
+                        "banner_sport": banner_sport,
                         "image_url":  f"data:;base64,{imageBytes}"
                     }
             else:        
                 generated_recap = generate_recap(sport + " " + match, res, gameId, sportKey)
                 print(sport)
-                image_prompt = createImagePrompt(sport + " " + match)
                 #print(image_prompt)
-                image_url = generate_image(image_prompt)
+                try: 
+                    image_prompt = createImagePrompt(sport + " " + match)
+                    image_url = generate_image(image_prompt)
+                except:
+                    image_url = ""
                 #print(image_url)
                 time.sleep(2)
-                data = requests.get(image_url).content
-                file_name = str(uuid.uuid4()) + ".jpg"
-                f = open(file_name, 'wb')
-                f.write(data)
-                f.close
-                addWatermark(title, file_name)
+                try:
+                    data = requests.get(image_url).content
+                    file_name = str(uuid.uuid4()) + ".jpg"
+                    f = open(file_name, 'wb')
+                    f.write(data)
+                    f.close
+                    addWatermark(title, file_name)
+                except:
+                    file_name = str(uuid.uuid4()) + ".jpg"
+                    generate_image3(title, file_name)
+                    print("error creating image")
             
                 context = {
                     "user_input": match,
                     "generated_recap": generated_recap.replace("\n", "<br/>"),
                     "image_url": image_url,
+                    "banner_sport": banner_sport,
                     "sports": sports,
                 }
 

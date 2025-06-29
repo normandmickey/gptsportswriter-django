@@ -9,5 +9,6 @@
     <p><center><img src="data:;base64,{{article.get_image_bytes}}" alt="Generated Image" style="max-width:80vw; max-height:80vh; object-fit: contain;"></center></p>
     <p>{{ article.content | markdown| safe }}</p>
     <p>Created: {{ article.created_at }} GMT</p>
+    <p><center><iframe src="https://widgets.revmasters.com/widgets/?afflink=https%3A%2F%2Frecord.revmasters.com%2F_8ejz3pKmFDsVbxXQ5NRGNWNd7ZgqdRLk%2F1%2F&etype=league&sport={{sport}}&theme=light&game-end=" width="300" height="600"></iframe></center></p>
     </body>
 {% endblock %}
