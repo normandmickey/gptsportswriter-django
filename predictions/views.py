@@ -68,15 +68,15 @@ tweepy_auth = tweepy.OAuth1UserHandler(
 )
 
 def getBannerSport(sportKey):
-    if sportKey == "baseball_mlb":
-        sport = "MLB"
-    elif sportKey == "basketball_wnba":
-        sport = "WNBA"
-    elif sportKey == "soccer_fifa_club_world_cup":
-        sport = "Fifa+Club+World+Cup"
-    else:
-        sport = "MLB"
-    return sport
+    sportMap = {
+        "baseball_mlb": "MLB",
+        "basketball_wnba": "WNBA",
+        "soccer_fifa_club_world_cup": "Fifa+Club+World+Cup",
+        "soccer_mls": "Major+League+Soccer",
+        "tennis_atp_wimbledon": "Wimbledon+Men",
+        "tennis_wta_wimbledon": "Wimbledon+Women"
+    }
+    return sportMap.get(sportKey, "MLB")
 
 def pricing_page(request):
     return render(request, 'predictions/pricing_page.html', {
