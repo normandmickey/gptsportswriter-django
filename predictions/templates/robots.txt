@@ -1,7 +1,4 @@
 User-Agent: *
 Disallow: /admin/
 
-User-agent: GPTBot
-Disallow: /
-
 Sitemap: https://www.gptsportswriter.com/sitemap.xml
