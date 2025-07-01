@@ -148,7 +148,7 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
         context = ""
     
      # Construct the system prompt. Feel free to experiment with different prompts.
-    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and sarcastic but very accurate and confident in your predictions. If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. """
+    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and sarcastic but very accurate and confident in your predictions. If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. For decimal odds the implied probability is Implied Probability = (1 / Decimal Odds) * 100%  """
     # Make the API call
     try:
         response = groq_client.chat.completions.create(
@@ -276,7 +276,7 @@ def get_prop(input_text, guaranteedWords, oddsJson, odds2Json):
     context = ask.news.search_news("player prop bets for " + input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"], string_guarantee_op='OR', string_guarantee=guaranteedWords, premium=True).as_string
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
-    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%.   """
+    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. For decimal odds the implied probability is Implied Probability = (1 / Decimal Odds) * 100%  """
     # Make the API call
     response = groq_client.chat.completions.create(
         model=GPT_MODEL,
@@ -313,7 +313,7 @@ def get_parlay(input_text, guaranteedWords, oddsJson):
     #print(context)
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
-    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions. When making a parlay the bets must be from the same bookmaker and you cannot have both teams winning. If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%.  """
+    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions. When making a parlay the bets must be from the same bookmaker and you cannot have both teams winning. If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. For decimal odds the implied probability is Implied Probability = (1 / Decimal Odds) * 100% """
     # Make the API call
     try:
         response = groq_client.chat.completions.create(
