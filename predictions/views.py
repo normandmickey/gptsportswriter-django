@@ -459,6 +459,9 @@ def zoomDocumentation(request):
 def sports_betting_money_management(request):
     return render(request, "predictions/sports_betting_money_management.html")
 
+def second_opinions(request):
+    return render(request, "predictions/second_opinions.html")
+
 def disclaimer(request):
     return render(request, "predictions/disclaimer.html")
 

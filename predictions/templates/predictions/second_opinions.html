@@ -1,0 +1,136 @@
+{% extends "predictions/layout.html" %}
+{% block title %}
+GPTSportsWriter
+{% endblock %}
+{% block content %}
+<style>
+body {
+ font-family: Arial, sans-serif;
+ margin:0;
+ padding:0;
+ background-color: #f7f7f7;
+}
+
+header {
+ background-color: #3498db;
+ color: #fff;
+ padding:1em;
+ text-align: center;
+}
+
+main {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ padding:2em;
+}
+
+.body-content {
+ max-width:800px;
+ margin:0 auto;
+ padding:2em;
+ background-color: #fff;
+ box-shadow:02px4px rgba(0,0,0,0.1);
+ border-radius:10px;
+}
+
+.section-budget, .section-avoid-chasing-losses, .section-the-unit-system, .section-stay-ahead, .section-review-and-adjust, .section-diversify-bets {
+ background-color: #f7f7f7;
+ padding:1em;
+ margin-bottom:1em;
+ box-shadow:02px4px rgba(0,0,0,0.1);
+ border-radius:10px;
+}
+
+h1 {
+ font-size:36px;
+ line-height:1.2;
+ color: #f7dc6f; /* Complementary orange color */
+}
+
+h2 {
+ margin-top:0;
+ font-size:24px;
+ line-height:1.2;
+ color: #337ab7; /* Blue text */
+}
+
+p {
+ margin-bottom:1em;
+ line-height:1.6;
+}
+
+ul {
+ list-style: none;
+ padding:0;
+ margin:0;
+}
+
+li {
+ margin-bottom:0.5em;
+}
+
+a {
+ text-decoration: none;
+ color: #337ab7; /* Blue links */
+}
+
+a:hover {
+ color: #23527c; /* Darker blue on hover */
+}
+
+footer {
+ background-color: #3498db; /* Blue background */
+ color: #f7dc6f; /* Complementary orange text */
+ padding:1em;
+ text-align: center;
+}
+
+footer a {
+ color: #fff; /* White links */
+}
+
+footer a:hover {
+ color: #f7dc6f; /* Complementary orange on hover */
+}
+
+@media (max-width:768px) {
+ main {
+ padding:1em;
+ }
+ .body-content {
+ padding:1em;
+ }
+}
+
+@media (max-width:480px) {
+ h1 {
+ font-size:24px;
+ }
+ h2 {
+ font-size:18px;
+ }
+ p {
+ font-size:14px;
+ }
+}
+</style>
+<header>
+  <h1>Second Opinions - AI Sports Betting Sites</h1>
+</header>
+<main>
+  <section class="section-budget">
+    <h2><a href = "https://betboss.ai" target="_blank">BetBoss.ai</a></h2>
+    <p>The best sport picks mathematically possible.</p>
+  </section>
+  <section class="section-the-unit-system">
+    <h2><a href = "https://www.pine-sports.com/chat/c1009ffe-43be-44d0-a79a-dd1ec1b3bd60" target="_blank">PineSports-AI</a></h2>
+    <p>The ultimate sports research companion designed by bettors, for bettors. Jaxon gives you insights to bet smarter.</p>
+  </section>
+  <section class="section-avoid-chasing-losses">
+    <h2><a href = "https://www.pine-sports.com/chat/c1009ffe-43be-44d0-a79a-dd1ec1b3bd60" target="_blank">ML Mafia</a></h2>
+    <p>Turn Picks into Paychecks - Join the #1 AI-Powered Mafia.</p>
+  </section>
+   
+</main>
+{% endblock %}
