@@ -2,8 +2,12 @@ import os, requests
 from io import BytesIO
 from openai import OpenAI
 from PIL import Image, ImageDraw, ImageFont
+from groq import Groq
 
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+groq_client = Groq(
+    api_key=os.environ.get("GROQ_API_KEY")
+)
 
 
 def createImagePrompt(text):
@@ -13,6 +17,30 @@ def createImagePrompt(text):
         {
         "role": "user",
         "content": "create a prompt to create a meme like image in the style of digital art.  Find the mascot for the teams mentioned in the text and create an image of a game between them, include references to the cities or colleges and teams or mascots mentioned in the text with emphasis the home team, be creative, fun and whimsical. If there are no teams mentioned then use the subject of text as your inspiration. Make sure the image is relevant to the sport mentioned." + text
+        }
+    ],
+    #messages=[
+    #    {
+    #    "role": "user",
+    #    "content": "create an image prompt to display the following text" + text
+    #    }
+    #],
+    temperature=0.5,
+    max_tokens=800,
+    top_p=1,
+    frequency_penalty=0,
+    presence_penalty=0
+    )
+
+    return response.choices[0].message.content
+
+def summarizePrediction(text):
+    response = groq_client.chat.completions.create(
+    model="meta-llama/llama-4-scout-17b-16e-instruct",
+    messages=[
+        {
+        "role": "user",
+        "content": "Find the best bet from the following text.  respond with just the bet.  If the text is a game recap, respond with the winner and score" + text
         }
     ],
     #messages=[
@@ -69,8 +97,10 @@ def generate_image2(text_prompt):
 #    image_data = requests.get(image_url).content
 #    return BytesIO(image_data)
 
-def generate_image3(title, filename):
+def generate_image3(title, filename, prediction):
     print(title)
+    bet = summarizePrediction(prediction)
+    print(bet)
     match = title.split(":")[1]
     away_team = match.split("VS")[0]
     home_team = match.split('VS')[1][:-11]
@@ -86,10 +116,14 @@ def generate_image3(title, filename):
     try:
         fnt = ImageFont.truetype('arial.ttf', 80)
         fnt2 = ImageFont.truetype('arial.ttf', 50)
+        fnt3 = ImageFont.truetype('arial.ttf', 20)
+    
     except IOError:
         print("Arial font not found. Using default font.")
         fnt = ImageFont.load_default(size=80) # Fallback to default font
         fnt2 = ImageFont.load_default(size=50)
+        fnt3 = ImageFont.load_default(size=20)
+
 
     # 4. Add text
     text_to_add = "www.GPTSportsWriter.com"
@@ -99,6 +133,7 @@ def generate_image3(title, filename):
     d.text(((img_width - 55) / 2, 250), "VS", font=fnt2, fill=text_color)
     d.text(((img_width - (len(home_team) * 27.5)) / 2, 310), home_team, font=fnt2, fill=text_color)
     d.text(((img_width - (len(match_date) * 27.5)) / 2, 430), match_date, font=fnt2, fill=text_color)
+    d.text((20, 550), bet, font=fnt3, fill=text_color)
     
     # 5. Save the image
     img.save(filename)

@@ -174,12 +174,14 @@ def prediction_detail(request, slug):
     article = get_object_or_404(Predictions, slug=slug)
     sportKey = article.sport_key
     sport = getBannerSport(sportKey)
+    paragraphs = article.content.split('<br/><br/>')
     res = ""
     #latest_odds = generate_odds(article.sport_key + " " + article.title, res, article.id, article.sport_key)
     #print(latest_odds)
     context = {
         'article': article,
         'sport': sport,
+        'paragraphs': paragraphs,
         #'update': latest_odds.replace("\n", "<br/>"),
     }
     return render(request, 'predictions/prediction_detail.html', context)
@@ -187,10 +189,13 @@ def prediction_detail(request, slug):
 def article_detail(request, slug):
     article = get_object_or_404(Predictions, slug=slug)
     res = ""
+    paragraphs = article.content.split('<br/><br/>')
     #latest_odds = generate_odds(article.sport_key + " " + article.title, res, article.id, article.sport_key)
     #print(latest_odds)
+    print(paragraphs)
     context = {
         'article': article,
+        'paragraphs': paragraphs,
         #'update': latest_odds.replace("\n", "<br/>"),
     }
     return render(request, 'predictions/article_detail.html', context)
@@ -198,9 +203,11 @@ def article_detail(request, slug):
 def prop_detail(request, slug):
     article = get_object_or_404(Props, slug=slug)
     sport = getBannerSport(article.sport_key)
+    paragraphs = article.content.split('<br/><br/>')
     context = {
         'article': article,
         'sport': sport,
+        'paragraphs': paragraphs,
         #'update': latest_odds.replace("\n", "<br/>"),
     }
     return render(request, 'predictions/prop_detail.html', context)
@@ -208,9 +215,11 @@ def prop_detail(request, slug):
 def recap_detail(request, slug):
     article = get_object_or_404(Recaps, slug=slug)
     sport = getBannerSport(article.sport_key)
+    paragraphs = article.content.split('<br/><br/>')
     context = {
         'article': article,
         'sport': sport,
+        'paragraphs': paragraphs,
         #'update': latest_odds.replace("\n", "<br/>"),
     }
     return render(request, 'predictions/recap_detail.html', context)
@@ -218,9 +227,11 @@ def recap_detail(request, slug):
 def parlay_detail(request, slug):
     article = get_object_or_404(Parlays, slug=slug)
     sport = getBannerSport(article.sport_key)
+    paragraphs = article.content.split('<br/><br/>')
     context = {
         'article': article,
         'sport': sport,
+        'paragraphs': paragraphs,
         #'update': latest_odds.replace("\n", "<br/>"),
     }
     return render(request, 'predictions/parlay_detail.html', context)
@@ -524,7 +535,7 @@ def parlays(request):
                     addWatermark(title, file_name)
                 except:
                     file_name = str(uuid.uuid4()) + ".jpg"
-                    generate_image3(title, file_name)
+                    generate_image3(title, file_name, generated_parlay)
                     print("error creating image")
             
                 context = {
@@ -705,7 +716,7 @@ def predictions(request):
                     addWatermark(title, file_name)
                 except:
                     file_name = str(uuid.uuid4()) + ".jpg"
-                    generate_image3(title, file_name)
+                    generate_image3(title, file_name, generated_prediction)
                     print("error creating image")
             
                 context = {
@@ -888,7 +899,7 @@ def props(request):
                     addWatermark(title, file_name)
                 except:
                     file_name = str(uuid.uuid4()) + ".jpg"
-                    generate_image3(title, file_name)
+                    generate_image3(title, file_name, generated_prop)
                     print("error creating image")
                     
                 context = {
@@ -985,7 +996,7 @@ def recaps(request):
                     addWatermark(title, file_name)
                 except:
                     file_name = str(uuid.uuid4()) + ".jpg"
-                    generate_image3(title, file_name)
+                    generate_image3(title, file_name, generated_recap)
                     print("error creating image")
             
                 context = {
