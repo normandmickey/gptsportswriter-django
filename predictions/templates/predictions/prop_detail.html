@@ -15,6 +15,14 @@
                 <script type="text/javascript" src="https://js.revmasters.com/javascript.php?prefix=8ejz3pKmFDsVbxXQ5NRGNWNd7ZgqdRLk&amp;media=1100&amp;campaign=1"></script>
             </div>
         {% endif %}
+    {% endfor %}{% for paragraph in paragraphs %}
+        <p>{{ paragraph | markdown | safe }}</p>
+        {% if forloop.counter == 3 %} {# Insert ad after the 3rd paragraph #}
+            <div class="ad-container">
+                <!-- Your AdSense or other ad network code here -->
+                <script type="text/javascript" src="https://js.revmasters.com/javascript.php?prefix=8ejz3pKmFDvWm346AIeRA2Nd7ZgqdRLk&amp;media=824&amp;campaign=1"></script>
+            </div>
+        {% endif %}
     {% endfor %}
     <p>Created: {{ article.created_at }} GMT</p>
     <p><center><iframe src="https://widgets.revmasters.com/widgets/?afflink=https%3A%2F%2Frecord.revmasters.com%2F_8ejz3pKmFDsVbxXQ5NRGNWNd7ZgqdRLk%2F1%2F&etype=league&sport={{sport}}&theme=light&game-end=" width="300" height="600"></iframe></center></p>
