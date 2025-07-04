@@ -1,7 +1,7 @@
 {% extends "predictions/layout.html" %}
 {% load markdown_extras %}
 {% block title %}
-GPTSportsWriter - Parlays
+GPTSportsWriter - Props
 {% endblock %}
 {% block content %}
 <script>
@@ -9,13 +9,13 @@ GPTSportsWriter - Parlays
     function openLoader() {
         document.getElementById("loadingModal").style.display = "block";
         document.getElementById("submitBtn").disabled = true;
-      }
+    }
     
     </script>
 
-<p><center>AI Sports Parlays - Accurate, humorous and informative.</center></p>
-<p><center><a href="{% url 'recent_parlays' %}">Recent Parlays</center></a>
-<div pagename="parlays" style="padding:1em; font-size:14pt;">
+<p><center>AI Sports Prop Bets - Accurate, humorous and informative.</center></p>
+<p><center><a href="{% url 'recent_props' %}">Recent Props</center></a>
+<div pagename="props" style="padding:1em; font-size:14pt;">
     <form onsubmit="openLoader()" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <select name="sport" style="width:15em;" id="sport">
@@ -36,29 +36,21 @@ GPTSportsWriter - Parlays
     <div id="loadingModal" style="display: none;">
         <button class="btn btn-primary" type="button" disabled>
           <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-          Currently trying to analyze match: please stand by while we stare blankly at data
+          Warning: match analysis may cause frustration. Prolonged exposure may lead to questioning life choices.
         </button>
     </div>
        
       <div id="data-box">
         <p>
-            <strong>Parlay: {{ user_input }}</strong>
+            <strong>Props: {{ user_input }}</strong>
         </p>
 
         {% if image_url %}
-           <img src="{{ image_url }}" alt="Generated Image" style="max-width:80vw; max-height:80vh; object-fit: contain;">
+            <img src="{{ image_url }}" alt="Generated Image" style="max-width:80vw; max-height:80vh; object-fit: contain;">
         </p>
     {% endif %}
-    {% if generated_parlay %}
-        {% for paragraph in paragraphs %}
-        <p>{{ paragraph | markdown | safe }}</p>
-        {% if forloop.counter == 3 %} {# Insert ad after the 3rd paragraph #}
-            <div class="ad-container">
-                <!-- Your AdSense or other ad network code here -->
-                <script type="text/javascript" src="https://js.revmasters.com/javascript.php?prefix=8ejz3pKmFDvWm346AIeRA2Nd7ZgqdRLk&amp;media=824&amp;campaign=1"></script>
-            </div>
-        {% endif %}
-    {% endfor %}
+    {% if generated_prediction %}
+        <p>{{ generated_prediction | markdown | safe }}</p>
         <p><center><iframe src="https://widgets.revmasters.com/widgets/?afflink=https%3A%2F%2Frecord.revmasters.com%2F_8ejz3pKmFDsVbxXQ5NRGNWNd7ZgqdRLk%2F1%2F&etype=league&sport={{banner_sport}}&theme=light&game-end=" width="300" height="600"></iframe></center></p>
     {% endif %}
     </div>

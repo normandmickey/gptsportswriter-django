@@ -1,10 +1,11 @@
 {% extends "predictions/layout.html" %}
 {% load markdown_extras %}
 {% block title %}
-GPTSportsWriter - Parlays
+GPTSportsWriter - Predictions
 {% endblock %}
 {% block content %}
 <script>
+
 
     function openLoader() {
         document.getElementById("loadingModal").style.display = "block";
@@ -13,9 +14,9 @@ GPTSportsWriter - Parlays
     
     </script>
 
-<p><center>AI Sports Parlays - Accurate, humorous and informative.</center></p>
-<p><center><a href="{% url 'recent_parlays' %}">Recent Parlays</center></a>
-<div pagename="parlays" style="padding:1em; font-size:14pt;">
+<p><center>Get ready to score big with GPTSportswriter's AI sports predictvons, delivering accurate, humorous, and informative picks that combine the latest odds and news articles to help you make informed betting decisions. Whether you're a seasoned gambler or a casual fan, GPTSportswriter's expert analysis and witty commentary will keep you entertained and ahead of the game.</center></p>
+<p><center><a href="{% url 'recent_predictions' %}">Recent Predictions</center></a>
+<div pagename="predictions" style="padding:1em; font-size:14pt;">
     <form onsubmit="openLoader()" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <select name="sport" style="width:15em;" id="sport">
@@ -31,35 +32,33 @@ GPTSportsWriter - Parlays
             {% endfor %}
         </select>
         <br/>
-        <button id="submitBtn" type="submit" value="submit" style="width:8em; height:3em;" enabled>Submit</button>
+        <button id='submitBtn' type="submit" value="submit" style="width:8em; height:3em;" enabled>Submit</button>
     </form>
     <div id="loadingModal" style="display: none;">
         <button class="btn btn-primary" type="button" disabled>
           <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
-          Currently trying to analyze match: please stand by while we stare blankly at data
+          Analyzing match: please wait while we attempt to make sense of chaos
         </button>
     </div>
        
       <div id="data-box">
+       
         <p>
-            <strong>Parlay: {{ user_input }}</strong>
+            <strong>Prediction:</strong> {{ user_input | safe}}
         </p>
 
         {% if image_url %}
-           <img src="{{ image_url }}" alt="Generated Image" style="max-width:80vw; max-height:80vh; object-fit: contain;">
+            <img src="{{ image_url }}" alt="Generated Image" style="max-width:80vw; max-height:80vh; object-fit: contain;">
         </p>
     {% endif %}
-    {% if generated_parlay %}
-        {% for paragraph in paragraphs %}
-        <p>{{ paragraph | markdown | safe }}</p>
-        {% if forloop.counter == 3 %} {# Insert ad after the 3rd paragraph #}
-            <div class="ad-container">
-                <!-- Your AdSense or other ad network code here -->
-                <script type="text/javascript" src="https://js.revmasters.com/javascript.php?prefix=8ejz3pKmFDvWm346AIeRA2Nd7ZgqdRLk&amp;media=824&amp;campaign=1"></script>
-            </div>
-        {% endif %}
-    {% endfor %}
+    {% if generated_prediction %}
+        <p>{{ generated_prediction | markdown | safe }} {{ created_at }}</p>
+        <p>Created at: {{ created_at }} GMT</p>
+         <p>
+            Update: {{ latest_odds | safe}}
+        </p>
         <p><center><iframe src="https://widgets.revmasters.com/widgets/?afflink=https%3A%2F%2Frecord.revmasters.com%2F_8ejz3pKmFDsVbxXQ5NRGNWNd7ZgqdRLk%2F1%2F&etype=league&sport={{banner_sport}}&theme=light&game-end=" width="300" height="600"></iframe></center></p>
+
     {% endif %}
     </div>
 </div>

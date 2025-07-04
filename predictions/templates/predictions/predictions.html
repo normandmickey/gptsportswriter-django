@@ -52,7 +52,15 @@ GPTSportsWriter - Predictions
         </p>
     {% endif %}
     {% if generated_prediction %}
-        <p>{{ generated_prediction | markdown | safe }} {{ created_at }}</p>
+        {% for paragraph in paragraphs %}
+        <p>{{ paragraph | markdown | safe }}</p>
+        {% if forloop.counter == 3 %} {# Insert ad after the 3rd paragraph #}
+            <div class="ad-container">
+                <!-- Your AdSense or other ad network code here -->
+                <script type="text/javascript" src="https://js.revmasters.com/javascript.php?prefix=8ejz3pKmFDvWm346AIeRA2Nd7ZgqdRLk&amp;media=824&amp;campaign=1"></script>
+            </div>
+        {% endif %}
+    {% endfor %}
         <p>Created at: {{ created_at }} GMT</p>
          <p>
             Update: {{ latest_odds | safe}}

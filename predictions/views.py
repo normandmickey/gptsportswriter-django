@@ -506,11 +506,13 @@ def parlays(request):
             if articles:
                 for article in articles:
                     imageBytes = get_image_base64(article.gameimg)
+                    paragraphs = article.content.split('<br/><br/>')
                     context = {
                         "user_input": match,
                         "generated_parlay": article.content.replace("\n", "<br/>"),
                         "sports": sports,
                         "banner_sport": banner_sport,
+                        "paragraphs": paragraphs,
                         "image_url":  f"data:;base64,{imageBytes}"
                     }
             else:
@@ -537,12 +539,14 @@ def parlays(request):
                     file_name = str(uuid.uuid4()) + ".jpg"
                     generate_image3(title, file_name, generated_parlay)
                     print("error creating image")
-            
+
+                paragraphs = generated_parlay.split('\n\n')
                 context = {
                     "user_input": match[:-2],
                     "generated_parlay": generated_parlay.replace("\n", "<br/>"),
                     "image_url": image_url,
                     "banner_sport": banner_sport,
+                    "paragraphs": paragraphs,
                     "sports": sports,
                 }
 
@@ -682,6 +686,7 @@ def predictions(request):
                     #print("title: " + article.title)
                     latest_odds = generate_odds(sport + " " + match, res, gameId, sportKey)
                     imageBytes = get_image_base64(article.gameimg)
+                    paragraphs = article.content.split('<br/><br/>')
                     context = {
                         "user_input": match,
                         "generated_prediction": article.content,
@@ -689,7 +694,8 @@ def predictions(request):
                         "image_url":  f"data:;base64,{imageBytes}",
                         "created_at": article.created_at,
                         "banner_sport": bannerSport,
-                        "latest_odds": latest_odds.replace("\n", "<br/>")
+                        "latest_odds": latest_odds.replace("\n", "<br/>"),
+                        "paragraphs": paragraphs,
                     }
             else:
                 generated_prediction = generate_prediction(sport + " " + match, res, gameId, sportKey)
@@ -718,13 +724,15 @@ def predictions(request):
                     file_name = str(uuid.uuid4()) + ".jpg"
                     generate_image3(title, file_name, generated_prediction)
                     print("error creating image")
-            
+                #print(generated_prediction)
+                paragraphs = generated_prediction.split('\n\n')
                 context = {
                     "user_input": match,
                     "generated_prediction": generated_prediction,
                     "image_url": image_url,
                     "sports": sports,
                     "banner_sport": bannerSport,
+                    "paragraphs": paragraphs,
                     "created_at": "",
                 }
 
@@ -870,11 +878,13 @@ def props(request):
             if articles:
                 for article in articles:
                     imageBytes = get_image_base64(article.gameimg)
+                    paragraphs = article.content.split('<br/><br/>')
                     context = {
                         "user_input": match,
                         "generated_prediction": article.content.replace("\n", "<br/>"),
                         "sports": sports,
                         "baner_sport": banner_sport,
+                        "paragraphs": paragraphs,
                         "image_url":  f"data:;base64,{imageBytes}"
                     }
             else:                  
@@ -901,12 +911,14 @@ def props(request):
                     file_name = str(uuid.uuid4()) + ".jpg"
                     generate_image3(title, file_name, generated_prop)
                     print("error creating image")
-                    
+
+                paragraphs = generated_prop.split('\n\n')
                 context = {
                     "user_input": match,
                     "generated_prediction": generated_prop.replace("\n", "<br/>"),
                     "image_url": image_url,
                     "banner_sport": banner_sport,
+                    "paragraphs": paragraphs,
                     "sports": sports,
                 }
 
