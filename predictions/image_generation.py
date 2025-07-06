@@ -133,7 +133,7 @@ def generate_image3(title, filename, prediction):
     d.text(((img_width - 55) / 2, 250), "VS", font=fnt2, fill=text_color)
     d.text(((img_width - (len(home_team) * 27.5)) / 2, 310), home_team, font=fnt2, fill=text_color)
     d.text(((img_width - (len(match_date) * 27.5)) / 2, 430), match_date, font=fnt2, fill=text_color)
-    d.text((20, 550), bet, font=fnt3, fill=text_color)
+    d.text((20, 550), bet, font=fnt2, fill=text_color)
     
     # 5. Save the image
     img.save(filename)
