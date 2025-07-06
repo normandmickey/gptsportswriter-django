@@ -116,13 +116,13 @@ def generate_image3(title, filename, prediction):
     try:
         fnt = ImageFont.truetype('arial.ttf', 80)
         fnt2 = ImageFont.truetype('arial.ttf', 50)
-        fnt3 = ImageFont.truetype('arial.ttf', 20)
+        fnt3 = ImageFont.truetype('arial.ttf', 25)
     
     except IOError:
         print("Arial font not found. Using default font.")
         fnt = ImageFont.load_default(size=80) # Fallback to default font
         fnt2 = ImageFont.load_default(size=50)
-        fnt3 = ImageFont.load_default(size=20)
+        fnt3 = ImageFont.load_default(size=25)
 
 
     # 4. Add text
@@ -133,7 +133,7 @@ def generate_image3(title, filename, prediction):
     d.text(((img_width - 55) / 2, 250), "VS", font=fnt2, fill=text_color)
     d.text(((img_width - (len(home_team) * 27.5)) / 2, 310), home_team, font=fnt2, fill=text_color)
     d.text(((img_width - (len(match_date) * 27.5)) / 2, 430), match_date, font=fnt2, fill=text_color)
-    d.text((20, 550), bet, font=fnt2, fill=text_color)
+    d.text((20, 550), bet, font=fnt3, fill=text_color)
     
     # 5. Save the image
     img.save(filename)
