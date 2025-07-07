@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'gptsportswriter',
     'djstripe',
     'accounts',
+    'django_social_share',
 ]
 
 SITE_ID = 1
