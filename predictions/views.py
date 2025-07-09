@@ -744,7 +744,10 @@ def predictions(request):
                 tweetText = ""
                 
                 #print(link)
-                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prediction + "\n\nVisit " + link + " for more predictions."
+                rLength = len(generated_prediction)
+                rMidpoint = rLength // 2
+                first_half = generated_prediction[:rMidpoint]
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + first_half + "\n\nClick the following link to read the complete article. " + link
                 
                 #write to database
                 #write_to_database(gameId,generated_prediction,"img.jpg",dbTable)
