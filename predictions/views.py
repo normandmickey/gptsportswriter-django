@@ -554,7 +554,10 @@ def parlays(request):
                 link = create_link("parlay", title)
                 image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
-                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_parlay + "\n\nVisit " + link + " for more parlays."
+                rLength = len(generated_parlay)
+                rMidpoint = rLength // 2
+                first_half = generated_parlay[:rMidpoint]
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + first_half + "\n\nClick the following link to read the complete article. " + link
                 
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText) 
@@ -929,7 +932,10 @@ def props(request):
                 link = create_link("prop", title)
                 image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
-                selfText = "{image1}" + " by https://www.gptsportswriter.com " + generated_prop + "\n\nVisit " + link + " for more props."
+                rLength = len(generated_prop)
+                rMidpoint = rLength // 2
+                first_half = generated_prop[:rMidpoint]
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + first_half + "\n\nClick the follwoing link to reach the complete article " + link
                 
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText)
