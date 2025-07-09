@@ -555,9 +555,12 @@ def parlays(request):
                 image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
                 rLength = len(generated_parlay)
-                rMidpoint = rLength // 2
-                first_half = generated_parlay[:rMidpoint]
-                selfText = "{image1}" + " by https://www.gptsportswriter.com " + first_half + "\n\nClick the following link to read the complete article. " + link
+                if rLength > 0:
+                    rMidpoint = rLength // 2
+                    first_half = generated_parlay[:rMidpoint]
+                else:
+                    first_half = ""
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + first_half + "\n\nTo Be Continued... " + link 
                 
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText) 
@@ -748,9 +751,12 @@ def predictions(request):
                 
                 #print(link)
                 rLength = len(generated_prediction)
-                rMidpoint = rLength // 2
-                first_half = generated_prediction[:rMidpoint]
-                selfText = "{image1}" + " by https://www.gptsportswriter.com " + first_half + "\n\nClick the following link to read the complete article. " + link
+                if rLength > 0:
+                    rMidpoint = rLength // 2
+                    first_half = generated_prediction[:rMidpoint]
+                else:
+                    first_half = ""
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + first_half + "\n\nTo Be Continued... " + link
                 
                 #write to database
                 #write_to_database(gameId,generated_prediction,"img.jpg",dbTable)
@@ -933,9 +939,12 @@ def props(request):
                 image = InlineImage(path=file_name, caption=title)
                 media = {"image1": image}
                 rLength = len(generated_prop)
-                rMidpoint = rLength // 2
-                first_half = generated_prop[:rMidpoint]
-                selfText = "{image1}" + " by https://www.gptsportswriter.com " + first_half + "\n\nClick the follwoing link to reach the complete article " + link
+                if rLength > 0:
+                    rMidpoint = rLength // 2
+                    first_half = generated_prop[:rMidpoint]
+                else:
+                    first_half = ""
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + first_half + "\n\nTo Be Continued... " + link
                 
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText)
