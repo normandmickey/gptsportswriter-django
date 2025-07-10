@@ -39,6 +39,44 @@ groq_client = Groq(
     api_key=os.environ.get("GROQ_API_KEY")
 )
 
+system_prompt = f"""You are the world’s foremost AI sportswriter and handicapper, renowned for your sharp wit, incisive analysis, and unshakable confidence. Your predictions are grounded in statistical rigor, historical context, and real-time data. When calculating implied probabilities:  
+- **For American odds (positive):** Use the formula `100 / (odds + 100)`.  
+- **For American odds (negative):** Use the formula `|odds| / (|odds| + 100)`.  
+- **For decimal odds:** Use the formula `1 / decimal_odds * 100%`.  
+
+Example: For -150 odds, the implied probability is `150 / (150 + 100) = 60%`. For +200 odds, it’s `100 / (200 + 100) = 33.33%`.  
+
+Your tone should blend humor and authority, but always prioritize factual accuracy and logical reasoning. Avoid speculative or fabricated information unless explicitly instructed to extrapolate from odds alone."""
+
+prediction_prompt = USER_PROMPT = """Provide a sharp, humorous, and data-driven analysis of the requested matchup, including:
+1. Key statistics (e.g., team/player performance, recent trends, head-to-head history).
+2. Injuries/updates affecting either side.
+3. Odds breakdown (implied probabilities and EV calculations).
+
+Betting Strategy:
+- Use the provided underdog win rates as context:
+  - Baseball, hockey, soccer: 41%
+  - NFL, MMA: 35%
+  - NBA: 32%
+  - NCAA basketball: 26%
+  - NCAA football: 22%
+  - Tennis: 30%
+
+Decision Framework:
+1. If match data is unavailable, base predictions solely on the given odds.
+2. Calculate Expected Value (EV):
+   - For underdogs: Split the difference between the implied probability (from odds) and the sport-specific underdog win rate.
+     Example: If odds imply 30% chance and the underdog win rate is 41%, adjust to (30% + 41%) / 2 = 35.5%.
+   - For favorites: Split the difference between the implied probability and the favorite win rate (100% - underdog rate).
+     Example: If odds imply 60% and the favorite win rate is 60% (100% - 40% underdog rate), adjust to (60% + 60%) / 2 = 60%.
+3. Select the best bet by comparing adjusted probabilities to the implied odds. The highest EV (adjusted probability > implied probability) and most likely outcome (highest adjusted probability) should guide your recommendation.
+
+Accuracy Requirements:
+- Use up-to-date, verifiable data.
+- Clearly state assumptions when extrapolating from odds alone.
+- Avoid subjective or anecdotal reasoning—stick to statistical models and historical trends.
+"""
+
 def search_internet(query):
     try:
         results = ddgs.text(query, max_results=5)
@@ -148,15 +186,14 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
         context = ""
     
      # Construct the system prompt. Feel free to experiment with different prompts.
-    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and sarcastic but very accurate and confident in your predictions. If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. For decimal odds the implied probability is Implied Probability = (1 / Decimal Odds) * 100%  """
+    
     # Make the API call
     try:
         response = groq_client.chat.completions.create(
             model=GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                #{"role": "user", "content": "Provide a humorous and sarcastic prediction for the upcoming matchup, including relevant statistics and odds. Highlight any notable injuries or key player information. Based on the provided context, make a informed best bet, taking into account the historical underdog win rates across different sports: 41% in baseball and hockey and Soccer, 35% in NFA football and MMA, 32% in NBA basketball, 26% in NCAA Basketball, 22% in NCAA Football and 30% in Tennis. Ensure that all information is accurate and not fabricated." + context + str(oddsJson) + " " + input_text},
-                {"role": "user", "content": "Provide a witty and tongue-in-cheek analysis of the upcoming matchup, complete with relevant statistics and odds. Highlight any significant injuries or key player updates that might impact the game's outcome. Based on the context, make a data-driven best bet, considering the historical trends and win rates of various teams and players across different sports. For reference, the overall underdog win rates are: 41% in baseball, hockey, and soccer; 35% in NFL football and MMA; 32% in NBA basketball; 26% in NCAA basketball; 22% in NCAA football; and 30% in tennis. Ensure that all information is accurate, up-to-date, and not made up on the spot.  If there is no information about the match requests make a prediction based only on the odds provided. Calculate the Odds Expected Value, when evaluating underdogs split the diffrence between the calculated probability and underdog win rate.  When evaluating favorites split the difference between favorite win rate (100% - underdog rate) and the given odds. Your best be should be one with the best expected value and most likely outcome. " + context + str(oddsJson) + " " + input_text},
+                {"role": "user", "content": prediction_prompt + context + str(oddsJson) + " " + input_text},
             ],
             temperature=0.3, 
             max_tokens=10000,
@@ -167,7 +204,7 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
             model=OPENAI_GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "Provide a witty and tongue-in-cheek analysis of the upcoming matchup, complete with relevant statistics and odds. Highlight any significant injuries or key player updates that might impact the game's outcome. Based on the context, make a data-driven best bet, considering the historical trends and win rates of various teams and players across different sports. For reference, the overall underdog win rates are: 41% in baseball, hockey, and soccer; 35% in NFL football and MMA; 32% in NBA basketball; 26% in NCAA basketball; 22% in NCAA football; and 30% in tennis. Ensure that all information is accurate, up-to-date, and not made up on the spot.  If there is no information about the match requests make a prediction based only on the odds provided.   Calculate the Odds Expected Value, split the diffrence between the calculated probability and underdog win rate. your best be should be one with the best expected value and most likely outcome. " + context + str(oddsJson) + " " + input_text},
+                {"role": "user", "content": prediction_prompt + context + str(oddsJson) + " " + input_text},
             ],
             temperature=0.3, 
             max_tokens=1000
@@ -276,7 +313,7 @@ def get_prop(input_text, guaranteedWords, oddsJson, odds2Json):
     context = ask.news.search_news("player prop bets for " + input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"], string_guarantee_op='OR', string_guarantee=guaranteedWords, premium=True).as_string
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
-    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. For decimal odds the implied probability is Implied Probability = (1 / Decimal Odds) * 100%  """
+    #system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. For decimal odds the implied probability is Implied Probability = (1 / Decimal Odds) * 100%  """
     # Make the API call
     response = groq_client.chat.completions.create(
         model=GPT_MODEL,
@@ -313,14 +350,13 @@ def get_parlay(input_text, guaranteedWords, oddsJson):
     #print(context)
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
-    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions. When making a parlay the bets must be from the same bookmaker and you cannot have both teams winning. If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. For decimal odds the implied probability is Implied Probability = (1 / Decimal Odds) * 100% """
     # Make the API call
     try:
         response = groq_client.chat.completions.create(
             model=GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "Find the best same game parlay bet for the following match.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + str(oddsJson) + " " + input_text},
+                {"role": "user", "content": "Find the best same game parlay bet for the following match. " + prediction_prompt + context + str(oddsJson) + " " + input_text},
             ],
             temperature=0.3, 
             max_tokens=10000,
@@ -331,7 +367,7 @@ def get_parlay(input_text, guaranteedWords, oddsJson):
             model=OPENAI_GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "Find the best same game parlay bet for the following match.  Include only relevant stats and odds for the game in question. Do not make up any details." + context + str(oddsJson) + " " + input_text},
+                {"role": "user", "content": "Find the best same game parlay bet for the following match. " + prediction_prompt + context + str(oddsJson) + " " + input_text},
             ],
             temperature=0.3, 
             max_tokens=1000
@@ -362,7 +398,7 @@ def get_news(input_text, string_guarantee):
         #print(article.summary)
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
-    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty and accurate.  If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. """
+    #system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty and accurate.  If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. """
     # Make the API call
     #print(context)
     try:
@@ -434,14 +470,14 @@ def get_recap(input_text, string_guarantee, scoresJson):
         context += article.summary
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
-    system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate.  """
+    #system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate.  """
     # Make the API call
     try:
         response = groq_client.chat.completions.create(
             model=GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "Write a humorous recap for the following matchup.  Include only relevant stats and odds for the game in question do not make up any details." + context + str(scoresJson) + " " + input_text},
+                {"role": "user", "content": "Write a humorous recap for the following matchup. " + prediction_prompt + context + str(scoresJson) + " " + input_text},
             ],
             temperature=0.3, 
             max_tokens=10000,
@@ -452,7 +488,7 @@ def get_recap(input_text, string_guarantee, scoresJson):
             model=OPENAI_GPT_MODEL,
             messages=[
                 {"role": "system", "content": system_prompt},
-                {"role": "user", "content": "Write a humorous recap for the following matchup.  Include only relevant stats and odds for the game in question do not make up any details." + context + str(scoresJson) + " " + input_text},
+                {"role": "user", "content": "Write a humorous recap for the following matchup. " + prediction_prompt + context + str(scoresJson) + " " + input_text},
             ],
             temperature=0.3, 
             max_tokens=1000
