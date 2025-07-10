@@ -560,7 +560,7 @@ def parlays(request):
                     first_half = generated_parlay[:rMidpoint]
                 else:
                     first_half = ""
-                selfText = "{image1}" + " by https://www.gptsportswriter.com " + first_half + "\n\nTo Be Continued... " + link 
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + first_half + "\n\nTo Be Continued...(full article) " + link 
                 
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText) 
@@ -756,7 +756,8 @@ def predictions(request):
                     first_half = generated_prediction[:rMidpoint]
                 else:
                     first_half = ""
-                selfText = "{image1}" + " by https://www.gptsportswriter.com " + first_half + "\n\nTo Be Continued... " + link
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + first_half + "\n\nTo Be Continued...(full article) " + link
+                print(selfText)
                 
                 #write to database
                 #write_to_database(gameId,generated_prediction,"img.jpg",dbTable)
@@ -944,7 +945,7 @@ def props(request):
                     first_half = generated_prop[:rMidpoint]
                 else:
                     first_half = ""
-                selfText = "{image1}" + " by https://www.gptsportswriter.com " + first_half + "\n\nTo Be Continued... " + link
+                selfText = "{image1}" + " by https://www.gptsportswriter.com " + first_half + "\n\nTo Be Continued...(full article) " + link
                 
                 try:
                     subreddit.submit(title, inline_media=media, selftext=selfText)
