@@ -91,7 +91,7 @@ def recent_predictions(request):
     data = Predictions.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('id', 'title', 'created_at', 'slug', 'sport_key', 'tweet_text')
     for item in data:
         item['title'] = item['title'].replace("Prediction: ", "")
-        item['tweet_text'] = item['tweet_text'].partition(":")[2]
+        item['tweet_text'] = item['tweet_text'].partition("Want more?")[0]
     return render(request, 'predictions/recent_predictions.html', {'data': data})
 
 '''
@@ -147,7 +147,7 @@ def recent_parlays(request):
     data = Parlays.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug', 'sport_key', 'tweet_text')
     for item in data:
         item['title'] = item['title'].replace("Parlay: ", "")
-        item['tweet_text'] = item['tweet_text'].partition(":")[2]
+        item['tweet_text'] = item['tweet_text'].partition("Want more?")[0]
     return render(request, 'predictions/recent_parlays.html', {'data': data})
 
 def recent_props(request):
@@ -157,7 +157,7 @@ def recent_props(request):
     data = Props.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug', 'sport_key', 'tweet_text')
     for item in data:
         item['title'] = item['title'].replace("Prop Bets: ", "")
-        item['tweet_text'] = item['tweet_text'].partition(":")[2]
+        item['tweet_text'] = item['tweet_text'].partition("Want more?")[0]
     return render(request, 'predictions/recent_props.html', {'data': data})
 
 def recent_recaps(request):
@@ -167,7 +167,7 @@ def recent_recaps(request):
     data = Recaps.objects.filter(created_at__gte=twenty_fours_hours_ago).order_by('-created_at').values('title', 'content', 'created_at', 'slug', 'sport_key', 'tweet_text')
     for item in data:
         item['title'] = item['title'].replace("Recap: ", "")
-        item['tweet_text'] = item['tweet_text'].partition(":")[2]
+        item['tweet_text'] = item['tweet_text'].partition("Want more?")[0]
     return render(request, 'predictions/recent_recaps.html', {'data': data})
 
 def prediction_detail(request, slug):
