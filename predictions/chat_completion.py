@@ -48,33 +48,30 @@ Example: For -150 odds, the implied probability is `150 / (150 + 100) = 60%`. Fo
 
 Your tone should blend humor and authority, but always prioritize factual accuracy and logical reasoning. Avoid speculative or fabricated information unless explicitly instructed to extrapolate from odds alone."""
 
-prediction_prompt = USER_PROMPT = """Provide a sharp, humorous, and data-driven analysis of the requested matchup, including:
-1. Key statistics (e.g., team/player performance, recent trends, head-to-head history).
-2. Injuries/updates affecting either side.
-3. Odds breakdown (implied probabilities and EV calculations).
+prediction_prompt = USER_PROMPT = """Deliver a **lengthy, engaging, and humor-infused analysis** of the requested matchup, blending sharp statistical insights with narrative flair. The article should feel like a story that *uses* data rather than a list of numbers, while still grounding predictions in verifiable trends and models. Prioritize depth over brevity, and let the analysis breathe by weaving in context, anecdotes, and strategic nuance.  
 
-Betting Strategy:
-- Use the provided underdog win rates as context:
-  - Baseball, hockey, soccer: 41%
-  - NFL, MMA: 35%
-  - NBA: 32%
-  - NCAA basketball: 26%
-  - NCAA football: 22%
-  - Tennis: 30%
+**Structure & Tone:**  
+1. **Contextualize the Matchup:** Start with a vivid narrative of the teams/players, their rivalry, or the stakes involved. Use humor to highlight quirks or historical quirks (e.g., ‘Team X’s defense is so leaky, even their mascot brought a life preserver’).  
+2. **Key Data Points:** Integrate statistics **sparingly but purposefully**. For example:  
+   - Highlight **1-2 standout stats** (e.g., ‘Player Y’s clutch performance under pressure is so absurd, it’s like watching a magician who also knows trigonometry’).  
+   - Discuss **recent trends** and **head-to-head history** in a way that builds a narrative (e.g., ‘The last time these teams met, it was like a chess match played with fire — and the referee needed a defibrillator’).  
+   - Mention **injuries/updates** as plot twists or character flaws (e.g., ‘Star Z’s ankle injury isn’t just a setback — it’s the tragic flaw of this season’s hero’).  
+3. **Odds & Strategy:** Explain the betting landscape with a mix of analysis and levity:  
+   - Compare **implied probabilities** to the sport-specific underdog win rates (e.g., ‘The odds say the underdog has a 30% chance, but history suggests they’re more like 41% — it’s the sports equivalent of betting on a cat to win a nap contest’).  
+   - Break down **EV calculations** in a digestible way, using analogies (e.g., ‘This EV calculation isn’t just math — it’s like calculating whether to bring an umbrella based on the sky’s mood and your ex’s text history’).  
+   - Use the **Decision Framework** to argue for a betting choice, framing it as a strategic pick rather than a cold calculation (e.g., ‘While the numbers favor the favorite, their overconfidence is their Achilles’ heel — and we all know how that story ends’).  
 
-Decision Framework:
-1. If match data is unavailable, base predictions solely on the given odds.
-2. Calculate Expected Value (EV):
-   - For underdogs: Split the difference between the implied probability (from odds) and the sport-specific underdog win rate.
-     Example: If odds imply 30% chance and the underdog win rate is 41%, adjust to (30% + 41%) / 2 = 35.5%.
-   - For favorites: Split the difference between the implied probability and the favorite win rate (100% - underdog rate).
-     Example: If odds imply 60% and the favorite win rate is 60% (100% - 40% underdog rate), adjust to (60% + 60%) / 2 = 60%.
-3. Select the best bet by comparing adjusted probabilities to the implied odds. The highest EV (adjusted probability > implied probability) and most likely outcome (highest adjusted probability) should guide your recommendation.
+**Betting Strategy (Reimagined):**  
+- **Underdog Win Rates:** Use these as a lens to question the odds. For example: ‘Given the sport’s underdog win rate of X%, are the odds pricing in the drama of the underdog or the reality of the favorites?’  
+- **EV Calculations:** Present these as a balancing act between data and intuition. Instead of just formulas, explain how the adjusted probabilities tell a story (e.g., ‘Splitting the difference between the odds and historical trends isn’t math — it’s the art of betting like a seasoned gambler who once bet their cat on a dice roll’).  
 
-Accuracy Requirements:
-- Use up-to-date, verifiable data.
-- Clearly state assumptions when extrapolating from odds alone.
-- Avoid subjective or anecdotal reasoning—stick to statistical models and historical trends.
+**Accuracy & Style:**  
+- **Data Sources:** Clearly cite where stats are pulled from (e.g., ‘According to the 2024 NBA Injury Report…’), but avoid overwhelming readers with citations.  
+- **Assumptions:** When extrapolating from odds alone, frame it as a ‘best guess’ with humor (e.g., ‘Since we’re flying blind, let’s assume Team A’s coach is still using a 2003 playbook — and their defense is still a work in progress’).  
+- **Tone:** Balance wit with substance. If you can’t find a clever metaphor for a stat, at least make it memorable (e.g., ‘This team’s offense is like a broken VCR — it’s glitchy, confusing, and nobody knows where the tape ends’).  
+
+**Final Output:**  
+The article should feel like a **10-minute conversation with a sharp, data-savvy friend** who knows their sports but isn’t afraid to laugh at the chaos. Prioritize **depth over conciseness**, and let the analysis unfold naturally through storytelling, humor, and strategic reasoning. The goal is to inform, entertain, and make the reader feel like they’ve just unlocked a secret guide to the matchup — not just a spreadsheet.
 """
 
 def search_internet(query):
