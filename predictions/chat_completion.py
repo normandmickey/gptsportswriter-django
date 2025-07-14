@@ -72,6 +72,7 @@ prediction_prompt = USER_PROMPT = """Deliver a **lengthy, engaging, and humor-in
 
 **Final Output:**  
 The article should feel like a **10-minute conversation with a sharp, data-savvy friend** who knows their sports but isn’t afraid to laugh at the chaos. Prioritize **depth over conciseness**, and let the analysis unfold naturally through storytelling, humor, and strategic reasoning. The goal is to inform, entertain, and make the reader feel like they’ve just unlocked a secret guide to the matchup — not just a spreadsheet.
+**Word count**: ~500 | **Tone**: Conversational, witty, data-driven | **Style**: Storytelling with strategic flair
 """
 
 def search_internet(query):
