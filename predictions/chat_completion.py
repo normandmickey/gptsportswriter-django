@@ -48,31 +48,20 @@ Example: For -150 odds, the implied probability is `150 / (150 + 100) = 60%`. Fo
 
 Your tone should blend humor and authority, but always prioritize factual accuracy and logical reasoning. Avoid speculative or fabricated information unless explicitly instructed to extrapolate from odds alone."""
 
-prediction_prompt = USER_PROMPT = """Deliver a **lengthy, engaging, and humor-infused analysis** of the requested matchup, blending sharp statistical insights with narrative flair. The article should feel like a story that *uses* data rather than a list of numbers, while still grounding predictions in verifiable trends and models. Prioritize depth over brevity, and let the analysis breathe by weaving in context, anecdotes, and strategic nuance.  
+prediction_prompt = USER_PROMPT = """Analyze the upcoming using the provided statistical odds and news articles. Your task is to predict the winner while crafting a humorous yet factually accurate analysis. Use the following guidelines:  
 
-**Structure & Tone:**  
-1. **Contextualize the Matchup:** Start with a vivid narrative of the teams/players, their rivalry, or the stakes involved. Use humor to highlight quirks or historical quirks (e.g., ‘Team X’s defense is so leaky, even their mascot brought a life preserver’).  
-2. **Key Data Points:** Integrate statistics **sparingly but purposefully**. For example:  
-   - Highlight **1-2 standout stats** (e.g., ‘Player Y’s clutch performance under pressure is so absurd, it’s like watching a magician who also knows trigonometry’).  
-   - Discuss **recent trends** and **head-to-head history** in a way that builds a narrative (e.g., ‘The last time these teams met, it was like a chess match played with fire — and the referee needed a defibrillator’).  
-   - Mention **injuries/updates** as plot twists or character flaws (e.g., ‘Star Z’s ankle injury isn’t just a setback — it’s the tragic flaw of this season’s hero’).  
-3. **Odds & Strategy:** Explain the betting landscape with a mix of analysis and levity:  
-   - Compare **implied probabilities** to the sport-specific underdog win rates (e.g., ‘The odds say the underdog has a 30% chance, but history suggests they’re more like 41% — it’s the sports equivalent of betting on a cat to win a nap contest’).  
-   - Break down **EV calculations** in a digestible way, using analogies (e.g., ‘This EV calculation isn’t just math — it’s like calculating whether to bring an umbrella based on the sky’s mood and your ex’s text history’).  
-   - Use the **Decision Framework** to argue for a betting choice, framing it as a strategic pick rather than a cold calculation (e.g., ‘While the numbers favor the favorite, their overconfidence is their Achilles’ heel — and we all know how that story ends’).  
+1. **Parse the Odds**: Highlight key statistics (e.g., win percentages, player injuries, historical matchups) and explain their relevance.  
+2. **Digest the News**: Summarize recent news about each team (e.g., ‘Star player X is recovering from a hamstring injury after tripping over their own shoelaces’).  
+3. **Humorous Spin**: Inject jokes, puns, or absurd analogies (e.g., ‘Team A’s defense is so porous, they’d let a breeze score a goal’). Ensure humor enhances clarity, not confusion.  
+4. **Prediction**: Conclude with a clear winner based on your analysis, tying together odds, news, and jokes.  
 
-**Betting Strategy (Reimagined):**  
-- **Underdog Win Rates:** Use these as a lens to question the odds. For example: ‘Given the sport’s underdog win rate of X%, are the odds pricing in the drama of the underdog or the reality of the favorites?’  
-- **EV Calculations:** Present these as a balancing act between data and intuition. Instead of just formulas, explain how the adjusted probabilities tell a story (e.g., ‘Splitting the difference between the odds and historical trends isn’t math — it’s the art of betting like a seasoned gambler who once bet their cat on a dice roll’).  
+**Tone**: Think of a sports commentator who’s also a stand-up comedian—entertaining but never misleading. Avoid sarcasm that borders on cruelty; keep it lighthearted.  
 
-**Accuracy & Style:**  
-- **Data Sources:** Clearly cite where stats are pulled from (e.g., ‘According to the 2024 NBA Injury Report…’), but avoid overwhelming readers with citations.  
-- **Assumptions:** When extrapolating from odds alone, frame it as a ‘best guess’ with humor (e.g., ‘Since we’re flying blind, let’s assume Team A’s coach is still using a 2003 playbook — and their defense is still a work in progress’).  
-- **Tone:** Balance wit with substance. If you can’t find a clever metaphor for a stat, at least make it memorable (e.g., ‘This team’s offense is like a broken VCR — it’s glitchy, confusing, and nobody knows where the tape ends’).  
+**Example**:  
+*If analyzing a soccer match where Team A’s star striker is injured and Team B’s goalie is a former circus acrobat:*  
+‘Team A’s striker is out, tripping over his own ambition last week. Without him, their offense is like a toaster in a bakery—present but useless. Team B’s goalie? A human flywall who once caught a falling elephant (in a circus, not a metaphor). Bet on Team B, unless you’re a fan of dramatic last-minute own goals.’  
 
-**Final Output:**  
-The article should feel like a **10-minute conversation with a sharp, data-savvy friend** who knows their sports but isn’t afraid to laugh at the chaos. Prioritize **depth over conciseness**, and let the analysis unfold naturally through storytelling, humor, and strategic reasoning. The goal is to inform, entertain, and make the reader feel like they’ve just unlocked a secret guide to the matchup — not just a spreadsheet.
-**Word count**: ~500 | **Tone**: Conversational, witty, data-driven | **Style**: Storytelling with strategic flair
+Now, apply this to the follwoing matchup.  The article should be ~500 words long.
 """
 
 def search_internet(query):
