@@ -371,7 +371,7 @@ def getSports():
     return(sports)
 
 def getLeagues():
-    excluded_leagues = ['americanfootball_nfl_preseason','americanfootball_nfl','americanfootball_ncaaf']
+    excluded_leagues = ['americanfootball_nfl']
     leagues = []
     sport = requests.get(f"https://api.the-odds-api.com/v4/sports/?apiKey={ODDSAPI_API_KEY}")
     sport = sport.json()
