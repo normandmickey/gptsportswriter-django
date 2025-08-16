@@ -192,7 +192,7 @@ def article_detail(request, slug):
     paragraphs = article.content.split('<br/><br/>')
     #latest_odds = generate_odds(article.sport_key + " " + article.title, res, article.id, article.sport_key)
     #print(latest_odds)
-    print(paragraphs)
+    #print(paragraphs)
     context = {
         'article': article,
         'paragraphs': paragraphs,
@@ -498,7 +498,7 @@ def parlays(request):
             sport = sport.replace('_', " ")
             res = re.split('\s+', match)
             res.remove('VS')
-            print(res)
+            #print(res)
 
             title = "Parlay: " + match[:-2]
             articles = Parlays.objects.filter(id=gameId)
@@ -686,7 +686,7 @@ def predictions(request):
             title = "Prediction: " + match[:-2]
             bannerSport = getBannerSport(sportKey)
 
-            print(articles)
+            #print(articles)
             if articles:
                 for article in articles:
                     #print("title: " + article.title)
@@ -709,12 +709,12 @@ def predictions(request):
                     image_prompt = createImagePrompt(sport + " " + match)
                 except:
                     image_prompt = ""
-                #print(image_prompt)
+                print("Image Prompt: " + image_prompt)
                 try:
                     image_url = generate_image(image_prompt)
                 except:
                     image_url = ""
-                #print(image_url)
+                print("Image URL: " + image_url)
                 time.sleep(2)
                 try:
                     #file_name2 = str(uuid.uuid4()) + ".jpg"
@@ -757,7 +757,7 @@ def predictions(request):
                 else:
                     first_half = ""
                 selfText = "{image1}" + " by https://www.gptsportswriter.com " + first_half + "\n\nTo Be Continued...(full article) " + link
-                print(selfText)
+                #print(selfText)
                 
                 #write to database
                 #write_to_database(gameId,generated_prediction,"img.jpg",dbTable)
@@ -774,7 +774,7 @@ def predictions(request):
                     print("error sending tweet")
 
                 drawing = open(file_name, 'rb').read()
-                print("tweetText:" + tweetText)
+                #print("tweetText:" + tweetText)
                 prediction = Predictions.objects.create(id=gameId, content=generated_prediction.replace("\n", "<br/>"), gameimg=drawing, title=title, sport_key=sportKey, tweet_text=tweetText)
                 
                 articles = Predictions.objects.filter(id=gameId)
@@ -1009,7 +1009,7 @@ def recaps(request):
                     }
             else:        
                 generated_recap = generate_recap(sport + " " + match, res, gameId, sportKey)
-                print(sport)
+                #print(sport)
                 #print(image_prompt)
                 try: 
                     image_prompt = createImagePrompt(sport + " " + match)
