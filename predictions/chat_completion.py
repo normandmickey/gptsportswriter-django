@@ -6,7 +6,10 @@ from openai import OpenAI
 from duckduckgo_search import DDGS
 from balldontlie import BalldontlieAPI
 from .models import Predictions
+from tavily import TavilyClient
 #from google import genai
+
+TAVILY_API_KEY = os.getenv('TAVILY_API_KEY')
 
 openAI_client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 ddgs = DDGS()
@@ -170,7 +173,18 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
             image_url = article.image_url
             #print(image_url)
     except:
-        context = ""
+        max_results = 5
+        client = TavilyClient(api_key=TAVILY_API_KEY)
+        # For basic search:
+        response = client.search(input_text, search_depth="basic")
+        # For advanced search:
+        #response = tavily.search(query="Should I invest in Apple in 2024?", search_depth="advanced")
+        # Get the search results as context to pass an LLM:
+        #context = [{"url": obj["url"], "content": obj["content"]} for obj in response.results]
+        #context = [{"body": obj["content"]} for obj in response.get("results", [])]
+        context = [{"href": obj["url"], "body": obj["content"]} for obj in response.get("results", [])]
+        context = str(context)
+        #print(context[:20000])
     
      # Construct the system prompt. Feel free to experiment with different prompts.
     
@@ -297,7 +311,21 @@ def get_prop(input_text, guaranteedWords, oddsJson, odds2Json):
     start = (datetime.now() - timedelta(hours=48)).timestamp()
     end = datetime.now().timestamp()
     #context = ask.news.search_news("player prop bets for " + input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_string
-    context = ask.news.search_news("player prop bets for " + input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"], string_guarantee_op='OR', string_guarantee=guaranteedWords, premium=True).as_string
+    try:
+        context = ask.news.search_news("player prop bets for " + input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"], string_guarantee_op='OR', string_guarantee=guaranteedWords, premium=True).as_string
+    except:
+        max_results = 5
+        client = TavilyClient(api_key=TAVILY_API_KEY)
+        # For basic search:
+        response = client.search(input_text, search_depth="basic")
+        # For advanced search:
+        #response = tavily.search(query="Should I invest in Apple in 2024?", search_depth="advanced")
+        # Get the search results as context to pass an LLM:
+        #context = [{"url": obj["url"], "content": obj["content"]} for obj in response.results]
+        #context = [{"body": obj["content"]} for obj in response.get("results", [])]
+        context = [{"href": obj["url"], "body": obj["content"]} for obj in response.get("results", [])]
+        context = str(context)
+        #print(context[:20000])
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     #system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty but very accurate in your predictions.  If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. For decimal odds the implied probability is Implied Probability = (1 / Decimal Odds) * 100%  """
@@ -330,10 +358,24 @@ def get_parlay(input_text, guaranteedWords, oddsJson):
     end = datetime.now().timestamp()
     input_text = "Same Game Parlays for " + input_text
     #newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_dicts
-    newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], string_guarantee_op='OR', string_guarantee=guaranteedWords, premium=True).as_dicts
-    context = ""
-    for article in newsArticles:
-        context += article.summary
+    try:
+        newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], string_guarantee_op='OR', string_guarantee=guaranteedWords, premium=True).as_dicts
+        context = ""
+        for article in newsArticles:
+            context += article.summary
+    except:
+        max_results = 5
+        client = TavilyClient(api_key=TAVILY_API_KEY)
+        # For basic search:
+        response = client.search(input_text, search_depth="basic")
+        # For advanced search:
+        #response = tavily.search(query="Should I invest in Apple in 2024?", search_depth="advanced")
+        # Get the search results as context to pass an LLM:
+        #context = [{"url": obj["url"], "content": obj["content"]} for obj in response.results]
+        #context = [{"body": obj["content"]} for obj in response.get("results", [])]
+        context = [{"href": obj["url"], "body": obj["content"]} for obj in response.get("results", [])]
+        context = str(context)
+        #print(context[:20000])
     #print(context)
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
@@ -379,10 +421,24 @@ def get_news(input_text, string_guarantee):
     #print("top News string guarantee: " + str(string_guarantee))
     context=""
     #newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_dicts
-    newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=5, categories=["Sports"], premium=True).as_dicts
-    for article in newsArticles:
-        context += article.summary
+    try:
+        newsArticles = ask.news.search_news("Top News for " + input_text, method='kw', return_type='dicts', n_articles=5, categories=["Sports"], premium=True).as_dicts
+        for article in newsArticles:
+            context += article.summary
         #print(article.summary)
+    except:
+        max_results = 5
+        client = TavilyClient(api_key=TAVILY_API_KEY)
+        # For basic search:
+        response = client.search(input_text, search_depth="basic")
+        # For advanced search:
+        #response = tavily.search(query="Should I invest in Apple in 2024?", search_depth="advanced")
+        # Get the search results as context to pass an LLM:
+        #context = [{"url": obj["url"], "content": obj["content"]} for obj in response.results]
+        #context = [{"body": obj["content"]} for obj in response.get("results", [])]
+        context = [{"href": obj["url"], "body": obj["content"]} for obj in response.get("results", [])]
+        context = str(context)
+        #print(context[:20000])
     #print(context)
     # Construct the system prompt. Feel free to experiment with different prompts.
     #system_prompt = f"""You are a the worlds greatest AI sportswriter and handicapper. You are smart, funny and witty and accurate.  If the odds are positive, apply this formula: 100/(odds + 100). If the odds are negative, apply this formula: odds/(odds + 100). For our example, as the odds are negative, the implied probability will be 150/(150 + 100) = 60%. """
