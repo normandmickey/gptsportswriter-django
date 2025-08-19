@@ -165,7 +165,7 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
     context = ""
     try: 
         #newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_dicts
-        newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], string_guarantee_op='OR', string_guarantee=guaranteedWords, premium=True).as_dicts
+        newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"]).as_dicts
         #newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True).as_dicts
         context = ""
         for article in newsArticles:
@@ -218,7 +218,7 @@ def get_prediction(input_text, guaranteedWords, oddsJson):
 
 def get_results(prediction, title, gameId, sportKey):
     try:
-        newsArticles = ask.news.search_news(title, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True).as_dicts
+        newsArticles = ask.news.search_news(title, method='kw', return_type='dicts', n_articles=3, categories=["Sports"]).as_dicts
         context = ""
         for article in newsArticles:
             context += article.summary
@@ -312,7 +312,7 @@ def get_prop(input_text, guaranteedWords, oddsJson, odds2Json):
     end = datetime.now().timestamp()
     #context = ask.news.search_news("player prop bets for " + input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_string
     try:
-        context = ask.news.search_news("player prop bets for " + input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"], string_guarantee_op='OR', string_guarantee=guaranteedWords, premium=True).as_string
+        context = ask.news.search_news("player prop bets for " + input_text, method='kw', return_type='string', n_articles=3, categories=["Sports"]).as_string
     except:
         max_results = 5
         client = TavilyClient(api_key=TAVILY_API_KEY)
@@ -359,7 +359,7 @@ def get_parlay(input_text, guaranteedWords, oddsJson):
     input_text = "Same Game Parlays for " + input_text
     #newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end)).as_dicts
     try:
-        newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], string_guarantee_op='OR', string_guarantee=guaranteedWords, premium=True).as_dicts
+        newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"]).as_dicts
         context = ""
         for article in newsArticles:
             context += article.summary
@@ -507,7 +507,7 @@ def get_recap(input_text, string_guarantee, scoresJson):
     start = (datetime.now() - timedelta(hours=12)).timestamp()
     end = datetime.now().timestamp()
     #newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True, start_timestamp=int(start), end_timestamp=int(end), string_guarantee=string_guarantee).as_dicts
-    newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"], premium=True).as_dicts
+    newsArticles = ask.news.search_news(input_text, method='kw', return_type='dicts', n_articles=3, categories=["Sports"]).as_dicts
     context = ""
     for article in newsArticles:
         context += article.summary
