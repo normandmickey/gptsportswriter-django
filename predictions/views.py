@@ -361,7 +361,7 @@ def fbPost(text, title, file):
 
 def getSports():
     sports = []
-    excluded_leagues = ['americanfootball_nfl']
+    excluded_leagues = ['none']
     sport = requests.get(f"https://api.the-odds-api.com/v4/sports/?apiKey={ODDSAPI_API_KEY}")
     sport = sport.json()
     for i in range(len(sport)):
@@ -371,7 +371,7 @@ def getSports():
     return(sports)
 
 def getLeagues():
-    excluded_leagues = ['americanfootball_nfl']
+    excluded_leagues = ['none']
     leagues = []
     sport = requests.get(f"https://api.the-odds-api.com/v4/sports/?apiKey={ODDSAPI_API_KEY}")
     sport = sport.json()
