@@ -1,6 +1,29 @@
 <!DOCTYPE html>
 <html>
 <style>
+.popup-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    position: relative;
+    max-width: 400px;
+}
+.close-btn {
+    position: absolute;
+    top: 10px; right: 15px;
+    cursor: pointer;
+    font-size: 20px;
+}
 body {
  font-family: Arial, sans-serif;
  margin:0;
@@ -201,5 +224,26 @@ footer a:hover {
  <p><a href="https://sportsbook.draftkings.com/r/sb/normandmickey/US-NY-SB/US-NY" target="_blank" style="color: #fff;">DraftKings</a> <a href="https://fndl.co/tnycp5x" target="_blank" style="color: #fff;">FanDuel</a> <a href="https://fanatics.onelink.me/5kut/45u53uhg" target="_blank" style="color: #fff;">Fanatics</a></p>
  <p><a href="https://promos.betr.app/referafriend-pickem/invite/82813f23-b9cf-4fc6-868c-00d45e86647a/" target="_blank" style="color: #fff;">Betr.app - Deposit match up to $25 PLUS $10 on registration.</a></p>
  </main>
+ {% block content %}{% endblock %}
+
+    <!-- Popup Overlay -->
+    <div id="site-popup" class="popup-overlay" style="display:none;">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <h2>Welcome to GPTSportsWriter.com</h2>
+            <p></p>
+        </div>
+    </div>
+
+    <script>
+        // Simple logic to show the popup on page load
+        window.onload = function() {
+            document.getElementById('site-popup').style.display = 'flex';
+        };
+
+        function closePopup() {
+            document.getElementById('site-popup').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
