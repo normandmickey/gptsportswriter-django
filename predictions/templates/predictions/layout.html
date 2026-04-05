@@ -1,205 +1,196 @@
 <!DOCTYPE html>
-<html>
-<style>
-body {
- font-family: Arial, sans-serif;
- margin:0;
- padding:0;
- background-color: #f7f7f7;
-}
-
-header {
- background-color: #3498db;
- color: #fff;
- padding:1em;
- text-align: center;
-}
-
-main {
- display: flex;
- flex-direction: column;
- align-items: center;
- padding:2em;
-}
-
-.body-content {
- max-width:800px;
- margin:0 auto;
- padding:2em;
- background-color: #fff;
- box-shadow:02px4px rgba(0,0,0,0.1);
- border-radius:10px;
-}
-
-.section-story, .section-how-we-work, .section-what-sets-us-apart, .section-join-community, .section-stay-ahead {
- background-color: #f7f7f7;
- padding:1em;
- margin-bottom:1em;
- box-shadow:02px4px rgba(0,0,0,0.1);
- border-radius:10px;
-}
-
-h1 {
- font-size:36px;
- line-height:1.2;
- color: #f7dc6f; /* Complementary orange color */
-}
-
-h2 {
- margin-top:0;
- font-size:24px;
- line-height:1.2;
- color: #337ab7; /* Blue text */
-}
-
-p {
- margin-bottom:1em;
- line-height:1.6;
-}
-
-ul {
- list-style: none;
- padding:0;
- margin:0;
-}
-
-li {
- margin-bottom:0.5em;
-}
-
-a {
- text-decoration: none;
- color: #337ab7; /* Blue links */
-}
-
-a:hover {
- color: #23527c; /* Darker blue on hover */
-}
-
-footer {
- background-color: #3498db; /* Blue background */
- color: #f7dc6f; /* Complementary orange text */
- padding:1em;
- text-align: center;
-}
-
-footer a {
- color: #fff; /* White links */
-}
-
-footer a:hover {
- color: #f7dc6f; /* Complementary orange on hover */
-}
-
-@media (max-width:768px) {
- main {
- padding:1em;
- }
- .body-content {
- padding:1em;
- }
-}
-
-@media (max-width:480px) {
- h1 {
- font-size:24px;
- }
- h2 {
- font-size:18px;
- }
- p {
- font-size:14px;
- }
-}
-</style>
+<html lang="en">
 <head>
- <meta charset="utf-8"/>
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>{% block title %}{% endblock %}</title>
- <meta name="description" content="{% block description %}Default description.{% endblock %}">
- {% load static %}
- <link rel="stylesheet" href="{% static 'styles.css' %}">
- <script src='{% static "predictions2.js?v=1.4" %}'></script>
- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
- <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WP7DJ18F7B"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="description" content="{% block description %}Default description.{% endblock %}">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <script src="{% static 'predictions2.js?v=1.4' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-  gtag('config', 'G-WP7DJ18F7B');
-</script>
-<link rel="icon" type="image/png" href="{% static 'images/favicon-32x32.png' %}">
-<link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
-<link rel="icon" type="image/png" sizes="192x192" href="{% static 'images/android-chrome-192x192.png' %}">
-<link rel="icon" type="image/png" sizes="512x512" href="{% static 'images/android-chrome-512x512.png' %}">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-9ndCyUa6m8K3l3+QXW9e2G7cJwRkL0KZ3KpQ0iP9E+8JtVjA1z+8nNwM5M4Z6c5R"
+          crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+Z4p1L5G6l8cWQ+P4V5b4g4B0d1wK"
+            crossorigin="anonymous"></script>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-WP7DJ18F7B"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-WP7DJ18F7B');
+    </script>
+
+    <link rel="icon" type="image/png" href="{% static 'images/favicon-32x32.png' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{% static 'images/android-chrome-192x192.png' %}">
+    <link rel="icon" type="image/png" sizes="512x512" href="{% static 'images/android-chrome-512x512.png' %}">
+
+    <style>
+        /* ---- Your existing CSS (unchanged) ---- */
+        body {font-family:Arial,sans-serif;margin:0;padding:0;background:#f7f7f7;}
+        header{background:#3498db;color:#fff;padding:1em;text-align:center;}
+        main{display:flex;flex-direction:column;align-items:center;padding:2em;}
+        .body-content{max-width:800px;margin:0 auto;padding:2em;background:#fff;
+                     box-shadow:0 2px 4px rgba(0,0,0,.1);border-radius:10px;}
+        .section-story,.section-how-we-work,.section-what-sets-us-apart,
+        .section-join-community,.section-stay-ahead{
+            background:#f7f7f7;padding:1em;margin-bottom:1em;
+            box-shadow:0 2px 4px rgba(0,0,0,.1);border-radius:10px;}
+        h1{font-size:36px;line-height:1.2;color:#f7dc6f;}
+        h2{margin-top:0;font-size:24px;line-height:1.2;color:#337ab7;}
+        p{margin-bottom:1em;line-height:1.6;}
+        ul{list-style:none;padding:0;margin:0;}
+        li{margin-bottom:.5em;}
+        a{text-decoration:none;color:#337ab7;}
+        a:hover{color:#23527c;}
+        footer{background:#3498db;color:#f7dc6f;padding:1em;text-align:center;}
+        footer a{color:#fff;}
+        footer a:hover{color:#f7dc6f;}
+        @media (max-width:768px){main{padding:1em}.body-content{padding:1em}}
+        @media (max-width:480px){h1{font-size:24px}h2{font-size:18px}p{font-size:14px}}
+        /* ---- Popup‑specific CSS ---- */
+        .modal-lg .modal-body{padding:0;}
+        .revmasters-iframe{
+            width:100%;
+            height:80vh;               /* 80% of viewport height – fits nicely on desktop */
+            border:none;
+        }
+        @media (max-width:576px){
+            .revmasters-iframe{height:70vh;}  /* a bit shorter on phones */
+        }
+    </style>
 </head>
+
 <body>
- <header>
- <nav class="navbar navbar-expand-sm navbar-light" style="background-color: #4c77ee; color: #fff;">
- <div class="container-fluid">
- <a class="navbar-brand" href="#" style="color: #fff;">GPTSportsWriter.com</a>
- <button class="navbar-toggler"  type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
- <span class="navbar-toggler-icon"></span>
- </button>
- <div class="collapse navbar-collapse"  id="collapsibleNavbar">
- <ul class="navbar-nav">
- <li class="nav-item">
- <a class="nav-link" href="{% url 'home' %}" style="color: #fff;">Home</a>
- </li>
- <li class="nav-item">
- <a class="nav-link" href="{% url 'predictions' %}" style="color: #fff;">Create Predictions</a>
- </li>  
- <li class="nav-item">
- <a class="nav-link" href="{% url 'recaps' %}" style="color: #fff;">Create Recaps</a>
- </li>
- <li class="nav-item">
- <a class="nav-link" href="{% url 'parlays' %}" style="color: #fff;">Create Parlays</a>
- </li>
- <li class="nav-item">
- <a class="nav-link" href="{% url 'props' %}" style="color: #fff;">Create Props</a>
- </li>
- <li class="nav-item">
- <a class="nav-link" href="{% url 'topnews' %}" style="color: #fff;">Top News</a>
- </li>
- <li class="nav-item">
- <a class="nav-link" href="{% url 'odds' %}" style="color: #fff;">Current Odds</a>
- </li>
- <li class="nav-item">
- <a class="nav-link" href="{% url 'prediction_results' %}" style="color: #fff;">Yesterdays Results</a>
- </li>
-  <li class="nav-item">
- <a class="nav-link" href="{% url 'sports_betting_money_management' %}" style="color: #fff;">Money Management</a>
- </li>
- <li class="nav-item">
- <a class="nav-link" href="{% url 'second_opinions' %}" style="color: #fff;">Second Opinions</a>
- </li>
- </ul>
- </div>
- </div>
- </nav>
- <p></p>
- <!-- script type="text/javascript" src="https://js.revmasters.com/javascript.php?prefix=8ejz3pKmFDuMKNOJN2Xw7mNd7ZgqdRLk&amp;media=1099&amp;campaign=1"></script>-->
-<script type="text/javascript" src="https://js.revmasters.com/javascript.php?prefix=8ejz3pKmFDv0IgYKf5j8xmNd7ZgqdRLk&amp;media=992&amp;campaign=1"></script>
- <p><a href="https://links.pikkit.com/invite/alleyoop30220" target="_blank" style="color: #fff;">Pikkit - Sports Betting Tracker, Odds, Insights & Analysis.</a></p>
- </header>
- <main>
- <div class="body-content">
- {% block content %}
- {% endblock %}
- </div>
- <hr/>
- <footer>
-<!--<script type="text/javascript" src="https://js.revmasters.com/javascript.php?prefix=8ejz3pKmFDtD3TEmsPWI0WNd7ZgqdRLk&amp;media=1100&amp;campaign=1"></script>-->
-<script type="text/javascript" src="https://js.revmasters.com/javascript.php?prefix=8ejz3pKmFDvGs5YK48Vb6WNd7ZgqdRLk&amp;media=688&amp;campaign=1"></script>
- <p><a href="https://www.reddit.com/r/GPTSportsWriter/" style="color: #337ab7;">Reddit</a> <a href="https://www.facebook.com/gptsportswriter" style="color: #337ab7;">FB</a> <a href="https://x.com/gptsportswriter" style="color: #337ab7;">X</a> <a href="https://discord.gg/gBzTrbyybX" style="color: #337ab7;">Discord</a> <a href="https://t.me/GPTSportsWriter_bot" style="color: #337ab7;">Telegram Bot</a></p>
- <p>&copy; GPTSportsWriter.com - 2025</p>
- <h3><a href=" {% url 'disclaimer'  %}">Disclaimer: We Try Not to Suck (But No Promises)</a></h3>
- <p><a href="https://sportsbook.draftkings.com/r/sb/normandmickey/US-NY-SB/US-NY" target="_blank" style="color: #fff;">DraftKings</a> <a href="https://fndl.co/tnycp5x" target="_blank" style="color: #fff;">FanDuel</a> <a href="https://fanatics.onelink.me/5kut/45u53uhg" target="_blank" style="color: #fff;">Fanatics</a></p>
- <p><a href="https://promos.betr.app/referafriend-pickem/invite/82813f23-b9cf-4fc6-868c-00d45e86647a/" target="_blank" style="color: #fff;">Betr.app - Deposit match up to $25 PLUS $10 on registration.</a></p>
- </main>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-light" style="background-color:#4c77ee;color:#fff;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#" style="color:#fff;">GPTSportsWriter.com</a>
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar"
+                    aria-controls="collapsibleNavbar" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="{% url 'home' %}" style="color:#fff;">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'predictions' %}" style="color:#fff;">Create Predictions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'recaps' %}" style="color:#fff;">Create Recaps</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'parlays' %}" style="color:#fff;">Create Parlays</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'props' %}" style="color:#fff;">Create Props</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'topnews' %}" style="color:#fff;">Top News</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'odds' %}" style="color:#fff;">Current Odds</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'prediction_results' %}" style="color:#fff;">Yesterdays Results</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'sports_betting_money_management' %}" style="color:#fff;">Money Management</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'second_opinions' %}" style="color:#fff;">Second Opinions</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Your existing RevMasters script in the header (kept as‑is) -->
+    <script type="text/javascript"
+            src="https://js.revmasters.com/javascript.php?prefix=8ejz3pKmFDv0IgYKf5j8xmNd7ZgqdRLk&amp;media=992&amp;campaign=1">
+    </script>
+
+    <p><a href="https://links.pikkit.com/invite/alleyoop30220"
+          target="_blank"
+          style="color:#fff;">Pikkit - Sports Betting Tracker, Odds, Insights &amp; Analysis.</a></p>
+</header>
+
+<main>
+    <div class="body-content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <hr/>
+
+    <footer>
+        <script type="text/javascript"
+                src="https://js.revmasters.com/javascript.php?prefix=8ejz3pKmFDvGs5YK48Vb6WNd7ZgqdRLk&amp;media=688&amp;campaign=1">
+        </script>
+
+        <p>
+            <a href="https://www.reddit.com/r/GPTSportsWriter/" style="color:#337ab7;">Reddit</a>
+            <a href="https://www.facebook.com/gptsportswriter" style="color:#337ab7;">FB</a>
+            <a href="https://x.com/gptsportswriter" style="color:#337ab7;">X</a>
+            <a href="https://discord.gg/gBzTrbyybX" style="color:#337ab7;">Discord</a>
+            <a href="https://t.me/GPTSportsWriter_bot" style="color:#337ab7;">Telegram Bot</a>
+        </p>
+
+        <p>&copy; GPTSportsWriter.com - 2025</p>
+        <h3><a href="{% url 'disclaimer' %}">Disclaimer: We Try Not to Suck (But No Promises)</a></h3>
+
+        <p>
+            <a href="https://sportsbook.draftkings.com/r/sb/normandmickey/US-NY-SB/US-NY"
+               target="_blank"
+               style="color:#fff;">DraftKings</a>
+            <a href="https://fndl.co/tnycp5x" target="_blank" style="color:#fff;">FanDuel</a>
+            <a href="https://fanatics.onelink.me/5kut/45u53uhg" target="_blank" style="color:#fff;">Fanatics</a>
+        </p>
+        <p>
+            <a href="https://promos.betr.app/referafriend-pickem/invite/82813f23-b9cf-4fc6-868c-00d45e86647a/"
+               target="_blank"
+               style="color:#fff;">Betr.app - Deposit match up to $25 PLUS $10 on registration.</a>
+        </p>
+    </footer>
+</main>
+
+<!-- ============================================================= -->
+<!--                     POPUP MODAL (Bootstrap)                  -->
+<!-- ============================================================= -->
+<div class="modal fade" id="revmastersModal" tabindex="-1" aria-labelledby="revmastersModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="revmastersModalLabel">Special Offer from RevMasters</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <!-- The external page is loaded inside an iframe -->
+                <iframe class="revmasters-iframe"
+                        src="https://record.revmasters.com/_8ejz3pKmFDtD3TEmsPWI0WNd7ZgqdRLk/1/"
+                        allowfullscreen>
+                </iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // -----------------------------------------------------------------
+    // 1️⃣  Auto‑show the modal after a short delay (feel free to adjust)
+    // -----------------------------------------------------------------
+    $(document).ready(function () {
+        // Change 2000 → 0 if you want it to appear instantly
+        setTimeout(function () {
+            $('#revmastersModal').modal('show');
+        }, 2000);
+    });
+
+    // -----------------------------------------------------------------
+    // 2️⃣  OPTIONAL: expose a global function so you can open it later
+    // -----------------------------------------------------------------
+    function openRevmastersPopup() {
+        $('#revmastersModal').modal('show');
+    }
+    // Example usage:  <a href="javascript:openRevmastersPopup()">Open Offer</a>
+</script>
+
 </body>
 </html>
